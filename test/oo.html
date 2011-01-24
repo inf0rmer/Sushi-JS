@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS Core Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script src="qunit/qunit.js"></script>
+	<script src="../sushi.core.js"></script>
+	<script src="../sushi.oo.js"></script>
+	<script>
+		module('Sushi.OO');
+		var User = Sushi.oo.Class({
+			init: function(name, age) {
+				this.name = name;
+				this.age  = age;
+		  	}
+		 });
+		 
+		test('Class', function(){
+			var alice = new User('Alice', '26');			
+			equals(alice.name, 'Alice', 'var alice has a name property with value "Alice"');
+		});
+		
+		test('Inheritance', function(){
+			var SuperUser = Sushi.oo.Class( User, {
+				init: function() {
+					this.$super( 'init', arguments );
+				},
+				
+				chaseAlice: function() {
+					alert( "That damned brat!" );
+				}
+			});
+			
+			var queen = new SuperUser('Queen', '100');
+			
+			equals( queen.age, '100', 'super() was executed.' );
+			ok(queen.chaseAlice, 'var queen has method chaseAlice()');
+		});
+		
+		test('Mixins', function(){
+			var MixinUser = Sushi.oo.Class({
+				include: User,
+				
+				init: function(newProp) {
+					this.newProp = newProp;
+				}
+			});
+			
+			var mixinUser = new MixinUser('logger');
+			
+			ok(!mixinUser.name, 'mixinUser does not have a "name" property');
+			ok(!mixinUser.name, 'mixinUser does not have an "age" property');
+			ok(!mixinUser.name, 'mixinUser has a new "newProp" property');
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">QUnit Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>
