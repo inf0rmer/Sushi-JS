@@ -21,7 +21,7 @@ define(
 				warn: window.console.warn || false,
 				error: window.console.error || false,
 				dir: window.console.dir || false
-			}
+			};
 		})(),
 		
 		// Local ref for easy converting to real arrays
@@ -101,7 +101,7 @@ define(
 		 */
 		printHistory = function() {
 		    log(_history);
-		}
+		};
 		
 		return {
 			log: log,
@@ -109,6 +109,6 @@ define(
 			error: error,
 			dir: dir,
 			printHistory: debugHistory
-		}
+		};
     }
 );
