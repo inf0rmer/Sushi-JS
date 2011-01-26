@@ -18,11 +18,22 @@
 				ok(Sushi, 'window.Sushi is defined');
 				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
 			});
-
-
-			module('Sushi.uses overrides init object');
-			test('Sushi loads 0 modules', function() {
-				equals(Sushi.uses.length, 0, 'Sushi.uses is an empty array');
+			
+			module('Sushi.isArray')
+			test('Sushi.isArray detects Arrays', function() {
+				ok(Sushi.isArray([])); // true
+				
+				// Try to fool it using with an array-like object
+				ok(!Sushi.isArray({
+					length: 1,
+					"0": 1,
+					slice: function() {}
+				})); // false
+			});
+			
+			module('Sushi.extend');
+			test('Sushi.uses is an empty array', function() {
+				equals(Sushi.uses.length, 0);
 			});
 		});
 	</script>
