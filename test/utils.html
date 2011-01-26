@@ -12,17 +12,19 @@
 	</script>
 	<script data-main="../sushi.core.js" src="../requireplugins-jquery-1.4.4.js"></script>
 	<script>
-		module('Sushi.utils NS');
-		test('Sushi.utils', function(){
-			ok(Sushi.utils, 'Sushi.utils is defined');
-		});
-		
-		module('debugging functions');
-		test('Sushi debug functions are present', function() {
-			ok(Sushi.utils.log, 'Sushi.utils.log is defined');
-			ok(Sushi.utils.warn, 'Sushi.utils.warn is defined');
-			ok(Sushi.utils.error, 'Sushi.utils.error is defined');
-			ok(Sushi.utils.dir, 'Sushi.utils.dir is defined');
+		require.ready(function(){
+			module('Sushi.utils Namespace');
+			test('Sushi.utils', function(){
+				ok(Sushi.utils, 'Sushi.utils is defined');
+			});
+
+			module('debugging functions');
+			test('Sushi debug functions are present', function() {
+				ok(Sushi.utils.log, 'Sushi.utils.log is defined');
+				ok(Sushi.utils.warn, 'Sushi.utils.warn is defined');
+				ok(Sushi.utils.error, 'Sushi.utils.error is defined');
+				ok(Sushi.utils.dir, 'Sushi.utils.dir is defined');
+			});
 		});
 	</script>
 </head>

@@ -12,17 +12,19 @@
 	</script>
 	<script data-main="../sushi.core.js" src="../requireplugins-jquery-1.4.4.js"></script>
 	<script>
-		module('Sushi.* namespace');
-		test('Sushi is global and accessible', function() {
-			ok(Sushi, 'window.Sushi is defined');
-			ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
+		require.ready(function() {
+			module('Sushi.* namespace');
+			test('Sushi is global and accessible', function() {
+				ok(Sushi, 'window.Sushi is defined');
+				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
+			});
+
+
+			module('Sushi.uses overrides init object');
+			test('Sushi loads 0 modules', function() {
+				equals(Sushi.uses.length, 0, 'Sushi.uses is an empty array');
+			});
 		});
-		
-		
-		module('Sushi.uses overrides init object');
-		test('Sushi loads 0 modules', function() {
-			equals(Sushi.uses.length, 0, 'Sushi.uses is an empty array');
-		})
 	</script>
 </head>
 <body>
