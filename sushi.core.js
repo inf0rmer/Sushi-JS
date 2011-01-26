@@ -70,9 +70,7 @@
 		isArray: function(array) {
 		    return Object.prototype.toString.call(array) === "[object Array]";
 		}
-	},
-	// Set localized '$' var to jQuery for convenience
-	$ = jQuery;
+	};
 	
 	// If window.Sushi is defined, merge params
 	if (window.Sushi) {
