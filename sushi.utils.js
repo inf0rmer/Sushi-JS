@@ -9,8 +9,8 @@ define(
 	['sushi.utils.debug'],
 	
 	function(debug) {
-		Sushi.namespace('utils');  
-		
+		Sushi.namespace('utils');
+				
 		// Extend Sushi.utils with the temporary debug object
 		Sushi.extend(Sushi.utils, debug);
 	}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS Core Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script src="qunit/qunit.js"></script>
+	<script>
+		Sushi = {
+			uses: [],
+			plugins: []
+		};
+			
+	</script>
+	<script src="sushi.js"></script>
+	<script>
+	/*
+		require.ready(function() {
+			module('Sushi.* namespace');
+			test('Sushi is global and accessible', function() {
+				ok(Sushi, 'window.Sushi is defined');
+				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
+			});
+			
+			module('Sushi.isArray')
+			test('Sushi.isArray detects Arrays', function() {
+				ok(Sushi.isArray([])); // true
+				
+				// Try to fool it using with an array-like object
+				ok(!Sushi.isArray({
+					length: 1,
+					"0": 1,
+					slice: function() {}
+				})); // false
+			});
+			
+			module('Sushi.extend');
+			test('Sushi.uses is an empty array', function() {
+				equals(Sushi.uses.length, 0);
+			});
+		});
+	*/
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi JS Core Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>

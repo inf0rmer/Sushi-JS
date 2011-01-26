@@ -108,7 +108,7 @@ define(
 			warn: warn,
 			error: error,
 			dir: dir,
-			printHistory: debugHistory
+			debugHistory: printHistory
 		};
     }
 );

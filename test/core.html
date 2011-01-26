@@ -5,13 +5,12 @@
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script src="qunit/qunit.js"></script>
 	<script>
-		Sushi = {
-			uses: [],
-			plugins: []
-		};
-			
+		//Own Sushi object to pass configurations into Sushi Core
+		var Sushi = {
+			'extendable': true
+		}
 	</script>
-	<script data-main="../sushi.core.js" src="../requireplugins-jquery-1.4.4.js"></script>
+	<script data-main="../sushi.base.js" src="../requireplugins-jquery-1.4.4.js"></script>
 	<script>
 		require.ready(function() {
 			module('Sushi.* namespace');
@@ -33,8 +32,8 @@
 			});
 			
 			module('Sushi.extend');
-			test('Sushi.uses is an empty array', function() {
-				equals(Sushi.uses.length, 0);
+			test('Sushi is extendable', function() {
+				ok(Sushi.extendable, 'Sushi.extendable is defined');
 			});
 		});
 	</script>
