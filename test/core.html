@@ -4,16 +4,29 @@
 	<title>Sushi JS Core Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script src="qunit/qunit.js"></script>
-	<script src="../sushi.core.js"></script>
 	<script>
+		Sushi = {
+			uses: []
+		};
+			
+	</script>
+	<script data-main="../sushi.core.js" src="../requireplugins-jquery-1.4.4.js"></script>
+	<script>
+		module('Sushi.* namespace');
 		test('Sushi is global and accessible', function() {
 			ok(Sushi, 'window.Sushi is defined');
 			ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
 		});
+		
+		
+		module('Sushi.uses overrides init object');
+		test('Sushi loads 0 modules', function() {
+			equals(Sushi.uses.length, 0, 'Sushi.uses is an empty array');
+		})
 	</script>
 </head>
 <body>
-	<h1 id="qunit-header">QUnit Test Suite</h1>
+	<h1 id="qunit-header">Sushi JS Core Test Suite</h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>

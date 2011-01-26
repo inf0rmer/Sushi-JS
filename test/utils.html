@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS Utils Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script src="qunit/qunit.js"></script>
+	<script>
+		// Setup
+		Sushi = {
+			uses: ['sushi.utils']
+		};			
+	</script>
+	<script data-main="../sushi.core.js" src="../requireplugins-jquery-1.4.4.js"></script>
+	<script>
+		module('Sushi.utils NS');
+		test('Sushi.utils', function(){
+			ok(Sushi.utils, 'Sushi.utils is defined');
+		});
+		
+		module('debugging functions');
+		test('Sushi debug functions are present', function() {
+			ok(Sushi.utils.log, 'Sushi.utils.log is defined');
+			ok(Sushi.utils.warn, 'Sushi.utils.warn is defined');
+			ok(Sushi.utils.error, 'Sushi.utils.error is defined');
+			ok(Sushi.utils.dir, 'Sushi.utils.dir is defined');
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi.Utils Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>
