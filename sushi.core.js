@@ -12,9 +12,16 @@
 	// Set up global namespace and config
 	var Sushi = {
 		VERSION: '0.0.5',
-		//modules to load
+		
+		// Modules to load
 		uses: [
 			'sushi.utils'
+		],
+		
+		// Plugins to load
+		plugins: [
+		    'plugins/pubsub.js',
+		    'plugins/mustache.js'
 		],
 		
 		/**
@@ -84,7 +91,7 @@
 	
 	// Require library-wide dependencies, not in requirejs module format
 	// TODO: move this to Sushi.plugins so we can load whatever plugins we wish
-	require(['plugins/pubsub.js', 'plugins/mustache.js', 'plugins/Stateful.js'], function() {
+	require(Sushi.plugins, function() {
 		// require Sushi modules in requirejs format
 		require(Sushi.uses, function(){
 			
