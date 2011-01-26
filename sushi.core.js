@@ -11,16 +11,17 @@
 (function( window ) {
 	// Set up global namespace and config
 	var Sushi = {
-		VERSION: '0.0.1',
+		VERSION: '0.0.5',
 		//modules to load
 		uses: [
 			'sushi.utils'
 		],
+		
 		/**
 		 * A utility that non-destructively defines namespaces
 		 *
 		 * @method namespace
-		 * @param {String} Name of namespace to create
+		 * @param {String} namespaceString Name of namespace to create
 		 * @return {Object} Namespaced object
 		 */
 		namespace: function(namespaceString) {
@@ -42,6 +43,32 @@
 			}
 			
 			return parent;			
+		},
+		
+		/**
+		 * Simple extending (shallow copying) utility
+		 *
+		 * @method extend
+		 * @param {Object} destination Object to copy properties to
+		 * @param {Object} source Object to copy properties from
+		 * @return {Object} Extended object
+		 */
+		extend: function(destination, source) {
+		    for ( var property in source ) {
+    			destination[property] = source[property];
+    		}
+    		return destination;
+		},
+		
+		/**
+		 * Checks for array-ness
+		 *
+		 * @method isArray
+		 * @param array Argument to test
+		 * @return {Boolean} Whether argument is an array or not
+		 */
+		isArray: function(array) {
+		    return Object.prototype.toString.call(array) === "[object Array]";
 		}
 	},
 	// Set localized '$' var to jQuery for convenience
@@ -49,11 +76,11 @@
 	
 	// If window.Sushi is defined, merge params
 	if (window.Sushi) {
-		$.extend(Sushi, window.Sushi);
+		Sushi.extend(Sushi, window.Sushi);
 	}
 	
 	// Check if Sushi.uses is an array
-	if (!$.isArray(Sushi.uses)) {
+	if (!Sushi.isArray(Sushi.uses)) {
 		throw new Error('Sushi.uses must be in array format.');
 	}
 	
