@@ -4,7 +4,7 @@
 	<title>Sushi JS Utils Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script src="qunit/qunit.js"></script>
-	<script data-main="../sushi.base.js" src="../requireplugins-jquery-1.4.4.js"></script>
+	<script data-main="../src/sushi.base.js" src="../src/requireplugins-jquery-1.4.4.js"></script>
 	<script>
 		require.ready(function(){
 			module('Sushi.utils Namespace');
@@ -12,13 +12,32 @@
 				ok(Sushi.utils, 'Sushi.utils is defined');
 			});
 
-			module('debugging functions');
+			module('Sushi.utils.debug');
 			test('Sushi debug functions are present', function() {
-				ok(Sushi.utils.log, 'Sushi.utils.log is defined');
-				ok(Sushi.utils.warn, 'Sushi.utils.warn is defined');
-				ok(Sushi.utils.error, 'Sushi.utils.error is defined');
-				ok(Sushi.utils.dir, 'Sushi.utils.dir is defined');
+				ok(Sushi.utils.debug.log, 'Sushi.utils.debug.log is defined');
+				ok(Sushi.utils.debug.warn, 'Sushi.utils.debug.warn is defined');
+				ok(Sushi.utils.debug.error, 'Sushi.utils.debug.error is defined');
+				ok(Sushi.utils.debug.dir, 'Sushi.utils.debug.dir is defined');
 			});
+			
+			var literal = {
+				'Name': 'Alice',
+				'Age': 7.5,
+				'Location': 'Wonderland'
+				
+			},			
+			string = '{"Name":"Alice","Age":7.5,"Location":"Wonderland"}';
+			
+			module('Sushi.utils.json');
+			
+			test('Sushi.utils.json.parse', function(){
+				equals(typeof Sushi.utils.json.parse(string), 'object');
+			});
+			
+			test('Sushi.utils.json.stringify', function(){
+				equals(typeof Sushi.utils.json.stringify(literal), 'string');
+			});
+			
 		});
 	</script>
 </head>
