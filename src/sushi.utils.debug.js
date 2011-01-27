@@ -4,16 +4,17 @@ define(
     /**
 	 * Defines several safe debugging methods
 	 *
-	 * @return {Object} Public debugging methods
+	 * @namespace Sushi.utils
+	 * @class debug
 	 */
-    function() {	
+    function() {
 		// Cached logging history
 		var _history = [],
 		
 		/**
 		 * Returns the debugging methods the environment supports
 		 *
-		 * @return {Object} Supported debugging methods
+		 * @returns {Object} Supported debugging methods
 		 */
 		_supports = (function(){
 			return {
@@ -99,7 +100,7 @@ define(
 		 * Prints the whole cached debug history to the console
 		 *
 		 */
-		printHistory = function() {
+		logHistory = function() {
 		    log(_history);
 		};
 		
@@ -108,7 +109,7 @@ define(
 			warn: warn,
 			error: error,
 			dir: dir,
-			debugHistory: printHistory
+			logHistory: logHistory
 		};
     }
 );

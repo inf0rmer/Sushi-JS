@@ -1,17 +1,18 @@
 /**
  * Sushi Core
- * Copyright (C) 2011 Bruno Abrantes
- * MIT Licensed
  *
  * @module Sushi
  */
-
-// Defining a private namespace inside the closure
 define(
     [],
     
+	/**
+	 * Sushi Core
+	 *
+	 * @namespace Sushi
+	 * @class core
+	 */
     function() {
-	    // Set up global namespace and config
     	var Sushi = {
     		VERSION: '0.0.5',
 				
