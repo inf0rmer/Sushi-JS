@@ -1,0 +1,13 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Sushi JS</span>
+<span class="cm"> * Copyright (C) 2011 Bruno Abrantes</span>
+<span class="cm"> * MIT Licensed</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="c1">// Require library-wide dependencies, not in requirejs module format</span>
+<span class="nx">require</span><span class="p">([],</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">// require Sushi modules in requirejs format</span>
+	<span class="nx">require</span><span class="p">([</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span> <span class="kd">function</span><span class="p">(){</span>
+	<span class="p">});</span>
+<span class="p">});</span>
+</pre></div>

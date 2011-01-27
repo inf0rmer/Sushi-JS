@@ -1,0 +1,83 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Sushi Core</span>
+<span class="cm"> *</span>
+<span class="cm"> * @module Sushi</span>
+<span class="cm"> */</span>
+<span class="nx">define</span><span class="p">(</span>
+    <span class="p">[],</span>
+    
+	<span class="cm">/**</span>
+<span class="cm">	 * Sushi Core</span>
+<span class="cm">	 *</span>
+<span class="cm">	 * @namespace Sushi</span>
+<span class="cm">	 * @class core</span>
+<span class="cm">	 */</span>
+    <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    	<span class="kd">var</span> <span class="nx">Sushi</span> <span class="o">=</span> <span class="p">{</span>
+    		<span class="nx">VERSION</span><span class="o">:</span> <span class="s1">&#39;0.0.5&#39;</span><span class="p">,</span>
+				
+    		<span class="cm">/**</span>
+<span class="cm">    		 * A utility that non-destructively defines namespaces</span>
+<span class="cm">    		 *</span>
+<span class="cm">    		 * @method namespace</span>
+<span class="cm">    		 * @param {String} namespaceString Name of namespace to create</span>
+<span class="cm">    		 * @return {Object} Namespaced object</span>
+<span class="cm">    		 */</span>
+    		<span class="nx">namespace</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">namespaceString</span><span class="p">)</span> <span class="p">{</span>
+    			<span class="kd">var</span> <span class="nx">parts</span> <span class="o">=</span> <span class="nx">namespaceString</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">),</span>
+    				<span class="nx">parent</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">,</span>
+    				<span class="nx">i</span><span class="p">;</span>
+			
+    			<span class="c1">// Strip redundant leading global</span>
+    			<span class="k">if</span> <span class="p">(</span><span class="nx">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s1">&#39;Sushi&#39;</span><span class="p">)</span> <span class="p">{</span>
+    				<span class="nx">parts</span> <span class="o">=</span> <span class="nx">parts</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    			<span class="p">}</span>
+			
+    			<span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">parts</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">+=</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    				<span class="c1">// Create a property if it doesn&#39;t exist</span>
+    				<span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">parts</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">===</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+    					<span class="nx">parent</span><span class="p">[</span><span class="nx">parts</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{};</span>
+    				<span class="p">}</span>
+    				<span class="nx">parent</span> <span class="o">=</span> <span class="nx">parent</span><span class="p">[</span><span class="nx">parts</span><span class="p">[</span><span class="nx">i</span><span class="p">]];</span>
+    			<span class="p">}</span>
+			
+    			<span class="k">return</span> <span class="nx">parent</span><span class="p">;</span>			
+    		<span class="p">},</span>
+		
+    		<span class="cm">/**</span>
+<span class="cm">    		 * Simple extending (shallow copying) utility</span>
+<span class="cm">    		 *</span>
+<span class="cm">    		 * @method extend</span>
+<span class="cm">    		 * @param {Object} destination Object to copy properties to</span>
+<span class="cm">    		 * @param {Object} source Object to copy properties from</span>
+<span class="cm">    		 * @return {Object} Extended object</span>
+<span class="cm">    		 */</span>
+    		<span class="nx">extend</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">destination</span><span class="p">,</span> <span class="nx">source</span><span class="p">)</span> <span class="p">{</span>
+    		    <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">source</span> <span class="p">)</span> <span class="p">{</span>
+        			<span class="nx">destination</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">source</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+        		<span class="p">}</span>
+        		<span class="k">return</span> <span class="nx">destination</span><span class="p">;</span>
+    		<span class="p">},</span>
+		
+    		<span class="cm">/**</span>
+<span class="cm">    		 * Checks for array-ness</span>
+<span class="cm">    		 *</span>
+<span class="cm">    		 * @method isArray</span>
+<span class="cm">    		 * @param array Argument to test</span>
+<span class="cm">    		 * @return {Boolean} Whether argument is an array or not</span>
+<span class="cm">    		 */</span>
+    		<span class="nx">isArray</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="p">{</span>
+    		    <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;[object Array]&quot;</span><span class="p">;</span>
+    		<span class="p">}</span>
+    	<span class="p">};</span>
+	
+    	<span class="c1">// If window.Sushi is defined, merge params</span>
+    	<span class="k">if</span> <span class="p">(</span><span class="nb">window</span><span class="p">.</span><span class="nx">Sushi</span><span class="p">)</span> <span class="p">{</span>
+    		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">,</span> <span class="nb">window</span><span class="p">.</span><span class="nx">Sushi</span><span class="p">);</span>
+    	<span class="p">}</span>
+	
+    	<span class="c1">// Sync global Sushi variable to namespaced one</span>
+    	<span class="nb">window</span><span class="p">.</span><span class="nx">Sushi</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
