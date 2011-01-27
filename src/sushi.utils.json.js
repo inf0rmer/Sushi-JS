@@ -1,5 +1,5 @@
 define(
-	[],
+	['../plugins/JSON.js'],
 	
 	/**
 	 * JSON handling functions
@@ -7,10 +7,7 @@ define(
 	 * @namespace Sushi.utils
 	 * @class json
 	 */
-	function() {
-		
-		// TODO: fallback to non-native implementation!
-		
+	function() {	
 		/**
 		 * Converts a JSON-formatted string into a Javascript literal object
 		 *
