@@ -24,7 +24,7 @@ define(
     	 */
 	    each = function(obj, iterator, context) {
             var value;
-            if (obj == null) return;
+            if (obj === null) return;
             
             if (_nativeForEach && obj.forEach === _nativeForEach) {
                 obj.forEach(iterator, context);
