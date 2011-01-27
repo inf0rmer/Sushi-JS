@@ -12,7 +12,7 @@
   <title>
     API: Sushi
     
-      &rarr; Sushi.core class
+      &rarr; Sushi.events class
     
     
   </title>
@@ -76,7 +76,7 @@
         <a href="./index.html" title="Sushi-JS">Sushi-JS</a>
           &rarr; module <a href="./module_sushi.html" title="Sushi">Sushi</a>
           
-            &rarr; class Sushi.core
+            &rarr; class Sushi.events
           
           
       </div>
@@ -102,10 +102,10 @@
             <div id="classList" class="module">
               <h4>Classes</h4>
               <ul>
-                  <li  class="selected" >
+                  <li >
                     <a href="Sushi.core.html">Sushi.core</a>
                   </li>
-                  <li >
+                  <li  class="selected" >
                     <a href="Sushi.events.html">Sushi.events</a>
                   </li>
                   <li >
@@ -161,13 +161,13 @@
               <h4>Methods</h4>
               <ul>
                   <li class=" ">
-                    <a href="#method_extend">extend</a>
+                    <a href="#method_publish">publish</a>
                   </li>
                   <li class=" ">
-                    <a href="#method_isArray">isArray</a>
+                    <a href="#method_subscribe">subscribe</a>
                   </li>
                   <li class=" ">
-                    <a href="#method_namespace">namespace</a>
+                    <a href="#method_unsubscribe">unsubscribe</a>
                   </li>
               </ul>
             </div>
@@ -190,7 +190,7 @@
 
           
 
-          class <strong>Sushi.core</strong>
+          class <strong>Sushi.events</strong>
           
         </h2>
 
@@ -199,7 +199,7 @@
 
 
         <div class="summary description">
-          Sushi Core
+          Sushi Events
         </div>
         
 
@@ -230,19 +230,19 @@
                 </thead>
                 <tbody>
 
-                    <tr class=" " resource="#method_extend">
+                    <tr class=" " resource="#method_publish">
 
                       <td class="names">
                         <code>
-                          <a name="method_extend">extend</a>(
-                          destination, source
+                          <a name="method_publish">publish</a>(
+                          topic, args
                           )
                         </code>
                       </td>
 
                       <td class="returns">
                         <code>
-                          Object
+                          void
                         </code>
 
                         
@@ -254,123 +254,78 @@
                         <a href="#top" class="top" title="Jump back to the top">↑</a>
 
 
-                        Simple extending (shallow copying) utility
+                        Publish data on a named topic
+Example:
+Sushi.events.publish("/some/topic", ["a","b","c"]);
 
                           <p>Parameters:</p>
                           <ul>
                               <li>
                                 <code>
-                                  destination
-                                  &lt;Object&gt;
-                                </code>
-                                 Object to copy properties to
-                              </li>
-                              <li>
-                                <code>
-                                  source
-                                  &lt;Object&gt;
-                                </code>
-                                 Object to copy properties from
-                              </li>
-                          <ul>
-
-
-                          <p>Returns:</p>
-                          <ul>
-                            <li>
-                                <code>
-                                  &lt;Object&gt;
-                                </code>
-                              Extended object
-                            </li>
-                          </ul>
-                      </td>
-
-                    </tr>
-                    <tr class=" " resource="#method_isArray">
-
-                      <td class="names">
-                        <code>
-                          <a name="method_isArray">isArray</a>(
-                          array
-                          )
-                        </code>
-                      </td>
-
-                      <td class="returns">
-                        <code>
-                          Boolean
-                        </code>
-
-                        
-                        
-                        
-                      </td>
-
-                      <td class="description">
-                        <a href="#top" class="top" title="Jump back to the top">↑</a>
-
-
-                        Checks for array-ness
-
-                          <p>Parameters:</p>
-                          <ul>
-                              <li>
-                                <code>
-                                  array
-                                  &lt;object&gt;
-                                </code>
-                                 Argument to test
-                              </li>
-                          <ul>
-
-
-                          <p>Returns:</p>
-                          <ul>
-                            <li>
-                                <code>
-                                  &lt;Boolean&gt;
-                                </code>
-                              Whether argument is an array or not
-                            </li>
-                          </ul>
-                      </td>
-
-                    </tr>
-                    <tr class=" " resource="#method_namespace">
-
-                      <td class="names">
-                        <code>
-                          <a name="method_namespace">namespace</a>(
-                          namespaceString
-                          )
-                        </code>
-                      </td>
-
-                      <td class="returns">
-                        <code>
-                          Object
-                        </code>
-
-                        
-                        
-                        
-                      </td>
-
-                      <td class="description">
-                        <a href="#top" class="top" title="Jump back to the top">↑</a>
-
-
-                        A utility that non-destructively defines namespaces
-
-                          <p>Parameters:</p>
-                          <ul>
-                              <li>
-                                <code>
-                                  namespaceString
+                                  topic
                                   &lt;String&gt;
                                 </code>
-                                 Name of namespace to create
+                                 The channel to publish on
+                              </li>
+                              <li>
+                                <code>
+                                  args
+                                  &lt;Array&gt;
+                                </code>
+                                  The data to publish. Each array item is converted into an ordered
+arguments on the subscribed functions.
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_subscribe">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_subscribe">subscribe</a>(
+                          topic, callback
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Array
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Register a callback on a named topic
+Example:
+Sushi.events.subscribe("/some/topic", function(a, b, c){ //handle data});
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  topic
+                                  &lt;String&gt;
+                                </code>
+                                     The channel to subscribe to
+                              </li>
+                              <li>
+                                <code>
+                                  callback
+                                  &lt;Function&gt;
+                                </code>
+                                  The handler event. Anytime something is Sushi.events.publish'ed on a 
+subscribed channel, the callback will be called with the
+published array as ordered arguments.
                               </li>
                           <ul>
 
@@ -379,11 +334,55 @@
                           <ul>
                             <li>
                                 <code>
-                                  &lt;Object&gt;
+                                  &lt;Array&gt;
                                 </code>
-                              Namespaced object
+                              A handle which can be used to unsubscribe this particular subscription
                             </li>
                           </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_unsubscribe">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_unsubscribe">unsubscribe</a>(
+                          handle
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Disconnect a subscribed function for a topic
+Example:
+var handle = Sushi.events.subscribe("/some/topic", function(a, b, c){ //handle data});
+Sushi.events.unsubscribe(handle);
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  handle
+                                  &lt;Array&gt;
+                                </code>
+                                 The return value from a Sushi.events.subscribe call
+                              </li>
+                          <ul>
+
+
                       </td>
 
                     </tr>

@@ -106,10 +106,16 @@
                     <a href="Sushi.core.html">Sushi.core</a>
                   </li>
                   <li >
+                    <a href="Sushi.events.html">Sushi.events</a>
+                  </li>
+                  <li >
                     <a href="Sushi.utils.html">Sushi.utils</a>
                   </li>
                   <li >
                     <a href="Sushi.utils.debug.html">Sushi.utils.debug</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.utils.enumerable.html">Sushi.utils.enumerable</a>
                   </li>
                   <li >
                     <a href="Sushi.utils.json.html">Sushi.utils.json</a>
@@ -130,7 +136,16 @@
                     <a href="sushi.core.js.html">sushi.core.js</a>
                   </li>
                   <li >
+                    <a href="sushi.events.js.html">sushi.events.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.events.pubsub.js.html">sushi.events.pubsub.js</a>
+                  </li>
+                  <li >
                     <a href="sushi.utils.debug.js.html">sushi.utils.debug.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.enumerable.js.html">sushi.utils.enumerable.js</a>
                   </li>
                   <li  class="selected" >
                     <a href="sushi.utils.js.html">sushi.utils.js</a>
@@ -166,7 +181,7 @@
 <span class="cm"> */</span>
 <span class="nx">define</span><span class="p">(</span>
 	<span class="c1">// Module dependencies</span>
-	<span class="p">[</span><span class="s1">&#39;sushi.utils.debug&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.json&#39;</span><span class="p">],</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.utils.debug&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.json&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.enumerable&#39;</span><span class="p">],</span>
 	
 	<span class="cm">/**</span>
 <span class="cm">	 * Sushi Utils</span>
@@ -174,13 +189,31 @@
 <span class="cm">	 * @namespace Sushi</span>
 <span class="cm">	 * @class utils</span>
 <span class="cm">	 */</span>
-	<span class="kd">function</span><span class="p">(</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">function</span><span class="p">(</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">json</span><span class="p">,</span> <span class="nx">enumerable</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">utilsNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">),</span>
 			<span class="nx">debugNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.debug&#39;</span><span class="p">),</span>
-			<span class="nx">jsonNS</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.json&#39;</span><span class="p">);</span>
+			<span class="nx">jsonNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.json&#39;</span><span class="p">),</span>
+			<span class="nx">enumerableNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.enumerable&#39;</span><span class="p">);</span>
+			
 		
+		<span class="kd">var</span> <span class="nx">utils</span> <span class="o">=</span> <span class="p">{</span>
+		    <span class="cm">/*</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @method isNumber</span>
+<span class="cm">		     * @param Value to test</span>
+<span class="cm">		     * </span>
+<span class="cm">		     * @return {Boolean} Whether value is a number or not.</span>
+<span class="cm">		     */</span>
+		    <span class="nx">isNumber</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+		        <span class="k">return</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">number</span> <span class="o">==</span> <span class="s2">&quot;number&quot;</span><span class="p">);</span>
+		    <span class="p">}</span>
+		<span class="p">};</span>
+		
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">,</span> <span class="nx">utils</span><span class="p">);</span>
+					
 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">debug</span><span class="p">);</span>
 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">json</span><span class="p">,</span> <span class="nx">json</span><span class="p">);</span>
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">enumerable</span><span class="p">,</span> <span class="nx">enumerable</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">);</span>
 </pre></div>

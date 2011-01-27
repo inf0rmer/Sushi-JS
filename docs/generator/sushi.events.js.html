@@ -10,8 +10,10 @@
   <meta name="viewport" content="width=device-width; initial-scale=1.0">
 
   <title>
-    API: 
+    API: Sushi
     
+    
+      &rarr; sushi.events.js (file)
     
   </title>
 
@@ -72,6 +74,11 @@
         </form>
 
         <a href="./index.html" title="Sushi-JS">Sushi-JS</a>
+          &rarr; module <a href="./module_sushi.html" title="Sushi">Sushi</a>
+          
+          
+            &rarr; file sushi.events.js
+          
       </div>
     </div> <!--! end of #sub-hd -->
     
@@ -86,7 +93,7 @@
             <div id="moduleList" class="module">
               <h4>Modules</h4>
               <ul>
-                  <li >
+                  <li  class="selected" >
                     <a href="module_sushi.html">Sushi</a>
                   </li>
               </ul>
@@ -128,7 +135,7 @@
                   <li >
                     <a href="sushi.core.js.html">sushi.core.js</a>
                   </li>
-                  <li >
+                  <li  class="selected" >
                     <a href="sushi.events.js.html">sushi.events.js</a>
                   </li>
                   <li >
@@ -160,14 +167,36 @@
 
     <div id="content" class="grid_12">
       
-        <div class="summary description">
-          <p>
-            This is the API documentation for
-            <a href="https://github.com/inf0rmer/Sushi-JS">Sushi-JS</a>.
-          </p>
-          <p>
-            Choose a module name from the list for more information.
-          </p>
+
+
+        <!--! source code view -->
+        <div id="srcout">
+          <h2>
+            file <strong>sushi.events.js</strong>
+          </h2>
+
+          <div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm"> * Sushi.events - Event management functions</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+ <span class="nx">define</span><span class="p">(</span>
+ 	<span class="c1">// Module dependencies</span>
+ 	<span class="p">[</span><span class="s1">&#39;sushi.events.pubsub&#39;</span><span class="p">],</span>
+
+ 	<span class="cm">/**</span>
+<span class="cm"> 	 * Sushi Events</span>
+<span class="cm"> 	 *</span>
+<span class="cm"> 	 * @namespace Sushi</span>
+<span class="cm"> 	 * @class events</span>
+<span class="cm"> 	 */</span>
+ 	<span class="kd">function</span><span class="p">(</span><span class="nx">pubsub</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;events&#39;</span><span class="p">);</span>
+        
+ 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">events</span><span class="p">,</span> <span class="nx">pubsub</span><span class="p">);</span>
+ 	<span class="p">}</span>
+ <span class="p">);</span>
+</pre></div>
+
         </div>
 
     </div>
