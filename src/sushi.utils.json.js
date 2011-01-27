@@ -9,6 +9,8 @@ define(
 	 */
 	function() {
 		
+		// TODO: fallback to non-native implementation!
+		
 		/**
 		 * Converts a JSON-formatted string into a Javascript literal object
 		 *
