@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS Collection Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script src="qunit/qunit.js"></script>
+	<script data-main="../src/sushi.base.js" src="../src/requireplugins-jquery-1.4.4.js"></script>
+	<script>
+		
+		require.ready(function() {
+			module('Sushi.utils.collection namespace');
+			test('Sushi.utils.collection', function() {
+				ok(Sushi.utils.collection, 'Sushi.utils.collection is defined');
+			});
+			
+			module('Sushi.utils.collection.each');
+			
+			var obj = {
+				"1": "apples",
+				"2": 25,
+				"3": "mangoes",
+				"4": 33
+			};
+			
+			var array = ["oranges", 5, "bananas", 10];
+			
+			test('forEach with an Array', function() {
+				var i = 0;
+				Sushi.utils.collection.each(array, function(value) {
+					equals(value, array[i]);
+					i++;
+				});
+			});
+			
+			test('forEach with an Object', function() {
+				var i = 1;
+				Sushi.utils.collection.each(obj, function(value) {
+					equals(value, obj[i]);
+					i++;
+				});
+			});
+			
+			module('Sushi.utils.collection.isArray');
+			test('Sushi.utils.collection.isArray detects Arrays', function() {
+				ok(Sushi.utils.collection.isArray([])); // true
+				
+				// Try to fool it using with an array-like object
+				ok(!Sushi.utils.collection.isArray({
+					length: 1,
+					"0": 1,
+					slice: function() {}
+				})); // false
+			});
+			
+			module('Sushi.utils.collection.toArray');
+			test('Sushi.utils.collection.toArray converts to arrays', function() {
+				
+				var obj = {
+					name: "Alice",
+					age: 12
+				}
+				
+				ok(Sushi.utils.collection.isArray(Sushi.utils.collection.toArray(obj)));
+			});
+
+			
+			module('Sushi.utils.collection.reduce');
+			test('Sushi.utils.collection.reduce', function() {
+				//Sum all values of array
+				equals(Sushi.utils.collection.reduce([0, 1, 2, 3], function(a, b){ return a + b; }), 6);
+				
+				//Array flattening
+				same(Sushi.utils.collection.reduce([[0,1], [2,3], [4,5]], function(a,b) { return a.concat(b); }), [0, 1, 2, 3, 4, 5]);
+				
+			});
+			
+			module('Sushi.utils.collection.reduceRight');
+			test('Sushi.utils.collection.reduceRight', function() {
+				//Sum all values of array
+				equals(Sushi.utils.collection.reduceRight([0, 1, 2, 3], function(a, b){ return a + b; }), 6);
+				
+				//Array flattening
+				same(Sushi.utils.collection.reduceRight([[0,1], [2,3], [4,5]], function(a,b) { return a.concat(b); }), [4, 5, 2, 3, 0, 1]);
+				
+			});
+			
+			module('Sushi.utils.collection.filter');
+			test('Sushi.utils.collection.filter', function() {
+				same(Sushi.utils.collection.filter([12, 5, 8, 130, 44], function(element, index, array) {
+					return (element >= 10);
+				}), [12, 130, 44]);			
+			});
+			
+			module('Sushi.utils.collection.some');
+			test('Sushi.utils.collection.some', function() {
+				ok(Sushi.utils.collection.some([12, 5, 8, 130, 44], function(element, index, array) {
+					return (element >= 10);
+				})); // true	
+				
+				ok(!Sushi.utils.collection.some([2, 5, 8, 1, 4], function(element, index, array) {
+					return (element >= 10);
+				})); // false
+			});
+			
+			module('Sushi.utils.collection.pluck');
+			test('Sushi.utils.collection.pluck', function() {
+				var obj = {
+					name: "Alice",
+					age: 12
+				};
+				
+				equals(Sushi.utils.collection.pluck(obj, name), 'Alice');
+			});
+
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi JS Collection Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>

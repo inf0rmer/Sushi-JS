@@ -9,7 +9,7 @@
 
 */
 define(
-    [],
+    ['sushi.utils.collection'],
     
     function() {
 	    // the topic/subscription hash

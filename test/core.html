@@ -19,18 +19,6 @@
 				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
 			});
 			
-			module('Sushi.isArray')
-			test('Sushi.isArray detects Arrays', function() {
-				ok(Sushi.isArray([])); // true
-				
-				// Try to fool it using with an array-like object
-				ok(!Sushi.isArray({
-					length: 1,
-					"0": 1,
-					slice: function() {}
-				})); // false
-			});
-			
 			module('Sushi.extend');
 			test('Sushi is extendable', function() {
 				ok(Sushi.extendable, 'Sushi.extendable is defined');

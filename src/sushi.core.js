@@ -57,17 +57,6 @@ define(
         			destination[property] = source[property];
         		}
         		return destination;
-    		},
-		
-    		/**
-    		 * Checks for array-ness
-    		 *
-    		 * @method isArray
-    		 * @param array Argument to test
-    		 * @return {Boolean} Whether argument is an array or not
-    		 */
-    		isArray: function(array) {
-    		    return Object.prototype.toString.call(array) === "[object Array]";
     		}
     	};
 	
