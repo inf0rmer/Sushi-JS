@@ -4,7 +4,7 @@
  */
 define(
 	// Module dependencies
-	['sushi.utils.debug', 'sushi.utils.json', 'sushi.utils.collection'],
+	['sushi.utils.debug', 'sushi.utils.json', 'sushi.utils.collection', 'sushi.utils.lang'],
 	
 	/**
 	 * Sushi Utils
@@ -12,11 +12,12 @@ define(
 	 * @namespace Sushi
 	 * @class utils
 	 */
-	function(debug, json, collection) {
+	function(debug, json, collection, lang) {
 		var utilsNs = Sushi.namespace('utils'),
 			debugNs = Sushi.namespace('utils.debug'),
 			jsonNs = Sushi.namespace('utils.json'),
-			collectionNs = Sushi.namespace('utils.collection');	
+			collectionNs = Sushi.namespace('utils.collection'),
+			langNs = Sushi.namespace('utils.lang');
 			
 		
 	    /**
@@ -46,5 +47,6 @@ define(
 		Sushi.extend(Sushi.utils.debug, debug);
 		Sushi.extend(Sushi.utils.json, json);
 		Sushi.extend(Sushi.utils.collection, collection);
+		Sushi.extend(Sushi.utils.lang, lang);
 	}
 );
