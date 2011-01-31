@@ -1,5 +1,5 @@
 define(
-	['../plugins/JSON.js'],
+	['../plugins/JSON'],
 	
 	/**
 	 * JSON handling functions
