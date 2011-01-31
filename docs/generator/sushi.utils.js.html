@@ -123,6 +123,9 @@
                   <li >
                     <a href="Sushi.utils.json.html">Sushi.utils.json</a>
                   </li>
+                  <li >
+                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
+                  </li>
               </ul>
             </div>
 
@@ -156,6 +159,9 @@
                   <li >
                     <a href="sushi.utils.json.js.html">sushi.utils.json.js</a>
                   </li>
+                  <li >
+                    <a href="sushi.utils.lang.js.html">sushi.utils.lang.js</a>
+                  </li>
               </ul>
             </div>
 
@@ -184,7 +190,7 @@
 <span class="cm"> */</span>
 <span class="nx">define</span><span class="p">(</span>
 	<span class="c1">// Module dependencies</span>
-	<span class="p">[</span><span class="s1">&#39;sushi.utils.debug&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.json&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.collection&#39;</span><span class="p">],</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.utils.debug&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.json&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.collection&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.lang&#39;</span><span class="p">],</span>
 	
 	<span class="cm">/**</span>
 <span class="cm">	 * Sushi Utils</span>
@@ -192,11 +198,12 @@
 <span class="cm">	 * @namespace Sushi</span>
 <span class="cm">	 * @class utils</span>
 <span class="cm">	 */</span>
-	<span class="kd">function</span><span class="p">(</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">json</span><span class="p">,</span> <span class="nx">collection</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">function</span><span class="p">(</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">json</span><span class="p">,</span> <span class="nx">collection</span><span class="p">,</span> <span class="nx">lang</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">utilsNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">),</span>
 			<span class="nx">debugNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.debug&#39;</span><span class="p">),</span>
 			<span class="nx">jsonNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.json&#39;</span><span class="p">),</span>
-			<span class="nx">collectionNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.collection&#39;</span><span class="p">);</span>	
+			<span class="nx">collectionNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.collection&#39;</span><span class="p">),</span>
+			<span class="nx">langNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.lang&#39;</span><span class="p">);</span>
 			
 		
 	    <span class="cm">/**</span>
@@ -226,6 +233,7 @@
 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">debug</span><span class="p">);</span>
 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">json</span><span class="p">,</span> <span class="nx">json</span><span class="p">);</span>
 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">collection</span><span class="p">,</span> <span class="nx">collection</span><span class="p">);</span>
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">lang</span><span class="p">,</span> <span class="nx">lang</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">);</span>
 </pre></div>

@@ -12,8 +12,8 @@
   <title>
     API: Sushi
     
+      &rarr; Sushi.utils.lang class
     
-      &rarr; sushi.utils.json.js (file)
     
   </title>
 
@@ -76,8 +76,8 @@
         <a href="./index.html" title="Sushi-JS">Sushi-JS</a>
           &rarr; module <a href="./module_sushi.html" title="Sushi">Sushi</a>
           
+            &rarr; class Sushi.utils.lang
           
-            &rarr; file sushi.utils.json.js
           
       </div>
     </div> <!--! end of #sub-hd -->
@@ -123,7 +123,7 @@
                   <li >
                     <a href="Sushi.utils.json.html">Sushi.utils.json</a>
                   </li>
-                  <li >
+                  <li  class="selected" >
                     <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
                   </li>
               </ul>
@@ -156,7 +156,7 @@
                   <li >
                     <a href="sushi.utils.js.html">sushi.utils.js</a>
                   </li>
-                  <li  class="selected" >
+                  <li >
                     <a href="sushi.utils.json.js.html">sushi.utils.json.js</a>
                   </li>
                   <li >
@@ -166,6 +166,14 @@
             </div>
 
 
+            <div id="methodsList" class="module">
+              <h4>Methods</h4>
+              <ul>
+                  <li class=" ">
+                    <a href="#method_replaceAccents">replaceAccents</a>
+                  </li>
+              </ul>
+            </div>
 
 
 
@@ -177,53 +185,118 @@
     <div id="content" class="grid_12">
       
 
+      
+        <h2>
+          
 
-        <!--! source code view -->
-        <div id="srcout">
-          <h2>
-            file <strong>sushi.utils.json.js</strong>
-          </h2>
+          
 
-          <div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
-	<span class="p">[</span><span class="s1">&#39;../plugins/JSON.js&#39;</span><span class="p">],</span>
-	
-	<span class="cm">/**</span>
-<span class="cm">	 * JSON handling functions</span>
-<span class="cm">	 *</span>
-<span class="cm">	 * @namespace Sushi.utils</span>
-<span class="cm">	 * @class json</span>
-<span class="cm">	 */</span>
-	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>	
-		<span class="cm">/**</span>
-<span class="cm">		 * Converts a JSON-formatted string into a Javascript literal object</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @param {String} string JSON-formatted string</span>
-<span class="cm">		 * @return {Object} Well formatted JS literal</span>
-<span class="cm">		 */</span>
-		<span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">);</span>
-		<span class="p">},</span>
-		
-		<span class="cm">/**</span>
-<span class="cm">		 * Converts a Javascript literal object into a well formatted JSON string</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @param {Object} literal Literal Notated Javascript Object</span>
-<span class="cm">		 * @return {String} Well formatted JSON string</span>
-<span class="cm">		 */</span>
-		<span class="nx">stringify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">literal</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">literal</span><span class="p">);</span>
-		<span class="p">};</span>
-		
-		<span class="k">return</span> <span class="p">{</span>
-			<span class="nx">parse</span><span class="o">:</span> <span class="nx">parse</span><span class="p">,</span>
-			<span class="nx">stringify</span><span class="o">:</span> <span class="nx">stringify</span>
-		<span class="p">};</span>
-		
-	<span class="p">}</span>
-<span class="p">);</span>
-</pre></div>
+          
 
+          class <strong>Sushi.utils.lang</strong>
+          
+        </h2>
+
+        <!-- class tree goes here -->
+
+
+
+        <div class="summary description">
+          Language handling functions
         </div>
+        
+
+
+
+        <div class="clear"></div>
+
+
+
+
+
+
+          <div class="section methods" resource="#methods">
+              <h3>Methods</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Methods
+                    </th>
+                    <th>
+                      Returns
+                    </th>
+                    <th>
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                    <tr class=" " resource="#method_replaceAccents">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_replaceAccents">replaceAccents</a>(
+                          string
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          String
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Converts every accented letter in a string with its non-accented equivalent.
+Currently WIP, trying to squeeze this function as much as possible. 
+(≈3ms per string, with 2 calls ≈ 1.5ms per call)
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  string
+                                  &lt;String&gt;
+                                </code>
+                                 with accented characters
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;String&gt;
+                                </code>
+                              string without accented characters in lower case
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+
+                </tbody>
+              </table>
+
+
+
+          </div>
+
+
+
+
+
 
     </div>
 

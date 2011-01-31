@@ -13,7 +13,7 @@
     API: Sushi
     
     
-      &rarr; sushi.utils.json.js (file)
+      &rarr; sushi.utils.lang.js (file)
     
   </title>
 
@@ -77,7 +77,7 @@
           &rarr; module <a href="./module_sushi.html" title="Sushi">Sushi</a>
           
           
-            &rarr; file sushi.utils.json.js
+            &rarr; file sushi.utils.lang.js
           
       </div>
     </div> <!--! end of #sub-hd -->
@@ -156,10 +156,10 @@
                   <li >
                     <a href="sushi.utils.js.html">sushi.utils.js</a>
                   </li>
-                  <li  class="selected" >
+                  <li >
                     <a href="sushi.utils.json.js.html">sushi.utils.json.js</a>
                   </li>
-                  <li >
+                  <li  class="selected" >
                     <a href="sushi.utils.lang.js.html">sushi.utils.lang.js</a>
                   </li>
               </ul>
@@ -181,44 +181,53 @@
         <!--! source code view -->
         <div id="srcout">
           <h2>
-            file <strong>sushi.utils.json.js</strong>
+            file <strong>sushi.utils.lang.js</strong>
           </h2>
 
           <div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
-	<span class="p">[</span><span class="s1">&#39;../plugins/JSON.js&#39;</span><span class="p">],</span>
-	
+	<span class="p">[],</span>
+
 	<span class="cm">/**</span>
-<span class="cm">	 * JSON handling functions</span>
+<span class="cm">	 * Language handling functions</span>
 <span class="cm">	 *</span>
 <span class="cm">	 * @namespace Sushi.utils</span>
-<span class="cm">	 * @class json</span>
+<span class="cm">	 * @class lang</span>
 <span class="cm">	 */</span>
-	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>	
+	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 		<span class="cm">/**</span>
-<span class="cm">		 * Converts a JSON-formatted string into a Javascript literal object</span>
+<span class="cm">		 * Converts every accented letter in a string with its non-accented equivalent.</span>
+<span class="cm">		 * Currently WIP, trying to squeeze this function as much as possible. </span>
+<span class="cm">		 * (≈3ms per string, with 2 calls ≈ 1.5ms per call)</span>
 <span class="cm">		 *</span>
-<span class="cm">		 * @param {String} string JSON-formatted string</span>
-<span class="cm">		 * @return {Object} Well formatted JS literal</span>
+<span class="cm">		 * @param {String} string with accented characters</span>
+<span class="cm">		 * @return {String} string without accented characters in lower case</span>
 <span class="cm">		 */</span>
-		<span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">);</span>
-		<span class="p">},</span>
+		<span class="kd">var</span> <span class="nx">replaceAccents</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">charList</span> <span class="o">=</span> <span class="sr">/[àáâãçèéêìíîòóôõùúû]/gi</span><span class="p">,</span>
+            <span class="nx">lookupTable</span> <span class="o">=</span> <span class="p">{</span>
+			    <span class="s2">&quot;à&quot;</span><span class="o">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;á&quot;</span><span class="o">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span>	<span class="s2">&quot;â&quot;</span><span class="o">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;ã&quot;</span><span class="o">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;ç&quot;</span><span class="o">:</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;è&quot;</span><span class="o">:</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>	<span class="s2">&quot;é&quot;</span><span class="o">:</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;ê&quot;</span><span class="o">:</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;í&quot;</span><span class="o">:</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;ì&quot;</span><span class="o">:</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span>	<span class="s2">&quot;î&quot;</span><span class="o">:</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;ó&quot;</span><span class="o">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;ò&quot;</span><span class="o">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;ô&quot;</span><span class="o">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span>	<span class="s2">&quot;õ&quot;</span><span class="o">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;ù&quot;</span><span class="o">:</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;ú&quot;</span><span class="o">:</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;û&quot;</span><span class="o">:</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span>	<span class="s2">&quot;À&quot;</span><span class="o">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;Á&quot;</span><span class="o">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;Â&quot;</span><span class="o">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;Ã&quot;</span><span class="o">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>	<span class="s2">&quot;Ç&quot;</span><span class="o">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;È&quot;</span><span class="o">:</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;É&quot;</span><span class="o">:</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;Ê&quot;</span><span class="o">:</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span>	<span class="s2">&quot;Í&quot;</span><span class="o">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;Ì&quot;</span><span class="o">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;Î&quot;</span><span class="o">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;Ó&quot;</span><span class="o">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span>	<span class="s2">&quot;Ò&quot;</span><span class="o">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;Ô&quot;</span><span class="o">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span>
+    			<span class="s2">&quot;Õ&quot;</span><span class="o">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;Ù&quot;</span><span class="o">:</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span>	<span class="s2">&quot;Ú&quot;</span><span class="o">:</span> <span class="s2">&quot;U&quot;</span><span class="p">,</span> <span class="s2">&quot;Û&quot;</span><span class="o">:</span> <span class="s2">&quot;U&quot;</span> 
+            <span class="p">};</span>
 		
-		<span class="cm">/**</span>
-<span class="cm">		 * Converts a Javascript literal object into a well formatted JSON string</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @param {Object} literal Literal Notated Javascript Object</span>
-<span class="cm">		 * @return {String} Well formatted JSON string</span>
-<span class="cm">		 */</span>
-		<span class="nx">stringify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">literal</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">literal</span><span class="p">);</span>
-		<span class="p">};</span>
+            <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">s</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">charList</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span> 
+                    <span class="k">return</span> <span class="nx">lookupTable</span><span class="p">[</span><span class="nx">match</span><span class="p">];</span> 
+                <span class="p">});</span>
+		    <span class="p">};</span>
+		<span class="p">})();</span>
 		
+				
+
 		<span class="k">return</span> <span class="p">{</span>
-			<span class="nx">parse</span><span class="o">:</span> <span class="nx">parse</span><span class="p">,</span>
-			<span class="nx">stringify</span><span class="o">:</span> <span class="nx">stringify</span>
+			<span class="nx">replaceAccents</span><span class="o">:</span> <span class="nx">replaceAccents</span>
 		<span class="p">};</span>
-		
 	<span class="p">}</span>
 <span class="p">);</span>
 </pre></div>

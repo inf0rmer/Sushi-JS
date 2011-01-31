@@ -123,6 +123,9 @@
                   <li >
                     <a href="Sushi.utils.json.html">Sushi.utils.json</a>
                   </li>
+                  <li >
+                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
+                  </li>
               </ul>
             </div>
 
@@ -155,6 +158,9 @@
                   </li>
                   <li >
                     <a href="sushi.utils.json.js.html">sushi.utils.json.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.lang.js.html">sushi.utils.lang.js</a>
                   </li>
               </ul>
             </div>
@@ -303,18 +309,18 @@
         <span class="nx">contains</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">heystack</span><span class="p">,</span> <span class="nx">needle</span><span class="p">)</span> <span class="p">{</span>
             <span class="kd">var</span> <span class="nx">found</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
             
-            <span class="k">if</span> <span class="p">(</span><span class="nx">heystack</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">found</span><span class="p">;</span> <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">heystack</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">found</span><span class="p">;</span> <span class="p">}</span>
             
             <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeIndexOf</span> <span class="o">&amp;&amp;</span> <span class="nx">heystack</span><span class="p">.</span><span class="nx">indexOf</span> <span class="o">===</span> <span class="nx">_nativeIndexOf</span><span class="p">)</span> <span class="p">{</span> 
                 <span class="k">return</span> <span class="nx">heystack</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">needle</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> 
             <span class="p">}</span>
             
             <span class="nx">some</span><span class="p">(</span><span class="nx">heystack</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nx">found</span> <span class="o">=</span> <span class="nx">value</span> <span class="o">===</span> <span class="nx">needle</span><span class="p">)</span> <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">found</span> <span class="o">=</span> <span class="nx">value</span> <span class="o">===</span> <span class="nx">needle</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">true</span><span class="p">;</span> <span class="p">}</span>
             <span class="p">});</span>
             
             <span class="k">return</span> <span class="nx">found</span><span class="p">;</span>
-        <span class="p">}</span>
+        <span class="p">},</span>
         
         <span class="cm">/**</span>
 <span class="cm">		 * Return all the elements that pass a truth test.</span>
@@ -336,7 +342,9 @@
             <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeFilter</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span> <span class="o">===</span> <span class="nx">_nativeFilter</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span> <span class="p">}</span>
             
             <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">))</span> <span class="nx">results</span><span class="p">[</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">))</span> <span class="p">{</span> 
+                    <span class="nx">results</span><span class="p">[</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span> 
+                <span class="p">}</span>
             <span class="p">});</span>
             
             <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
@@ -429,14 +437,25 @@
 		    <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeMap</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">map</span> <span class="o">===</span> <span class="nx">_nativeMap</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span> <span class="p">}</span>
 			
 		    <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
-		      <span class="nx">results</span><span class="p">[</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">);</span>
+		        <span class="nx">results</span><span class="p">[</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">);</span>
 		    <span class="p">});</span>
 		
 		    <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
 		<span class="p">},</span>
 		
-		<span class="nx">pluck</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-		    
+		<span class="cm">/**</span>
+<span class="cm">		 * Convenience method for Sushi.utils.collection.map to get a property from an object.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method pluck</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Object} obj Object to search through</span>
+<span class="cm">		 * @param key Property key to look for</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Object} Property in object</span>
+<span class="cm">		 *</span>
+<span class="cm">		 */</span>
+		<span class="nx">pluck</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="k">return</span> <span class="nx">map</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">value</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="p">});</span>
 		<span class="p">},</span>
 
 		<span class="cm">/**</span>
@@ -459,12 +478,15 @@
             
             <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">result</span><span class="p">;</span> <span class="p">}</span>
             
-            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeSome</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">some</span> <span class="o">===</span> <span class="nx">_nativeSome</span><span class="p">)</span> <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeSome</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">some</span> <span class="o">===</span> <span class="nx">_nativeSome</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+            <span class="p">}</span>
             
             <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
-              <span class="k">if</span> <span class="p">(</span><span class="nx">result</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">))</span> <span class="p">{</span>
-                  <span class="k">return</span> <span class="nx">breaker</span><span class="p">;</span>
-              <span class="p">}</span>
+                <span class="nx">result</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="nx">_breaker</span><span class="p">;</span>
+                <span class="p">}</span>
             <span class="p">});</span>
             
             <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
@@ -487,7 +509,9 @@
 			<span class="nx">reduce</span><span class="o">:</span> <span class="nx">reduce</span><span class="p">,</span>
 			<span class="nx">reduceRight</span><span class="o">:</span> <span class="nx">reduceRight</span><span class="p">,</span>
 			<span class="nx">map</span><span class="o">:</span> <span class="nx">map</span><span class="p">,</span>
-			<span class="nx">filter</span><span class="o">:</span> <span class="nx">filter</span>
+			<span class="nx">filter</span><span class="o">:</span> <span class="nx">filter</span><span class="p">,</span>
+			<span class="nx">some</span><span class="o">:</span> <span class="nx">some</span><span class="p">,</span>
+			<span class="nx">pluck</span><span class="o">:</span> <span class="nx">pluck</span>
         <span class="p">};</span>
 	<span class="p">}</span>
 <span class="p">);</span>
