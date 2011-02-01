@@ -16,7 +16,6 @@ define(
 		_nativeReduce = _ArrayProto.reduce,
 		_nativeReduceRight = _ArrayProto.reduceRight,
 		_nativeMap = _ArrayProto.map,
-		_nativeIsArray = _ArrayProto.isArray,
 		_nativeIndexOf = _ArrayProto.indexOf,
 		_nativeSome = _ArrayProto.some,
 		_slice = _ArrayProto.slice,
@@ -33,34 +32,6 @@ define(
 	    values = function(obj) {
             return map(obj, Sushi.utils.identity);
         },
-	    
-	    /**
-		 * Checks for array-ness
-		 *
-		 * @method isArray
-		 * @param array Argument to test
-		 *
-		 * @return {Boolean} Whether argument is an array or not
-		 */
-		isArray = function(array) {
-		    if (_nativeIsArray && Array.isArray === _nativeIsArray) {
-		        return Array.isArray.call(array);
-		    } else {
-		        return (Object.prototype.toString.call(array) === "[object Array]");
-		    }
-		},
-		
-		/**
-		 * Checks whether a given variable is an arguments object
-		 *
-		 * @method isArguments
-		 * @param obj Variable to test
-		 *
-		 * @return {Boolean} Whether variable is an arguments object
-		 */
-		isArguments = function(obj) {
-            return !!(obj && hasOwnProperty.call(obj, 'callee'));
-        },
         
 		/**
 		 * Safely convert anything iterable into a real, live array.
@@ -73,8 +44,8 @@ define(
 		toArray = function(iterable) {
             if (!iterable) {                         return []; }
             if (iterable.toArray) {                  return iterable.toArray(); }
-            if (isArray(iterable)) {                 return iterable; }
-            if (isArguments(iterable)) {             return _slice.call(iterable); }
+            if (Sushi.utils.isArray(iterable)) {     return iterable; }
+            if (Sushi.utils.isArguments(iterable)) { return _slice.call(iterable); }
             
             return values(iterable);
         },
@@ -223,7 +194,7 @@ define(
                 return memo !== undefined ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
             }
             
-            var reversed = (_collection.isArray(obj) ? obj.slice() : _collection.toArray(obj)).reverse();
+            var reversed = (Sushi.utils.isArray(obj) ? obj.slice() : _collection.toArray(obj)).reverse();
            
             return _collection.reduce(reversed, iterator, memo);
 		},
@@ -318,7 +289,6 @@ define(
         return {
             values: values,
             toArray: toArray,
-            isArray: isArray,
             each: each,
 			reduce: reduce,
 			reduceRight: reduceRight,
