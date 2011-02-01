@@ -13,7 +13,7 @@ define(
 	 * @class core
 	 */
     function() {
-    	var Sushi = {
+    	var SU = Sushi = {
     		VERSION: '0.0.5',
 				
     		/**
