@@ -11,13 +11,157 @@
 			test('Sushi.utils', function(){
 				ok(Sushi.utils, 'Sushi.utils is defined');
 			});
+			
+			module('Utility methods');
+			test('uniqueId', function() {
+				var id1 = Sushi.utils.uniqueId('test');
+				notEqual(id1, Sushi.utils.uniqueId('test'));
+			});
+			
+			test('range', function() {
+				same(Sushi.utils.range(10), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+				same(Sushi.utils.range(1, 11), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+				same(Sushi.utils.range(0, 30, 5), [0, 5, 10, 15, 20, 25]);
+				same(Sushi.utils.range(0, -10, -1), [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]);
+				same(Sushi.utils.range(0), []);
+				same(Sushi.utils.range(1, 0), []);
+			});
+			
+			test('keys', function() {
+				same(Sushi.utils.keys(["a", "b", "c"]), [0,1,2]);
+				same(Sushi.utils.keys({0: "a", 1: "b", 2: "c"}), ["0","1","2"]);
+				
+				var obj = {
+					getFoo: { 
+						value: function() {
+							return this.foo;
+						}
+					}
+				}
+				obj.foo = 1;
+				
+				same(Sushi.utils.keys(obj), ['getFoo', 'foo']);
+			});
+			
+			
+			module('"is" methods');
+			test('isEmpty', function(){
+				ok(Sushi.utils.isEmpty({}));
+				ok(Sushi.utils.isEmpty([]));
+				ok(Sushi.utils.isEmpty(''));
+				
+				ok(!Sushi.utils.isEmpty({ foo : 'bar' }));
+				ok(!Sushi.utils.isEmpty(["a", "b"]));
+				ok(!Sushi.utils.isEmpty('a'));
+			});
+			
+			test('isElement', function(){
+				var el = document.createElement('p'),
+					fakeEl = '<p>';
+				
+				ok(Sushi.utils.isElement(el));
+				ok(!Sushi.utils.isElement(fakeEl));
+			});
+			
+			test('isFunction', function(){
+				var fn = function() {return 'foo';},
+					fakeFn = 'function';
+				
+				ok(Sushi.utils.isFunction(fn));
+				ok(!Sushi.utils.isFunction(fakeFn));
+			});
+			
+			test('isString', function(){
+				var str = 'string',
+					fakeStr = 6;
+				
+				ok(Sushi.utils.isString(str));
+				ok(!Sushi.utils.isString(fakeStr));
+			});
+			
+			test('isNumber', function(){
+				var nbr = 6,
+					fakeNbr = '6';
+				
+				ok(Sushi.utils.isNumber(nbr));
+				ok(!Sushi.utils.isNumber(fakeNbr));
+			});
+			
+			test('isArray', function(){
+				ok(Sushi.utils.isArray([])); // true
+				
+				// Try to fool it using with an array-like object
+				ok(!Sushi.utils.isArray({
+					length: 1,
+					"0": 1,
+					slice: function() {}
+				})); // false
+			});
+			
+			test('isArguments', function(){
+				var args,
+				fn = (function() {
+					args = arguments;
+				})(1, 2),
+				fakeArgs = {};
+				
+				fakeArgs.callee = {};
+				
+				ok(Sushi.utils.isArguments(args));
+				//ok(!Sushi.utils.isArguments(fakeArgs));
+				
+			});
+			
+			test('isDate', function(){
+				var fakeDate = 'Wed Feb 02 2011 18:39:13 GMT+0000 (WET)';
+
+				ok(Sushi.utils.isDate(new Date()));
+				ok(!Sushi.utils.isDate(fakeDate));
+			});
+			
+			test('isEqual', function(){
+				var obj1 = {name:'Alice', birthplace: {town: 'Sussex', country: 'England'}},
+					obj2 = {name:'Alice', birthplace: {town: 'Sussex', country: 'England'}},
+					obj3 = {name:'Alice', birthplace: 'Sussex'},
+					obj4 = {name:'Alice', birthplace: {town: 'Middleton', country: 'England'}};
+					
+				ok(Sushi.utils.isEqual(obj1, obj2));
+				ok(!Sushi.utils.isEqual(obj1, obj3));
+				ok(!Sushi.utils.isEqual(obj1, obj4));
+			});
+			
+			test('isNaN', function(){
+				ok(Sushi.utils.isNaN(parseInt('a')));
+				ok(!Sushi.utils.isNaN(parseInt('1')));
+			});
+			
+			test('isRegExp', function(){
+				ok(Sushi.utils.isRegExp(new RegExp));
+				ok(Sushi.utils.isRegExp(/^\d+$/));
+				ok(!Sushi.utils.isRegExp('/^\d+$/'));
+			});
+			
+			test('isNull', function(){
+				ok(Sushi.utils.isNull(null));
+				ok(!Sushi.utils.isNull(undefined));
+				ok(!Sushi.utils.isNull(0));
+				ok(!Sushi.utils.isNull('null'));
+			});
+			
+			test('isUndefined', function(){
+				ok(!Sushi.utils.isUndefined(null));
+				ok(Sushi.utils.isUndefined(undefined));
+				ok(!Sushi.utils.isUndefined(0));
+				ok(!Sushi.utils.isUndefined('null'));
+			});
+			
 
 			module('Sushi.utils.debug');
 			test('Sushi debug functions are present', function() {
-				ok(Sushi.utils.debug.log, 'Sushi.utils.debug.log is defined');
-				ok(Sushi.utils.debug.warn, 'Sushi.utils.debug.warn is defined');
-				ok(Sushi.utils.debug.error, 'Sushi.utils.debug.error is defined');
-				ok(Sushi.utils.debug.dir, 'Sushi.utils.debug.dir is defined');
+				ok(Sushi.utils.log, 'Sushi.utils.log is defined');
+				ok(Sushi.utils.warn, 'Sushi.utils.warn is defined');
+				ok(Sushi.utils.error, 'Sushi.utils.error is defined');
+				ok(Sushi.utils.dir, 'Sushi.utils.dir is defined');
 			});
 			
 			var literal = {
@@ -36,8 +180,7 @@
 			
 			test('Sushi.utils.json.stringify', function(){
 				equals(typeof Sushi.utils.json.stringify(literal), 'string');
-			});
-			
+			});			
 		});
 	</script>
 </head>

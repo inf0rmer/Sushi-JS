@@ -8,12 +8,12 @@
 	<script>
 		
 		require.ready(function() {
-			module('Sushi.utils.collection namespace');
-			test('Sushi.utils.collection', function() {
-				ok(Sushi.utils.collection, 'Sushi.utils.collection is defined');
+			module('Sushi.utils namespace');
+			test('Sushi.utils', function() {
+				ok(Sushi.utils, 'Sushi.utils is defined');
 			});
 			
-			module('Sushi.utils.collection.each');
+			module('Sushi.utils.each');
 			
 			var obj = {
 				"1": "apples",
@@ -26,7 +26,7 @@
 			
 			test('forEach with an Array', function() {
 				var i = 0;
-				Sushi.utils.collection.each(array, function(value) {
+				Sushi.utils.each(array, function(value) {
 					equals(value, array[i]);
 					i++;
 				});
@@ -34,82 +34,70 @@
 			
 			test('forEach with an Object', function() {
 				var i = 1;
-				Sushi.utils.collection.each(obj, function(value) {
+				Sushi.utils.each(obj, function(value) {
 					equals(value, obj[i]);
 					i++;
 				});
 			});
 			
-			module('Sushi.utils.collection.isArray');
-			test('Sushi.utils.collection.isArray detects Arrays', function() {
-				ok(Sushi.utils.collection.isArray([])); // true
-				
-				// Try to fool it using with an array-like object
-				ok(!Sushi.utils.collection.isArray({
-					length: 1,
-					"0": 1,
-					slice: function() {}
-				})); // false
-			});
-			
-			module('Sushi.utils.collection.toArray');
-			test('Sushi.utils.collection.toArray converts to arrays', function() {
+			module('Sushi.utils.toArray');
+			test('Sushi.utils.toArray converts to arrays', function() {
 				
 				var obj = {
 					name: "Alice",
 					age: 12
 				}
 				
-				ok(Sushi.utils.collection.isArray(Sushi.utils.collection.toArray(obj)));
+				ok(Sushi.utils.isArray(Sushi.utils.toArray(obj)));
 			});
 
 			
-			module('Sushi.utils.collection.reduce');
-			test('Sushi.utils.collection.reduce', function() {
+			module('Sushi.utils.reduce');
+			test('Sushi.utils.reduce', function() {
 				//Sum all values of array
-				equals(Sushi.utils.collection.reduce([0, 1, 2, 3], function(a, b){ return a + b; }), 6);
+				equals(Sushi.utils.reduce([0, 1, 2, 3], function(a, b){ return a + b; }), 6);
 				
 				//Array flattening
-				same(Sushi.utils.collection.reduce([[0,1], [2,3], [4,5]], function(a,b) { return a.concat(b); }), [0, 1, 2, 3, 4, 5]);
+				same(Sushi.utils.reduce([[0,1], [2,3], [4,5]], function(a,b) { return a.concat(b); }), [0, 1, 2, 3, 4, 5]);
 				
 			});
 			
-			module('Sushi.utils.collection.reduceRight');
-			test('Sushi.utils.collection.reduceRight', function() {
+			module('Sushi.utils.reduceRight');
+			test('Sushi.utils.reduceRight', function() {
 				//Sum all values of array
-				equals(Sushi.utils.collection.reduceRight([0, 1, 2, 3], function(a, b){ return a + b; }), 6);
+				equals(Sushi.utils.reduceRight([0, 1, 2, 3], function(a, b){ return a + b; }), 6);
 				
 				//Array flattening
-				same(Sushi.utils.collection.reduceRight([[0,1], [2,3], [4,5]], function(a,b) { return a.concat(b); }), [4, 5, 2, 3, 0, 1]);
+				same(Sushi.utils.reduceRight([[0,1], [2,3], [4,5]], function(a,b) { return a.concat(b); }), [4, 5, 2, 3, 0, 1]);
 				
 			});
 			
-			module('Sushi.utils.collection.filter');
-			test('Sushi.utils.collection.filter', function() {
-				same(Sushi.utils.collection.filter([12, 5, 8, 130, 44], function(element, index, array) {
+			module('Sushi.utils.filter');
+			test('Sushi.utils.filter', function() {
+				same(Sushi.utils.filter([12, 5, 8, 130, 44], function(element, index, array) {
 					return (element >= 10);
 				}), [12, 130, 44]);			
 			});
 			
-			module('Sushi.utils.collection.some');
-			test('Sushi.utils.collection.some', function() {
-				ok(Sushi.utils.collection.some([12, 5, 8, 130, 44], function(element, index, array) {
+			module('Sushi.utils.some');
+			test('Sushi.utils.some', function() {
+				ok(Sushi.utils.some([12, 5, 8, 130, 44], function(element, index, array) {
 					return (element >= 10);
 				})); // true	
 				
-				ok(!Sushi.utils.collection.some([2, 5, 8, 1, 4], function(element, index, array) {
+				ok(!Sushi.utils.some([2, 5, 8, 1, 4], function(element, index, array) {
 					return (element >= 10);
 				})); // false
 			});
 			
-			module('Sushi.utils.collection.pluck');
-			test('Sushi.utils.collection.pluck', function() {
+			module('Sushi.utils.pluck');
+			test('Sushi.utils.pluck', function() {
 				var obj = {
 					name: "Alice",
 					age: 12
 				};
 				
-				equals(Sushi.utils.collection.pluck(obj, name), 'Alice');
+				equals(Sushi.utils.pluck(obj, name), 'Alice');
 			});
 
 		});
