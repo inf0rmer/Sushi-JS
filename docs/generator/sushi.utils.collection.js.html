@@ -114,18 +114,6 @@
                   <li >
                     <a href="Sushi.utils.html">Sushi.utils</a>
                   </li>
-                  <li >
-                    <a href="Sushi.utils.collection.html">Sushi.utils.collection</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.debug.html">Sushi.utils.debug</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.json.html">Sushi.utils.json</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
-                  </li>
               </ul>
             </div>
 
@@ -146,6 +134,9 @@
                   </li>
                   <li >
                     <a href="sushi.events.pubsub.js.html">sushi.events.pubsub.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.Model.js.html">sushi.Model.js</a>
                   </li>
                   <li  class="selected" >
                     <a href="sushi.utils.collection.js.html">sushi.utils.collection.js</a>
@@ -185,13 +176,10 @@
           </h2>
 
           <div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
-	<span class="p">[],</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span>
 	
 	<span class="cm">/**</span>
 <span class="cm">     * Sushi Collection</span>
-<span class="cm">     *</span>
-<span class="cm">     * @namespace Sushi.utils</span>
-<span class="cm">     * @class collection</span>
 <span class="cm">     */</span>
      
 	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -202,7 +190,6 @@
 		<span class="nx">_nativeReduce</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">reduce</span><span class="p">,</span>
 		<span class="nx">_nativeReduceRight</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">reduceRight</span><span class="p">,</span>
 		<span class="nx">_nativeMap</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">map</span><span class="p">,</span>
-		<span class="nx">_nativeIsArray</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">isArray</span><span class="p">,</span>
 		<span class="nx">_nativeIndexOf</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">,</span>
 		<span class="nx">_nativeSome</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">some</span><span class="p">,</span>
 		<span class="nx">_slice</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">slice</span><span class="p">,</span>
@@ -219,34 +206,6 @@
 	    <span class="nx">values</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">return</span> <span class="nx">map</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">identity</span><span class="p">);</span>
         <span class="p">},</span>
-	    
-	    <span class="cm">/**</span>
-<span class="cm">		 * Checks for array-ness</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @method isArray</span>
-<span class="cm">		 * @param array Argument to test</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @return {Boolean} Whether argument is an array or not</span>
-<span class="cm">		 */</span>
-		<span class="nx">isArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="p">{</span>
-		    <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeIsArray</span> <span class="o">&amp;&amp;</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span> <span class="o">===</span> <span class="nx">_nativeIsArray</span><span class="p">)</span> <span class="p">{</span>
-		        <span class="k">return</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">array</span><span class="p">);</span>
-		    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		        <span class="k">return</span> <span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;[object Array]&quot;</span><span class="p">);</span>
-		    <span class="p">}</span>
-		<span class="p">},</span>
-		
-		<span class="cm">/**</span>
-<span class="cm">		 * Checks whether a given variable is an arguments object</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @method isArguments</span>
-<span class="cm">		 * @param obj Variable to test</span>
-<span class="cm">		 *</span>
-<span class="cm">		 * @return {Boolean} Whether variable is an arguments object</span>
-<span class="cm">		 */</span>
-		<span class="nx">isArguments</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="s1">&#39;callee&#39;</span><span class="p">));</span>
-        <span class="p">},</span>
         
 		<span class="cm">/**</span>
 <span class="cm">		 * Safely convert anything iterable into a real, live array.</span>
@@ -259,8 +218,8 @@
 		<span class="nx">toArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>                         <span class="k">return</span> <span class="p">[];</span> <span class="p">}</span>
             <span class="k">if</span> <span class="p">(</span><span class="nx">iterable</span><span class="p">.</span><span class="nx">toArray</span><span class="p">)</span> <span class="p">{</span>                  <span class="k">return</span> <span class="nx">iterable</span><span class="p">.</span><span class="nx">toArray</span><span class="p">();</span> <span class="p">}</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">iterable</span><span class="p">))</span> <span class="p">{</span>                 <span class="k">return</span> <span class="nx">iterable</span><span class="p">;</span> <span class="p">}</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">isArguments</span><span class="p">(</span><span class="nx">iterable</span><span class="p">))</span> <span class="p">{</span>             <span class="k">return</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">iterable</span><span class="p">);</span> <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">iterable</span><span class="p">))</span> <span class="p">{</span>     <span class="k">return</span> <span class="nx">iterable</span><span class="p">;</span> <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isArguments</span><span class="p">(</span><span class="nx">iterable</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">iterable</span><span class="p">);</span> <span class="p">}</span>
             
             <span class="k">return</span> <span class="nx">values</span><span class="p">(</span><span class="nx">iterable</span><span class="p">);</span>
         <span class="p">},</span>
@@ -409,7 +368,7 @@
                 <span class="k">return</span> <span class="nx">memo</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduceRight</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduceRight</span><span class="p">(</span><span class="nx">iterator</span><span class="p">);</span>
             <span class="p">}</span>
             
-            <span class="kd">var</span> <span class="nx">reversed</span> <span class="o">=</span> <span class="p">(</span><span class="nx">_collection</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">()</span> <span class="o">:</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">toArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)).</span><span class="nx">reverse</span><span class="p">();</span>
+            <span class="kd">var</span> <span class="nx">reversed</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">()</span> <span class="o">:</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">toArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)).</span><span class="nx">reverse</span><span class="p">();</span>
            
             <span class="k">return</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">reversed</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">);</span>
 		<span class="p">},</span>
@@ -501,10 +460,9 @@
 		    <span class="c1">//TODO: Add extract logic</span>
 		<span class="p">};</span>
         
-        <span class="k">return</span> <span class="p">{</span>
+        <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">,</span> <span class="p">{</span>
             <span class="nx">values</span><span class="o">:</span> <span class="nx">values</span><span class="p">,</span>
             <span class="nx">toArray</span><span class="o">:</span> <span class="nx">toArray</span><span class="p">,</span>
-            <span class="nx">isArray</span><span class="o">:</span> <span class="nx">isArray</span><span class="p">,</span>
             <span class="nx">each</span><span class="o">:</span> <span class="nx">each</span><span class="p">,</span>
 			<span class="nx">reduce</span><span class="o">:</span> <span class="nx">reduce</span><span class="p">,</span>
 			<span class="nx">reduceRight</span><span class="o">:</span> <span class="nx">reduceRight</span><span class="p">,</span>
@@ -512,7 +470,7 @@
 			<span class="nx">filter</span><span class="o">:</span> <span class="nx">filter</span><span class="p">,</span>
 			<span class="nx">some</span><span class="o">:</span> <span class="nx">some</span><span class="p">,</span>
 			<span class="nx">pluck</span><span class="o">:</span> <span class="nx">pluck</span>
-        <span class="p">};</span>
+        <span class="p">});</span>
 	<span class="p">}</span>
 <span class="p">);</span>
 </pre></div>

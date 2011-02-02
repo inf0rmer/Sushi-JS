@@ -114,18 +114,6 @@
                   <li >
                     <a href="Sushi.utils.html">Sushi.utils</a>
                   </li>
-                  <li >
-                    <a href="Sushi.utils.collection.html">Sushi.utils.collection</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.debug.html">Sushi.utils.debug</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.json.html">Sushi.utils.json</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
-                  </li>
               </ul>
             </div>
 
@@ -146,6 +134,9 @@
                   </li>
                   <li >
                     <a href="sushi.events.pubsub.js.html">sushi.events.pubsub.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.Model.js.html">sushi.Model.js</a>
                   </li>
                   <li >
                     <a href="sushi.utils.collection.js.html">sushi.utils.collection.js</a>
@@ -185,13 +176,10 @@
           </h2>
 
           <div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
-	<span class="p">[],</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span>
 
 	<span class="cm">/**</span>
 <span class="cm">	 * Language handling functions</span>
-<span class="cm">	 *</span>
-<span class="cm">	 * @namespace Sushi.utils</span>
-<span class="cm">	 * @class lang</span>
 <span class="cm">	 */</span>
 	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 		<span class="cm">/**</span>
@@ -217,7 +205,7 @@
             <span class="p">};</span>
 		
             <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
-                <span class="nx">s</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">charList</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span> 
+                <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">charList</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span> 
                     <span class="k">return</span> <span class="nx">lookupTable</span><span class="p">[</span><span class="nx">match</span><span class="p">];</span> 
                 <span class="p">});</span>
 		    <span class="p">};</span>
@@ -225,9 +213,9 @@
 		
 				
 
-		<span class="k">return</span> <span class="p">{</span>
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">,</span> <span class="p">{</span>
 			<span class="nx">replaceAccents</span><span class="o">:</span> <span class="nx">replaceAccents</span>
-		<span class="p">};</span>
+		<span class="p">});</span>
 	<span class="p">}</span>
 <span class="p">);</span>
 </pre></div>

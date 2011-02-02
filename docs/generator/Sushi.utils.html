@@ -114,18 +114,6 @@
                   <li  class="selected" >
                     <a href="Sushi.utils.html">Sushi.utils</a>
                   </li>
-                  <li >
-                    <a href="Sushi.utils.collection.html">Sushi.utils.collection</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.debug.html">Sushi.utils.debug</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.json.html">Sushi.utils.json</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
-                  </li>
               </ul>
             </div>
 
@@ -146,6 +134,9 @@
                   </li>
                   <li >
                     <a href="sushi.events.pubsub.js.html">sushi.events.pubsub.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.Model.js.html">sushi.Model.js</a>
                   </li>
                   <li >
                     <a href="sushi.utils.collection.js.html">sushi.utils.collection.js</a>
@@ -173,7 +164,58 @@
                     <a href="#method_identity">identity</a>
                   </li>
                   <li class=" ">
+                    <a href="#method_isArguments">isArguments</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isArray">isArray</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isDate">isDate</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isElement">isElement</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isEmpty">isEmpty</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isEqual">isEqual</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isFunction">isFunction</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isNaN">isNaN</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isNull">isNull</a>
+                  </li>
+                  <li class=" ">
                     <a href="#method_isNumber">isNumber</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isRegExp">isRegExp</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_isUndefined">isUndefined</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_keys">keys</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_parse">parse</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_range">range</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_replaceAccents">replaceAccents</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_stringify">stringify</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_uniqueId">uniqueId</a>
                   </li>
               </ul>
             </div>
@@ -205,7 +247,7 @@
 
 
         <div class="summary description">
-          Sushi Utils
+          General purpose utility functions for the Sushi JS framework
         </div>
         
 
@@ -269,7 +311,7 @@
                                   value
                                   &lt;object&gt;
                                 </code>
-                                 Value to test
+                                 Value to return
                               </li>
                           <ul>
 
@@ -278,6 +320,464 @@
                           <ul>
                             <li>
                               Value passed in to the function
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isArguments">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isArguments">isArguments</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks whether a given variable is an arguments object
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Variable to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether variable is an arguments object
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isArray">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isArray">isArray</a>(
+                          array
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks for array-ness
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  array
+                                  &lt;object&gt;
+                                </code>
+                                 Argument to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is an array or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isDate">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isDate">isDate</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks whether a given variable is a date
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Variable to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether variable is a date
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isElement">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isElement">isElement</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object is a DOM node
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is a DOM node or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isEmpty">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isEmpty">isEmpty</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object is empty
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is empty or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isEqual">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isEqual">isEqual</a>(
+                          a, b
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Performs a deep comparison to check if two objects are equal.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  a
+                                  &lt;object&gt;
+                                </code>
+                                 First object
+                              </li>
+                              <li>
+                                <code>
+                                  b
+                                  &lt;object&gt;
+                                </code>
+                                 Second object
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether objects are equal or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isFunction">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isFunction">isFunction</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object is a function
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is a function or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isNaN">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isNaN">isNaN</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object is NaN
+NaN happens to be the only object in Javascript that is not equal to itself.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is NaN or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isNull">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isNull">isNull</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object's value is equal to null
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is equal to null or not
                             </li>
                           </ul>
                       </td>
@@ -328,6 +828,416 @@
                                   &lt;Boolean&gt;
                                 </code>
                               Whether value is a number or not.
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isRegExp">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isRegExp">isRegExp</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object is a Regular Expression
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is a RegExp or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_isUndefined">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_isUndefined">isUndefined</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Checks if an object is equal to undefined
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to test
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              Whether argument is equal to undefined or not
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_keys">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_keys">keys</a>(
+                          obj
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Retrieve the names of an object's properties.
+Defaults to ECMAScript 5's native Object.keys. Lifted from Underscore JS.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to retrieve keys from
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                              Array containing the object's key names.
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_parse">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_parse">parse</a>(
+                          string
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Object
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Converts a JSON-formatted string into a Javascript literal object
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  string
+                                  &lt;String&gt;
+                                </code>
+                                 JSON-formatted string
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Object&gt;
+                                </code>
+                              Well formatted JS literal
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_range">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_range">range</a>(
+                          start, stop, step
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Generate an integer Array containing an arithmetic progression.
+A port of the native Python range(). Lifted from Underscore JS.
+See http://docs.python.org/library/functions.html#range for more info.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  start
+                                  &lt;object&gt;
+                                </code>
+                                 Value to start progression from. Defaults to 0
+                              </li>
+                              <li>
+                                <code>
+                                  stop
+                                  &lt;object&gt;
+                                </code>
+                                 Value to stop progression at
+                              </li>
+                              <li>
+                                <code>
+                                  step
+                                  &lt;object&gt;
+                                </code>
+                                 Value to increment progression by. Defaults to 1
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                              Array containing the progression.
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_replaceAccents">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_replaceAccents">replaceAccents</a>(
+                          string
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          String
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Converts every accented letter in a string with its non-accented equivalent.
+Currently WIP, trying to squeeze this function as much as possible. 
+(≈3ms per string, with 2 calls ≈ 1.5ms per call)
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  string
+                                  &lt;String&gt;
+                                </code>
+                                 with accented characters
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;String&gt;
+                                </code>
+                              string without accented characters in lower case
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_stringify">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_stringify">stringify</a>(
+                          literal
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          String
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Converts a Javascript literal object into a well formatted JSON string
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  literal
+                                  &lt;Object&gt;
+                                </code>
+                                 Literal Notated Javascript Object
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;String&gt;
+                                </code>
+                              Well formatted JSON string
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_uniqueId">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_uniqueId">uniqueId</a>(
+                          prefix
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Generates a unique integer ID (within the client session)
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  prefix
+                                  &lt;object&gt;
+                                </code>
+                                 Optional prefix to prepend to the unique ID
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                              Unique ID
                             </li>
                           </ul>
                       </td>

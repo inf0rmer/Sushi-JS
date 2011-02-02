@@ -114,18 +114,6 @@
                   <li >
                     <a href="Sushi.utils.html">Sushi.utils</a>
                   </li>
-                  <li >
-                    <a href="Sushi.utils.collection.html">Sushi.utils.collection</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.debug.html">Sushi.utils.debug</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.json.html">Sushi.utils.json</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
-                  </li>
               </ul>
             </div>
 
@@ -146,6 +134,9 @@
                   </li>
                   <li >
                     <a href="sushi.events.pubsub.js.html">sushi.events.pubsub.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.Model.js.html">sushi.Model.js</a>
                   </li>
                   <li >
                     <a href="sushi.utils.collection.js.html">sushi.utils.collection.js</a>
@@ -170,13 +161,58 @@
               <h4>Methods</h4>
               <ul>
                   <li class=" ">
+                    <a href="#method__supports">_supports</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_contains">contains</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_dir">dir</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_each">each</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_error">error</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_filter">filter</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_log">log</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_logHistory">logHistory</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_map">map</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_pluck">pluck</a>
+                  </li>
+                  <li class=" ">
                     <a href="#method_publish">publish</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_reduce">reduce</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_reduceRight">reduceRight</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_some">some</a>
                   </li>
                   <li class=" ">
                     <a href="#method_subscribe">subscribe</a>
                   </li>
                   <li class=" ">
+                    <a href="#method_toArray">toArray</a>
+                  </li>
+                  <li class=" ">
                     <a href="#method_unsubscribe">unsubscribe</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_warn">warn</a>
                   </li>
               </ul>
             </div>
@@ -239,6 +275,494 @@
                 </thead>
                 <tbody>
 
+                    <tr class=" " resource="#method__supports">
+
+                      <td class="names">
+                        <code>
+                          <a name="method__supports">_supports</a>(
+                          
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Returns the debugging methods the environment supports
+
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_contains">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_contains">contains</a>(
+                          heystack, needle
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Determine if a given value is included in the array or object using ===.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  heystack
+                                  &lt;Object&gt;
+                                </code>
+                                 Object or Array to search in.
+                              </li>
+                              <li>
+                                <code>
+                                  needle
+                                  &lt;object&gt;
+                                </code>
+                                 Value to search heystack for
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Boolean&gt;
+                                </code>
+                              True if needle is present.
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_dir">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_dir">dir</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.dir()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_each">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_each">each</a>(
+                          obj, iterator, context
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Cornerstone each (forEach) implementation.
+Handles objects implementing forEach, arrays, and raw objects. 
+Delegates to ECMAScript 5's native forEach if available.
+Based on the Underscore JS implementation.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;object&gt;
+                                </code>
+                                 Object to loop through
+                              </li>
+                              <li>
+                                <code>
+                                  iterator
+                                  &lt;Function&gt;
+                                </code>
+                                 Function to callback for each element
+                              </li>
+                              <li>
+                                <code>
+                                  context
+                                  &lt;Object&gt;
+                                </code>
+                                 Object to use as "this" when executing iterator
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_error">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_error">error</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.error()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_filter">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_filter">filter</a>(
+                          obj, iterator, memo
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Array
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Return all the elements that pass a truth test.
+Delegates to ECMAScript 5's native filter if available.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;Array&gt;
+                                </code>
+                                 Array to filter.
+                              </li>
+                              <li>
+                                <code>
+                                  iterator
+                                  &lt;Function&gt;
+                                </code>
+                                 Function to execute on each value in the array.
+                              </li>
+                              <li>
+                                <code>
+                                  memo
+                                  &lt;object&gt;
+                                </code>
+                                 Object to use as the first argument to the first call of the callback.
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Array&gt;
+                                </code>
+                              Filtered Array
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_log">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_log">log</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.log()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_logHistory">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_logHistory">logHistory</a>(
+                          
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Prints the whole cached debug history to the console
+
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_map">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_map">map</a>(
+                          obj, iterator, context
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Array
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Creates a new array with the results of calling a provided function 
+on every element in this array.
+Delegates to ECMAScript 5's native map if available.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;Array&gt;
+                                </code>
+                                 Original array.
+                              </li>
+                              <li>
+                                <code>
+                                  iterator
+                                  &lt;Function&gt;
+                                </code>
+                                 Function that produces an element of the new Array from an element of the current one.
+                              </li>
+                              <li>
+                                <code>
+                                  context
+                                  &lt;Object&gt;
+                                </code>
+                                 Object to use as "this" when executing iterator
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Array&gt;
+                                </code>
+                              Reduced Array
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_pluck">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_pluck">pluck</a>(
+                          obj, key
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Object
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Convenience method for Sushi.utils.collection.map to get a property from an object.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;Object&gt;
+                                </code>
+                                 Object to search through
+                              </li>
+                              <li>
+                                <code>
+                                  key
+                                  &lt;object&gt;
+                                </code>
+                                 Property key to look for
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Object&gt;
+                                </code>
+                              Property in object
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
                     <tr class=" " resource="#method_publish">
 
                       <td class="names">
@@ -287,6 +811,202 @@ arguments on the subscribed functions.
                           <ul>
 
 
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_reduce">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_reduce">reduce</a>(
+                          obj, iterator, memo
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Array
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Reduce builds up a single result from a list of values 
+from left-to-right.
+Delegates to ECMAScript 5's native reduce if available.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;Array&gt;
+                                </code>
+                                 Array to reduce.
+                              </li>
+                              <li>
+                                <code>
+                                  iterator
+                                  &lt;Function&gt;
+                                </code>
+                                 Function to execute on each value in the array.
+                              </li>
+                              <li>
+                                <code>
+                                  memo
+                                  &lt;object&gt;
+                                </code>
+                                 Object to use as the first argument to the first call of the callback.
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Array&gt;
+                                </code>
+                              Reduced Array
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_reduceRight">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_reduceRight">reduceRight</a>(
+                          Array, Function, memo
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Array
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Reduce builds up a single result from a list of values (from right-to-left). 
+Delegates to ECMAScript 5's native reduceRight if available.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Array
+                                  &lt;Array&gt;
+                                </code>
+                                 to reduce.
+                              </li>
+                              <li>
+                                <code>
+                                  Function
+                                  &lt;Function&gt;
+                                </code>
+                                 to execute on each value in the array.
+                              </li>
+                              <li>
+                                <code>
+                                  memo
+                                  &lt;object&gt;
+                                </code>
+                                 Object to use as the first argument to the first call of the callback.
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Array&gt;
+                                </code>
+                              Reduced Array
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_some">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_some">some</a>(
+                          obj, iterator, context
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Booelan
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Determine if at least one element in the object matches a truth test.
+Delegates to ECMAScript 5's native some if available.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  obj
+                                  &lt;Object&gt;
+                                </code>
+                                 Object to search through
+                              </li>
+                              <li>
+                                <code>
+                                  iterator
+                                  &lt;Function&gt;
+                                </code>
+                                 Function that produces an element of the new Array from an element of the current one.
+                              </li>
+                              <li>
+                                <code>
+                                  context
+                                  &lt;Object&gt;
+                                </code>
+                                 Object to use as "this" when executing iterator
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Booelan&gt;
+                                </code>
+                              True if an object matches the truth test.
+                            </li>
+                          </ul>
                       </td>
 
                     </tr>
@@ -351,6 +1071,56 @@ published array as ordered arguments.
                       </td>
 
                     </tr>
+                    <tr class=" " resource="#method_toArray">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_toArray">toArray</a>(
+                          iterable
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          Array
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Safely convert anything iterable into a real, live array.
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  iterable
+                                  &lt;object&gt;
+                                </code>
+                                 Variable to convert to an array
+                              </li>
+                          <ul>
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;Array&gt;
+                                </code>
+                              Old variable in array format
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
                     <tr class=" " resource="#method_unsubscribe">
 
                       <td class="names">
@@ -388,6 +1158,47 @@ Sushi.events.unsubscribe(handle);
                                   &lt;Array&gt;
                                 </code>
                                  The return value from a Sushi.events.subscribe call
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_warn">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_warn">warn</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.warn()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
                               </li>
                           <ul>
 

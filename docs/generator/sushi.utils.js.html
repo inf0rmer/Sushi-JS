@@ -114,18 +114,6 @@
                   <li >
                     <a href="Sushi.utils.html">Sushi.utils</a>
                   </li>
-                  <li >
-                    <a href="Sushi.utils.collection.html">Sushi.utils.collection</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.debug.html">Sushi.utils.debug</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.json.html">Sushi.utils.json</a>
-                  </li>
-                  <li >
-                    <a href="Sushi.utils.lang.html">Sushi.utils.lang</a>
-                  </li>
               </ul>
             </div>
 
@@ -146,6 +134,9 @@
                   </li>
                   <li >
                     <a href="sushi.events.pubsub.js.html">sushi.events.pubsub.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.Model.js.html">sushi.Model.js</a>
                   </li>
                   <li >
                     <a href="sushi.utils.collection.js.html">sushi.utils.collection.js</a>
@@ -190,50 +181,315 @@
 <span class="cm"> */</span>
 <span class="nx">define</span><span class="p">(</span>
 	<span class="c1">// Module dependencies</span>
-	<span class="p">[</span><span class="s1">&#39;sushi.utils.debug&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.json&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.collection&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.lang&#39;</span><span class="p">],</span>
+	<span class="p">[],</span>
 	
 	<span class="cm">/**</span>
-<span class="cm">	 * Sushi Utils</span>
+<span class="cm">	 * General purpose utility functions for the Sushi JS framework</span>
 <span class="cm">	 *</span>
 <span class="cm">	 * @namespace Sushi</span>
 <span class="cm">	 * @class utils</span>
 <span class="cm">	 */</span>
-	<span class="kd">function</span><span class="p">(</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">json</span><span class="p">,</span> <span class="nx">collection</span><span class="p">,</span> <span class="nx">lang</span><span class="p">)</span> <span class="p">{</span>
-		<span class="kd">var</span> <span class="nx">utilsNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">),</span>
-			<span class="nx">debugNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.debug&#39;</span><span class="p">),</span>
-			<span class="nx">jsonNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.json&#39;</span><span class="p">),</span>
-			<span class="nx">collectionNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.collection&#39;</span><span class="p">),</span>
-			<span class="nx">langNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.lang&#39;</span><span class="p">);</span>
+	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">_utilsNs</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils&#39;</span><span class="p">),</span>
+		    <span class="nx">_ArrayProto</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span>
+		    <span class="nx">_nativeIsArray</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">isArray</span><span class="p">,</span>
+		    <span class="nx">_nativeKeys</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">;</span>
+
+		<span class="c1">// Generic utility methods</span>
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">,</span> <span class="p">{</span>
+		    <span class="nx">_idCounter</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+			<span class="cm">/**</span>
+<span class="cm">		     * Generates a unique integer ID (within the client session)</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @method uniqueId</span>
+<span class="cm">		     * @param prefix Optional prefix to prepend to the unique ID</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @return Unique ID</span>
+<span class="cm">		     */</span>
+			<span class="nx">uniqueId</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">prefix</span><span class="p">)</span> <span class="p">{</span>
+				<span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_idCounter</span><span class="o">++</span><span class="p">;</span>
+				<span class="k">return</span> <span class="nx">prefix</span> <span class="o">?</span> <span class="nx">prefix</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">:</span> <span class="nx">id</span><span class="p">;</span>
+			<span class="p">},</span>
 			
+			<span class="cm">/**</span>
+<span class="cm">		     * Default iterator object</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @method identity</span>
+<span class="cm">		     * @param value Value to return</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @return Value passed in to the function</span>
+<span class="cm">		     */</span>
+			<span class="nx">identity</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="c1">// Utility object methods</span>
+			<span class="cm">/**</span>
+<span class="cm">		     * Generate an integer Array containing an arithmetic progression.</span>
+<span class="cm">		     * A port of the native Python range(). Lifted from Underscore JS.</span>
+<span class="cm">		     * See http://docs.python.org/library/functions.html#range for more info.</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @method range</span>
+<span class="cm">		     * @param start Value to start progression from. Defaults to 0</span>
+<span class="cm">		     * @param stop Value to stop progression at</span>
+<span class="cm">		     * @param step Value to increment progression by. Defaults to 1</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @return Array containing the progression.</span>
+<span class="cm">		     */</span>
+			<span class="nx">range</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span> <span class="nx">stop</span><span class="p">,</span> <span class="nx">step</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">args</span>  <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">),</span>
+                    <span class="nx">solo</span>  <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nx">start</span> <span class="o">=</span> <span class="nx">solo</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="nx">stop</span>  <span class="o">=</span> <span class="nx">solo</span> <span class="o">?</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="nx">step</span>  <span class="o">=</span> <span class="nx">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="nx">len</span>   <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">((</span><span class="nx">stop</span> <span class="o">-</span> <span class="nx">start</span><span class="p">)</span> <span class="o">/</span> <span class="nx">step</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="nx">idx</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="nx">range</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="nx">len</span><span class="p">);</span>
+                    
+                <span class="k">while</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">range</span><span class="p">[</span><span class="nx">idx</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="nx">start</span><span class="p">;</span>
+                    <span class="nx">start</span> <span class="o">+=</span> <span class="nx">step</span><span class="p">;</span>
+                <span class="p">}</span>
+                
+                <span class="k">return</span> <span class="nx">range</span><span class="p">;</span>
+            <span class="p">},</span>
+            
+            <span class="cm">/**</span>
+<span class="cm">		     * Retrieve the names of an object&#39;s properties.</span>
+<span class="cm">		     * Defaults to ECMAScript 5&#39;s native Object.keys. Lifted from Underscore JS.</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @method keys</span>
+<span class="cm">		     * @param obj Object to retrieve keys from</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @return Array containing the object&#39;s key names.</span>
+<span class="cm">		     */</span>
+			<span class="nx">keys</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeKeys</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="nx">_nativeKeys</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span>
+			    <span class="p">}</span>
+			    
+                <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+                <span class="p">}</span>
+                
+                <span class="kd">var</span> <span class="nx">keys</span> <span class="o">=</span> <span class="p">[];</span>                
+                <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="nx">keys</span><span class="p">[</span><span class="nx">keys</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>                
+                <span class="k">return</span> <span class="nx">keys</span><span class="p">;</span>
+            <span class="p">},</span>
+			
+			<span class="c1">// Utility &quot;is&quot; methods. Lifted from Underscore.js</span>
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object is empty</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isEmpty</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is empty or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isEmpty</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">);</span> <span class="p">}</span>
+				
+				<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+					<span class="k">if</span> <span class="p">(</span><span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+				<span class="p">}</span>
+				
+				<span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object is a DOM node</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isElement</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is a DOM node or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isElement</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">nodeType</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span>
+			<span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object is a function</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isFunction</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is a function or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isFunction</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">call</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">apply</span><span class="p">);</span>
+			<span class="p">},</span>
+
+			<span class="c1">// Is a given value a string?</span>
+			<span class="nx">isString</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span> <span class="o">||</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">charCodeAt</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">substr</span><span class="p">));</span>
+			<span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">		     * Detects whether a value is a number</span>
+<span class="cm">		     *</span>
+<span class="cm">		     * @method isNumber</span>
+<span class="cm">		     * @param number Value to test</span>
+<span class="cm">		     * </span>
+<span class="cm">		     * @return {Boolean} Whether value is a number or not.</span>
+<span class="cm">		     */</span>
+			<span class="nx">isNumber</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+		        <span class="k">return</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">number</span> <span class="o">==</span> <span class="s2">&quot;number&quot;</span><span class="p">);</span>
+		    <span class="p">},</span>
 		
-	    <span class="cm">/**</span>
-<span class="cm">	     * Detects whether a value is a number</span>
-<span class="cm">	     *</span>
-<span class="cm">	     * @method isNumber</span>
-<span class="cm">	     * @param number Value to test</span>
-<span class="cm">	     * </span>
-<span class="cm">	     * @return {Boolean} Whether value is a number or not.</span>
-<span class="cm">	     */</span>
-	    <span class="nx">utilsNs</span><span class="p">.</span><span class="nx">isNumber</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
-	        <span class="k">return</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">number</span> <span class="o">==</span> <span class="s2">&quot;number&quot;</span><span class="p">);</span>
-	    <span class="p">};</span>
-	    
-	    <span class="cm">/**</span>
-<span class="cm">	     * Default iterator object</span>
-<span class="cm">	     *</span>
-<span class="cm">	     * @method identity</span>
-<span class="cm">	     * @param value Value to test</span>
-<span class="cm">	     *</span>
-<span class="cm">	     * @return Value passed in to the function</span>
-<span class="cm">	     */</span>
-	    <span class="nx">utilsNs</span><span class="p">.</span><span class="nx">identity</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-	        <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
-	    <span class="p">};</span>	
-	    
-		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">debug</span><span class="p">,</span> <span class="nx">debug</span><span class="p">);</span>
-		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">json</span><span class="p">,</span> <span class="nx">json</span><span class="p">);</span>
-		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">collection</span><span class="p">,</span> <span class="nx">collection</span><span class="p">);</span>
-		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">lang</span><span class="p">,</span> <span class="nx">lang</span><span class="p">);</span>
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks for array-ness</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isArray</span>
+<span class="cm">			 * @param array Argument to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is an array or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isArray</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeIsArray</span> <span class="o">&amp;&amp;</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span> <span class="o">===</span> <span class="nx">_nativeIsArray</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">array</span><span class="p">);</span>
+			    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;[object Array]&quot;</span><span class="p">);</span>
+			    <span class="p">}</span>
+			<span class="p">},</span>
+
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks whether a given variable is an arguments object</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isArguments</span>
+<span class="cm">			 * @param obj Variable to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether variable is an arguments object</span>
+<span class="cm">			 */</span>
+			<span class="nx">isArguments</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+	            <span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="s1">&#39;callee&#39;</span><span class="p">));</span>
+	        <span class="p">},</span>
+	        
+	        <span class="cm">/**</span>
+<span class="cm">			 * Checks whether a given variable is a date</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isDate</span>
+<span class="cm">			 * @param obj Variable to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether variable is a date</span>
+<span class="cm">			 */</span>
+	        <span class="nx">isDate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">getTimezoneOffset</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">setUTCFullYear</span><span class="p">);</span>
+            <span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">			 * Performs a deep comparison to check if two objects are equal.</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isEqual</span>
+<span class="cm">			 * @param a First object</span>
+<span class="cm">			 * @param b Second object</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether objects are equal or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isEqual</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+				<span class="c1">// Check object identity.</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">true</span><span class="p">;</span> <span class="p">}</span>
+				
+			    <span class="c1">// Different types?</span>
+			    <span class="kd">var</span> <span class="nx">atype</span> <span class="o">=</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span> 
+			    <span class="nx">btype</span> <span class="o">=</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">atype</span> <span class="o">!=</span> <span class="nx">btype</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    
+			    <span class="c1">// Basic equality test (watch out for coercions).</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">true</span><span class="p">;</span> <span class="p">}</span>
+			    
+			    <span class="c1">// One is falsy and the other truthy.</span>
+			    <span class="k">if</span> <span class="p">((</span><span class="o">!</span><span class="nx">a</span> <span class="o">&amp;&amp;</span> <span class="nx">b</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">b</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    
+			    <span class="c1">// One of them implements an isEqual()?</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">isEqual</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">isEqual</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span> <span class="p">}</span>
+			    
+			    <span class="c1">// Check dates&#39; integer values.</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isDate</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">isDate</span><span class="p">(</span><span class="nx">b</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span> <span class="nx">a</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="o">===</span> <span class="nx">b</span><span class="p">.</span><span class="nx">getTime</span><span class="p">()</span> <span class="p">);</span> <span class="p">}</span>
+			    
+			    <span class="c1">// Both are NaN?</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">b</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    
+			    <span class="c1">// Compare regular expressions.</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isRegExp</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">isRegExp</span><span class="p">(</span><span class="nx">b</span><span class="p">))</span> <span class="p">{</span>
+			      <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">source</span>     <span class="o">===</span> <span class="nx">b</span><span class="p">.</span><span class="nx">source</span> <span class="o">&amp;&amp;</span>
+			             <span class="nx">a</span><span class="p">.</span><span class="nx">global</span>     <span class="o">===</span> <span class="nx">b</span><span class="p">.</span><span class="nx">global</span> <span class="o">&amp;&amp;</span>
+			             <span class="nx">a</span><span class="p">.</span><span class="nx">ignoreCase</span> <span class="o">===</span> <span class="nx">b</span><span class="p">.</span><span class="nx">ignoreCase</span> <span class="o">&amp;&amp;</span>
+			             <span class="nx">a</span><span class="p">.</span><span class="nx">multiline</span>  <span class="o">===</span> <span class="nx">b</span><span class="p">.</span><span class="nx">multiline</span><span class="p">;</span>
+			    <span class="p">}</span>
+			    
+			    <span class="c1">// If a is not an object by this point, we can&#39;t handle it.</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">atype</span> <span class="o">!==</span> <span class="s1">&#39;object&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    
+			    <span class="c1">// Check for different array lengths before comparing contents.</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">length</span> <span class="o">!==</span> <span class="nx">b</span><span class="p">.</span><span class="nx">length</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    
+			    <span class="c1">// Nothing else worked, deep compare the contents.</span>
+			    <span class="kd">var</span> <span class="nx">aKeys</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span> <span class="nx">bKeys</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span>
+			    <span class="c1">// Different object sizes?</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">aKeys</span><span class="p">.</span><span class="nx">length</span> <span class="o">!=</span> <span class="nx">bKeys</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    <span class="c1">// Recursive comparison of contents.</span>
+			    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">key</span> <span class="k">in</span> <span class="nx">b</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">isEqual</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span> <span class="nx">b</span><span class="p">[</span><span class="nx">key</span><span class="p">]))</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+			    <span class="p">}</span>
+			    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object is NaN</span>
+<span class="cm">			 * NaN happens to be the only object in Javascript that is not equal to itself.</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isNaN</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is NaN or not</span>
+<span class="cm">			 */</span>
+			<span class="nb">isNaN</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="cm">/*jsl:ignore*/</span>
+				<span class="k">return</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="nx">obj</span><span class="p">;</span>
+				<span class="cm">/*jsl:end*/</span>
+			<span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object is a Regular Expression</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isRegExp</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is a RegExp or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isRegExp</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="o">!!</span><span class="p">(</span><span class="nx">obj</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">test</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">exec</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">ignoreCase</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">ignoreCase</span> <span class="o">===</span> <span class="kc">false</span><span class="p">));</span>
+			<span class="p">},</span>
+			
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object&#39;s value is equal to null</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isNull</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is equal to null or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isNull</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">;</span>
+			<span class="p">},</span>
+
+			<span class="cm">/**</span>
+<span class="cm">			 * Checks if an object is equal to undefined</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @method isUndefined</span>
+<span class="cm">			 * @param obj Object to test</span>
+<span class="cm">			 *</span>
+<span class="cm">			 * @return {Boolean} Whether argument is equal to undefined or not</span>
+<span class="cm">			 */</span>
+			<span class="nx">isUndefined</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">);</span>
+			<span class="p">}</span>
+		<span class="p">});</span>
 	<span class="p">}</span>
 <span class="p">);</span>
 </pre></div>
