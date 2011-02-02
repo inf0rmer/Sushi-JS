@@ -23,10 +23,6 @@ define(
 			
 			initialize: function() {},
 			
-			trigger: function(event, args) {
-				Sushi.events.publish('change:' + this.mid, args);
-			}
-			
 			copyAttributes: function() {
 				return Sushi.extend({}, this.attributes);
 			},
@@ -65,14 +61,75 @@ define(
 						
 						if (!options.silent) {
 							this._changed = true;
-							this.trigger('change', {
-													attribute: attr,
-													value:val
-													});
 						}
 					}
 				});
+				
+				// Fire a change event in case model was changed
+				if (this._changed) {
+				    this.change()
+				}
+				
+				return this;
+			},
+			
+			fetch: function() {
+			    
+			},
+			
+			save: function() {
+			    
+			},
+			
+			destroy: function() {
+			    
+			},
+			
+			parse: function(resp) {
+			    return resp;
+			}
+			
+			change: function() {
+			    // TODO: fire change event
+			    this._previousAttributes = Sushi.extend(this.attributes);
+			    this._changed = false;
+			},
+			
+			hasChanged: function(attr) {
+			    if (attr) {
+			        return (this._previousAttributes[attr] != this.attributes[attr]);
+			        return this._changed;
+			    }
+			},
+			
+			changedAttributes: function() {
+			    var now = this.attributes,
+			    old = this._previousAttributes,
+			    changed = false;
+			    
+			    Sushi.each(now, function(attr){
+                    if (!Sushi.utils.isEqual(old[attr], now[attr])) {
+                        changed = changed || {};
+                        changed[attr] = now[attr];
+                    }
+			    });
+			    
+			    return changed;
+			},
+			
+			previous: function(attr) {
+			    if (!attr || !this._previousAttributes) {
+			        return null
+			    }
+			    
+			    return this._previousAttributes[attr];
+			},
+			
+			previousAttributes: function() {
+			    return Sushi.extend(this._previousAttributes);
 			}
 		});
+		
+		return Model;
 	}
 );
