@@ -1,11 +1,8 @@
 define(
-	['../plugins/JSON'],
+	['../plugins/JSON', 'sushi.utils'],
 	
 	/**
 	 * JSON handling functions
-	 *
-	 * @namespace Sushi.utils
-	 * @class json
 	 */
 	function() {	
 		/**
@@ -28,10 +25,12 @@ define(
 			return window.JSON.stringify(literal);
 		};
 		
-		return {
+		Sushi.namespace('utils.json');
+		
+		Sushi.extend(Sushi.utils.json, {
 			parse: parse,
 			stringify: stringify
-		};
+		});
 		
 	}
 );

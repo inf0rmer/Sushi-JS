@@ -4,28 +4,23 @@
  */
 define(
 	// Module dependencies
-	['sushi.utils.debug', 'sushi.utils.json', 'sushi.utils.collection', 'sushi.utils.lang'],
+	[],
 	
 	/**
-	 * Sushi Utils
+	 * General purpose utility functions for the Sushi JS framework
 	 *
 	 * @namespace Sushi
 	 * @class utils
 	 */
-	function(debug, json, collection, lang) {
-		var utilsNs = Sushi.namespace('utils'),
-			debugNs = Sushi.namespace('utils.debug'),
-			jsonNs = Sushi.namespace('utils.json'),
-			collectionNs = Sushi.namespace('utils.collection'),
-			langNs = Sushi.namespace('utils.lang'),
-			_ArrayProto = Array.prototype,
-			_nativeIsArray = _ArrayProto.isArray,
-			idCounter = 0;
-			
-		
-		
+	function() {
+		var _utilsNs = Sushi.namespace('utils'),
+		    _ArrayProto = Array.prototype,
+		    _nativeIsArray = _ArrayProto.isArray,
+		    _nativeKeys = Object.keys;
+
 		// Generic utility methods
-		Sushi.extend(utilsNs, {
+		Sushi.extend(Sushi.utils, {
+		    _idCounter: 0,
 			/**
 		     * Generates a unique integer ID (within the client session)
 		     *
@@ -34,8 +29,8 @@ define(
 		     *
 		     * @return Unique ID
 		     */
-			uniqueId = function(prefix) {
-				var id = idCounter++;
+			uniqueId: function(prefix) {
+				var id = this._idCounter++;
 				return prefix ? prefix + id : id;
 			},
 			
@@ -47,13 +42,69 @@ define(
 		     *
 		     * @return Value passed in to the function
 		     */
-			identity = function(value) {
-				return value
-			}
-		});	
-		
-		// Utility "is" methods. Lifted from Underscore.js
-		Sushi.extend(utilsNs, {
+			identity: function(value) {
+				return value;
+			},
+			
+			// Utility object methods
+			/**
+		     * Generate an integer Array containing an arithmetic progression.
+		     * A port of the native Python range(). Lifted from Underscore JS.
+		     * See http://docs.python.org/library/functions.html#range for more info.
+		     *
+		     * @method range
+		     * @param start Value to start progression from. Defaults to 0
+		     * @param stop Value to stop progression at
+		     * @param step Value to increment progression by. Defaults to 1
+		     *
+		     * @return Array containing the progression.
+		     */
+			range: function(start, stop, step) {
+                var args  = Array.prototype.slice.call(arguments),
+                    solo  = args.length <= 1,
+                    start = solo ? 0 : args[0],
+                    stop  = solo ? args[0] : args[1],
+                    step  = args[2] || 1,
+                    len   = Math.max(Math.ceil((stop - start) / step), 0),
+                    idx   = 0,
+                    range = new Array(len);
+                    
+                while (idx < len) {
+                    range[idx++] = start;
+                    start += step;
+                }
+                
+                return range;
+            },
+            
+            /**
+		     * Retrieve the names of an object's properties.
+		     * Defaults to ECMAScript 5's native Object.keys. Lifted from Underscore JS.
+		     *
+		     * @method keys
+		     * @param obj Object to retrieve keys from
+		     *
+		     * @return Array containing the object's key names.
+		     */
+			keys: function(obj) {
+			    if (_nativeKeys) {
+			        return _nativeKeys(obj);
+			    }
+			    
+                if (this.isArray(obj)) {
+                    return this.range(0, obj.length);
+                }
+                
+                var keys = [];                
+                for (var key in obj) {
+                    if (hasOwnProperty.call(obj, key)) {
+                        keys[keys.length] = key;
+                    }
+                }                
+                return keys;
+            },
+			
+			// Utility "is" methods. Lifted from Underscore.js
 			/**
 			 * Checks if an object is empty
 			 *
@@ -62,11 +113,11 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is empty or not
 			 */
-			isEmpty = function(obj) {
-				if (_.isArray(obj) || _.isString(obj)) { return obj.length === 0 };
+			isEmpty: function(obj) {
+				if (this.isArray(obj) || this.isString(obj)) { return (obj.length === 0); }
 				
 				for (var key in obj) {
-					if (hasOwnProperty.call(obj, key)) { return false };
+					if (hasOwnProperty.call(obj, key)) { return false; }
 				}
 				
 				return true;
@@ -80,7 +131,7 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is a DOM node or not
 			 */
-			isElement = function(obj) {
+			isElement: function(obj) {
 			    return !!(obj && obj.nodeType == 1);
 			},
 			
@@ -92,12 +143,12 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is a function or not
 			 */
-			isFunction = function(obj) {
+			isFunction: function(obj) {
 				return !!(obj && obj.constructor && obj.call && obj.apply);
 			},
 
 			// Is a given value a string?
-			isString = function(obj) {
+			isString: function(obj) {
 				return !!(obj === '' || (obj && obj.charCodeAt && obj.substr));
 			},
 			
@@ -109,7 +160,7 @@ define(
 		     * 
 		     * @return {Boolean} Whether value is a number or not.
 		     */
-			isNumber = function(number) {
+			isNumber: function(number) {
 		        return (typeof number == "number");
 		    },
 		
@@ -121,7 +172,7 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is an array or not
 			 */
-			isArray = function(array) {
+			isArray: function(array) {
 			    if (_nativeIsArray && Array.isArray === _nativeIsArray) {
 			        return Array.isArray.call(array);
 			    } else {
@@ -137,9 +188,21 @@ define(
 			 *
 			 * @return {Boolean} Whether variable is an arguments object
 			 */
-			isArguments = function(obj) {
+			isArguments: function(obj) {
 	            return !!(obj && hasOwnProperty.call(obj, 'callee'));
 	        },
+	        
+	        /**
+			 * Checks whether a given variable is a date
+			 *
+			 * @method isDate
+			 * @param obj Variable to test
+			 *
+			 * @return {Boolean} Whether variable is a date
+			 */
+	        isDate: function(obj) {
+                return !!(obj && obj.getTimezoneOffset && obj.setUTCFullYear);
+            },
 			
 			/**
 			 * Performs a deep comparison to check if two objects are equal.
@@ -150,41 +213,52 @@ define(
 			 *
 			 * @return {Boolean} Whether objects are equal or not
 			 */
-			isEqual = function(a, b) {
+			isEqual: function(a, b) {
 				// Check object identity.
-				if (a === b) return true;
+				if (a === b) { return true; }
+				
 			    // Different types?
-			    var atype = typeof(a), btype = typeof(b);
-			    if (atype != btype) return false;
+			    var atype = typeof(a), 
+			    btype = typeof(b);
+			    if (atype != btype) { return false; }
+			    
 			    // Basic equality test (watch out for coercions).
-			    if (a == b) return true;
+			    if (a == b) { return true; }
+			    
 			    // One is falsy and the other truthy.
-			    if ((!a && b) || (a && !b)) return false;
-			    // Unwrap any wrapped objects.
-			    if (a._chain) a = a._wrapped;
-			    if (b._chain) b = b._wrapped;
+			    if ((!a && b) || (a && !b)) { return false; }
+			    
 			    // One of them implements an isEqual()?
-			    if (a.isEqual) return a.isEqual(b);
+			    if (a.isEqual) { return a.isEqual(b); }
+			    
 			    // Check dates' integer values.
-			    if (_.isDate(a) && _.isDate(b)) return a.getTime() === b.getTime();
+			    if (this.isDate(a) && this.isDate(b)) { return ( a.getTime() === b.getTime() ); }
+			    
 			    // Both are NaN?
-			    if (_.isNaN(a) && _.isNaN(b)) return false;
+			    if (this.isNaN(a) && this.isNaN(b)) { return false; }
+			    
 			    // Compare regular expressions.
-			    if (_.isRegExp(a) && _.isRegExp(b))
+			    if (this.isRegExp(a) && this.isRegExp(b)) {
 			      return a.source     === b.source &&
 			             a.global     === b.global &&
 			             a.ignoreCase === b.ignoreCase &&
 			             a.multiline  === b.multiline;
+			    }
+			    
 			    // If a is not an object by this point, we can't handle it.
-			    if (atype !== 'object') return false;
+			    if (atype !== 'object') { return false; }
+			    
 			    // Check for different array lengths before comparing contents.
-			    if (a.length && (a.length !== b.length)) return false;
+			    if (a.length && (a.length !== b.length)) { return false; }
+			    
 			    // Nothing else worked, deep compare the contents.
-			    var aKeys = _.keys(a), bKeys = _.keys(b);
+			    var aKeys = this.keys(a), bKeys = this.keys(b);
 			    // Different object sizes?
-			    if (aKeys.length != bKeys.length) return false;
+			    if (aKeys.length != bKeys.length) { return false; }
 			    // Recursive comparison of contents.
-			    for (var key in a) if (!(key in b) || !_.isEqual(a[key], b[key])) return false;
+			    for (var key in a) {
+			        if (!(key in b) || !this.isEqual(a[key], b[key])) { return false; }
+			    }
 			    return true;
 			},
 			
@@ -197,8 +271,10 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is NaN or not
 			 */
-			isNaN = function(obj) {
+			isNaN: function(obj) {
+			    /*jsl:ignore*/
 				return obj !== obj;
+				/*jsl:end*/
 			},
 			
 			/**
@@ -209,7 +285,7 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is a RegExp or not
 			 */
-			isRegExp = function(obj) {
+			isRegExp: function(obj) {
 				return !!(obj && obj.test && obj.exec && (obj.ignoreCase || obj.ignoreCase === false));
 			},
 			
@@ -221,9 +297,9 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is equal to null or not
 			 */
-			isNull = function(obj) {
+			isNull: function(obj) {
 				return obj === null;
-			};
+			},
 
 			/**
 			 * Checks if an object is equal to undefined
@@ -233,17 +309,9 @@ define(
 			 *
 			 * @return {Boolean} Whether argument is equal to undefined or not
 			 */
-			isUndefined = function(obj) {
-				return obj === void 0;
-			};
+			isUndefined: function(obj) {
+				return (obj === undefined);
+			}
 		});
-	    
-		Sushi.extend(Sushi.utils.debug, debug);
-		Sushi.extend(Sushi.utils.json, json);
-		Sushi.extend(Sushi.utils.collection, collection);
-		Sushi.extend(Sushi.utils.lang, lang);
-		
-		//Shortcuts
-		Sushi.each = Sushi.utils.collection.each;
 	}
 );

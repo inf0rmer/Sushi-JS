@@ -13,7 +13,7 @@ define(
 	 * @class core
 	 */
     function() {
-    	var SU = Sushi = {
+    	var $s = Sushi = {
     		VERSION: '0.0.5',
 				
     		/**
@@ -53,6 +53,7 @@ define(
     		 * @return {Object} Extended object
     		 */
     		extend: function(destination, source) {
+    		    //console.log(destination);
     		    for ( var property in source ) {
         			destination[property] = source[property];
         		}
@@ -67,5 +68,6 @@ define(
 	
     	// Sync global Sushi variable to namespaced one
     	window.Sushi = Sushi;
+    	window.$S = Sushi;
     }
 );

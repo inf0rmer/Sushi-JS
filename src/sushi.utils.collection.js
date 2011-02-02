@@ -1,11 +1,8 @@
 define(
-	[],
+	['sushi.utils'],
 	
 	/**
      * Sushi Collection
-     *
-     * @namespace Sushi.utils
-     * @class collection
      */
      
 	function() {
@@ -286,7 +283,7 @@ define(
 		    //TODO: Add extract logic
 		};
         
-        return {
+        Sushi.extend(Sushi.utils, {
             values: values,
             toArray: toArray,
             each: each,
@@ -296,6 +293,6 @@ define(
 			filter: filter,
 			some: some,
 			pluck: pluck
-        };
+        });
 	}
 );

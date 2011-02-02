@@ -1,11 +1,8 @@
 define(
-    [],
+    ['sushi.utils'],
     
     /**
 	 * Defines several safe debugging methods
-	 *
-	 * @namespace Sushi.utils
-	 * @class debug
 	 */
     function() {
 		// Cached logging history
@@ -104,12 +101,12 @@ define(
 		    log(_history);
 		};
 		
-		return {
+		Sushi.extend(Sushi.utils, {
 			log: log,
 			warn: warn,
 			error: error,
 			dir: dir,
 			logHistory: logHistory
-		};
+		});
     }
 );

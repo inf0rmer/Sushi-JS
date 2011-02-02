@@ -1,11 +1,8 @@
 define(
-	[],
+	['sushi.utils'],
 
 	/**
 	 * Language handling functions
-	 *
-	 * @namespace Sushi.utils
-	 * @class lang
 	 */
 	function() {
 		/**
@@ -39,8 +36,8 @@ define(
 		
 				
 
-		return {
+		Sushi.extend(Sushi.utils, {
 			replaceAccents: replaceAccents
-		};
+		});
 	}
 );
