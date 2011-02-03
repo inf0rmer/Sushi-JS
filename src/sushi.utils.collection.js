@@ -1,5 +1,5 @@
 define(
-	['sushi.utils'],
+	['sushi.core', 'sushi.utils'],
 	
 	/**
      * Sushi Collection
