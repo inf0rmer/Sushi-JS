@@ -4,7 +4,7 @@
  */
  define(
  	// Module dependencies
- 	['sushi.utils.collection'],
+ 	['sushi.core', 'sushi.utils.collection'],
 
  	/**
  	 * Sushi Events
