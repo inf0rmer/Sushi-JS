@@ -1,5 +1,5 @@
 define(
-	['../plugins/JSON', 'sushi.utils'],
+	['sushi.core', '../plugins/JSON', 'sushi.utils'],
 	
 	/**
 	 * JSON handling functions

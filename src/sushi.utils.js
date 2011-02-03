@@ -4,7 +4,7 @@
  */
 define(
 	// Module dependencies
-	[],
+	['sushi.core'],
 	
 	/**
 	 * General purpose utility functions for the Sushi JS framework
