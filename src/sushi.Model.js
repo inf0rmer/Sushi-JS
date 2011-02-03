@@ -1,5 +1,5 @@
 define(
-	['sushi.utils', 'sushi.utils.collection'],
+	['sushi.core', 'sushi.utils', 'sushi.utils.collection'],
 	
 	function() {
 		var Model = function(attributes, options) {
@@ -12,9 +12,9 @@ define(
 			this.attributes = {};
 			this.set(attributes, {silent : true});
 			this._previousAttributes = Sushi.extend(this.attributes);
-			this.init(attributes);
 			this.mid = Sushi.utils.uniqueId('m');
-		    this.topic = 'model_' + this.mid;
+		    this.topic = 'model_' + this.mid + '/';
+			this.initialize(attributes, options);
 		};
 		
 		Sushi.extend(Model.prototype, (function() {
