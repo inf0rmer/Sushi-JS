@@ -226,7 +226,7 @@ define(
 		},
 		
 		/**
-		 * Convenience method for Sushi.utils.collection.map to get a property from an object.
+		 * Convenience method for Sushi.utils.map to get a property from an object.
 		 *
 		 * @method pluck
 		 *
