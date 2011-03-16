@@ -46,7 +46,8 @@ define(
     		},
 		
     		/**
-    		 * Simple extending (shallow copying) utility
+    		 * Simple extending (shallow copying) utility. Delegates to 
+    		 * native Object.create() if available.
     		 *
     		 * @method extend
     		 * @param {Object} destination Object to copy properties to
@@ -55,7 +56,7 @@ define(
     		 */
     		extend: function(destination, source) {
     		    if (_nativeExtend) {
-    		        return Object.create({}, source);
+    		        return Object.create({destination}, source);
     		    }
     		    
     		    for ( var property in source ) {
