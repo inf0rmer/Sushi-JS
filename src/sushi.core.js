@@ -15,6 +15,7 @@ define(
     function() {
     	var $s = Sushi = {
     		VERSION: '0.0.5',
+    		_nativeExtend = Object.create,
 				
     		/**
     		 * A utility that non-destructively defines namespaces
@@ -53,7 +54,10 @@ define(
     		 * @return {Object} Extended object
     		 */
     		extend: function(destination, source) {
-    		    //console.log(destination);
+    		    if (_nativeExtend) {
+    		        return Object.create({}, source);
+    		    }
+    		    
     		    for ( var property in source ) {
         			destination[property] = source[property];
         		}
