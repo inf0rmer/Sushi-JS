@@ -1,0 +1,26 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;sushi.debug&#39;</span><span class="p">],</span>
+    
+    <span class="cm">/**</span>
+<span class="cm">	 * Defines several safe debugging methods</span>
+<span class="cm">	 *</span>
+<span class="cm">	 * @namespace Sushi.utils.debug</span>
+<span class="cm">	 * @class IE</span>
+<span class="cm">	 *	@extends Sushi.utils.debug</span>
+<span class="cm">	 */</span>
+    <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="cm">/**</span>
+<span class="cm">		*	Forces IE to run it&#39;s Garbage Collector</span>
+<span class="cm">		*/</span>
+		<span class="nx">garbageCollect</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+			<span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">CollectGarbage</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;function&quot;</span><span class="p">){</span>
+			    <span class="nx">CollectGarbage</span><span class="p">();</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+		
+		<span class="k">return</span> <span class="p">{</span>
+			<span class="nx">garbageCollect</span><span class="o">:</span> <span class="nx">garbageCollect</span>
+		<span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>

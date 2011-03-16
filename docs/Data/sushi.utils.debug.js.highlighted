@@ -1,0 +1,130 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span>
+    
+    <span class="cm">/**</span>
+<span class="cm">	 * Defines several safe debugging methods</span>
+<span class="cm">	 *</span>
+<span class="cm">	 * @namespace Sushi.utils</span>
+<span class="cm">	 * @class Debug</span>
+<span class="cm">	 * @extends Sushi.utils</span>
+<span class="cm">	 */</span>
+    <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="c1">// Cached logging history</span>
+		<span class="kd">var</span> <span class="nx">_history</span> <span class="o">=</span> <span class="p">[],</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Returns the debugging methods the environment supports</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @returns {Object} Supported debugging methods</span>
+<span class="cm">		 */</span>
+		<span class="nx">_supports</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+			<span class="k">return</span> <span class="p">{</span>
+				<span class="nx">log</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="o">||</span> <span class="kc">false</span><span class="p">,</span>
+				<span class="nx">warn</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">.</span><span class="nx">warn</span> <span class="o">||</span> <span class="kc">false</span><span class="p">,</span>
+				<span class="nx">error</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span> <span class="o">||</span> <span class="kc">false</span><span class="p">,</span>
+				<span class="nx">dir</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">console</span><span class="p">.</span><span class="nx">dir</span> <span class="o">||</span> <span class="kc">false</span>
+			<span class="p">};</span>
+		<span class="p">})(),</span>
+		
+		<span class="c1">// Local ref for easy converting to real arrays</span>
+		<span class="nx">_slice</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">,</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Logs comma-separated arguments to the console using console.log()</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param Values to be logged</span>
+<span class="cm">		 */</span>
+		<span class="nx">log</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">// Turn the arguments object into a real array</span>
+			<span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+			
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">_supports</span><span class="p">.</span><span class="nx">log</span><span class="p">)</span> <span class="p">{</span>
+		    	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		    		<span class="nx">_history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+					<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+				<span class="p">}</span>
+		    <span class="p">}</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Logs comma-separated arguments to the console using console.error()</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param Values to be logged</span>
+<span class="cm">		 */</span>
+		<span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">// Turn the arguments object into a real array</span>
+			<span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+			
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">_supports</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+		    	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		    		<span class="nx">_history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+					<span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+				<span class="p">}</span>
+		    <span class="p">}</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Logs comma-separated arguments to the console using console.warn()</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param Values to be logged</span>
+<span class="cm">		 */</span>
+		<span class="nx">warn</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">// Turn the arguments object into a real array</span>
+			<span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+			
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">_supports</span><span class="p">.</span><span class="nx">warn</span><span class="p">)</span> <span class="p">{</span>
+		    	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		    		<span class="nx">_history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+					<span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+				<span class="p">}</span>
+		    <span class="p">}</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Logs comma-separated arguments to the console using console.dir()</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param Values to be logged</span>
+<span class="cm">		 */</span>
+		<span class="nx">dir</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">// Turn the arguments object into a real array</span>
+			<span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+			
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">_supports</span><span class="p">.</span><span class="nx">dir</span><span class="p">)</span> <span class="p">{</span>
+		    	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		    		<span class="nx">_history</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+					<span class="nx">console</span><span class="p">.</span><span class="nx">dir</span><span class="p">(</span><span class="nx">args</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+				<span class="p">}</span>
+		    <span class="p">}</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Prints the whole cached debug history to the console</span>
+<span class="cm">		 *</span>
+<span class="cm">		 */</span>
+		<span class="nx">logHistory</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		    <span class="nx">log</span><span class="p">(</span><span class="nx">_history</span><span class="p">);</span>
+		<span class="p">},</span>
+		<span class="cm">/**</span>
+<span class="cm">		 * Forces IE to run its garbage Collector</span>
+<span class="cm">		 * @return {void, Boolean}  Returns false, if it&#39;s not possible to force the Garbage Collector, otherwise nothing is returned.</span>
+<span class="cm">		 */</span>
+		<span class="nx">garbageCollect</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+			<span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">CollectGarbage</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;function&quot;</span><span class="p">){</span>
+			    <span class="nx">CollectGarbage</span><span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="p">}</span>
+		<span class="p">};</span>
+		
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.debug&#39;</span><span class="p">)</span>
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">debug</span><span class="p">,</span> <span class="p">{</span>
+			<span class="nx">log</span><span class="o">:</span> <span class="nx">log</span><span class="p">,</span>
+			<span class="nx">warn</span><span class="o">:</span> <span class="nx">warn</span><span class="p">,</span>
+			<span class="nx">error</span><span class="o">:</span> <span class="nx">error</span><span class="p">,</span>
+			<span class="nx">dir</span><span class="o">:</span> <span class="nx">dir</span><span class="p">,</span>
+			<span class="nx">logHistory</span><span class="o">:</span> <span class="nx">logHistory</span><span class="p">,</span>
+			<span class="nx">garbageCollect</span><span class="o">:</span> <span class="nx">garbageCollect</span>
+		<span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>

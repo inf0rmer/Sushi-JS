@@ -1,0 +1,60 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+  <span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">],</span>
+  
+  <span class="kd">function</span><span class="p">(){</span>
+      <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;history&#39;</span><span class="p">);</span>
+            
+      <span class="kd">var</span> <span class="nx">_supports</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+          <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">window</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">pushState</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+          <span class="p">}</span>
+          
+          <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">})(),</span>
+      <span class="nx">_nativeHistory</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">history</span><span class="p">,</span>
+      <span class="nx">_pushState</span> <span class="o">=</span> <span class="nx">_nativeHistory</span><span class="p">.</span><span class="nx">pushState</span><span class="p">,</span>
+      
+      <span class="nx">push</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">stateObj</span><span class="p">,</span> <span class="nx">title</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">_nativeHistory</span><span class="p">.</span><span class="nx">pushState</span><span class="p">(</span><span class="nx">stateObj</span><span class="p">,</span> <span class="nx">title</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
+      <span class="p">},</span>
+    
+      <span class="nx">replace</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">stateObj</span><span class="p">,</span> <span class="nx">title</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">_nativeHistory</span><span class="p">.</span><span class="nx">replaceState</span><span class="p">(</span><span class="nx">stateObj</span><span class="p">,</span> <span class="nx">title</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
+      <span class="p">},</span>
+    
+      <span class="nx">go</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">step</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">_nativeHistory</span><span class="p">.</span><span class="nx">go</span><span class="p">(</span><span class="nx">step</span><span class="p">);</span>
+      <span class="p">},</span>
+    
+      <span class="nx">back</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="nx">_nativeHistory</span><span class="p">.</span><span class="nx">back</span><span class="p">();</span>
+      <span class="p">},</span>
+    
+      <span class="nx">forward</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          <span class="nx">_nativeHistory</span><span class="p">.</span><span class="nx">forward</span><span class="p">();</span>
+      <span class="p">};</span>
+      
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">_supports</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+      
+      <span class="nb">window</span><span class="p">.</span><span class="nx">popstate</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          
+      <span class="p">}</span>
+      
+      <span class="nb">window</span><span class="p">.</span><span class="nx">hashchange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+          
+      <span class="p">}</span>
+      
+      <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">history</span><span class="p">,</span> <span class="p">{</span>
+          <span class="nx">pushState</span><span class="o">:</span> <span class="nx">push</span><span class="p">,</span>
+          <span class="nx">replaceState</span><span class="o">:</span> <span class="nx">replace</span><span class="p">,</span>
+          <span class="nx">go</span><span class="o">:</span> <span class="nx">go</span><span class="p">,</span>
+          <span class="nx">back</span><span class="o">:</span> <span class="nx">back</span><span class="p">,</span>
+          <span class="nx">forward</span><span class="o">:</span> <span class="nx">forward</span>
+      <span class="p">});</span>
+      
+      <span class="k">return</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">history</span><span class="p">;</span>
+  <span class="p">}</span>  
+<span class="p">);</span>
+</pre></div>

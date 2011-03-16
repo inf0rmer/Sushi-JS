@@ -1,0 +1,303 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span>
+	
+	<span class="cm">/**</span>
+<span class="cm">     * Sushi Collection</span>
+<span class="cm">     *</span>
+<span class="cm">	 * @namespace Sushi.utils</span>
+<span class="cm">	 * @class Collection</span>
+<span class="cm">	 * @extends Sushi.utils</span>
+<span class="cm">	 */</span>
+     
+	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	    <span class="kd">var</span> <span class="nx">_collection</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+	    <span class="nx">_ArrayProto</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span>
+	    <span class="nx">_nativeForEach</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">forEach</span><span class="p">,</span>
+		<span class="nx">_nativeFilter</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">filter</span><span class="p">,</span>
+		<span class="nx">_nativeReduce</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">reduce</span><span class="p">,</span>
+		<span class="nx">_nativeReduceRight</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">reduceRight</span><span class="p">,</span>
+		<span class="nx">_nativeMap</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">map</span><span class="p">,</span>
+		<span class="nx">_nativeIndexOf</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">,</span>
+		<span class="nx">_nativeSome</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">some</span><span class="p">,</span>
+		<span class="nx">_slice</span> <span class="o">=</span> <span class="nx">_ArrayProto</span><span class="p">.</span><span class="nx">slice</span><span class="p">,</span>
+	    <span class="nx">_breaker</span> <span class="o">=</span> <span class="p">{},</span>
+	    
+	    <span class="cm">/*</span>
+<span class="cm">	     * Retrieve the values of an object&#39;s properties.</span>
+<span class="cm">	     *</span>
+<span class="cm">	     * @method values</span>
+<span class="cm">	     * @param obj Object to retrieve properties from</span>
+<span class="cm">	     *</span>
+<span class="cm">	     * @return {Array} Object properties in array format</span>
+<span class="cm">	     */</span>
+	    <span class="nx">values</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">map</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">identity</span><span class="p">);</span>
+        <span class="p">},</span>
+        
+		<span class="cm">/**</span>
+<span class="cm">		 * Safely convert anything iterable into a real, live array.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method toArray</span>
+<span class="cm">		 * @param iterable Variable to convert to an array</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Array} Old variable in array format</span>
+<span class="cm">		 */</span>
+		<span class="nx">toArray</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">iterable</span><span class="p">)</span> <span class="p">{</span>                         <span class="k">return</span> <span class="p">[];</span> <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">iterable</span><span class="p">.</span><span class="nx">toArray</span><span class="p">)</span> <span class="p">{</span>                  <span class="k">return</span> <span class="nx">iterable</span><span class="p">.</span><span class="nx">toArray</span><span class="p">();</span> <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">iterable</span><span class="p">))</span> <span class="p">{</span>     <span class="k">return</span> <span class="nx">iterable</span><span class="p">;</span> <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isArguments</span><span class="p">(</span><span class="nx">iterable</span><span class="p">))</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">_slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">iterable</span><span class="p">);</span> <span class="p">}</span>
+            
+            <span class="k">return</span> <span class="nx">values</span><span class="p">(</span><span class="nx">iterable</span><span class="p">);</span>
+        <span class="p">},</span>
+	    
+	    <span class="cm">/**</span>
+<span class="cm">    	 * Cornerstone each (forEach) implementation.</span>
+<span class="cm">    	 * Handles objects implementing forEach, arrays, and raw objects. </span>
+<span class="cm">    	 * Delegates to ECMAScript 5&#39;s native forEach if available.</span>
+<span class="cm">    	 * Based on the Underscore JS implementation.</span>
+<span class="cm">    	 *</span>
+<span class="cm">    	 * @method each</span>
+<span class="cm">    	 *</span>
+<span class="cm">    	 * @param obj Object to loop through</span>
+<span class="cm">    	 * @param {Function} iterator Function to callback for each element</span>
+<span class="cm">    	 * @param {Object} context Object to use as &quot;this&quot; when executing iterator</span>
+<span class="cm">    	 */</span>
+	    <span class="nx">each</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">value</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span><span class="p">;</span> <span class="p">}</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeForEach</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">forEach</span> <span class="o">===</span> <span class="nx">_nativeForEach</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">obj</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span><span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="nx">_breaker</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span><span class="p">;</span> <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nx">hasOwnProperty</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">))</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">],</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">obj</span><span class="p">)</span> <span class="o">===</span> <span class="nx">_breaker</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span><span class="p">;</span> <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        
+        <span class="cm">/**</span>
+<span class="cm">		 * Determine if a given value is included in the array or object using ===.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method contains</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Object} heystack Object or Array to search in.</span>
+<span class="cm">		 * @param needle Value to search heystack for</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Boolean} True if needle is present.</span>
+<span class="cm">		 */</span>        
+        <span class="nx">contains</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">heystack</span><span class="p">,</span> <span class="nx">needle</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">found</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">heystack</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">found</span><span class="p">;</span> <span class="p">}</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeIndexOf</span> <span class="o">&amp;&amp;</span> <span class="nx">heystack</span><span class="p">.</span><span class="nx">indexOf</span> <span class="o">===</span> <span class="nx">_nativeIndexOf</span><span class="p">)</span> <span class="p">{</span> 
+                <span class="k">return</span> <span class="nx">heystack</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">needle</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> 
+            <span class="p">}</span>
+            
+            <span class="nx">some</span><span class="p">(</span><span class="nx">heystack</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">found</span> <span class="o">=</span> <span class="nx">value</span> <span class="o">===</span> <span class="nx">needle</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">true</span><span class="p">;</span> <span class="p">}</span>
+            <span class="p">});</span>
+            
+            <span class="k">return</span> <span class="nx">found</span><span class="p">;</span>
+        <span class="p">},</span>
+        
+        <span class="cm">/**</span>
+<span class="cm">		 * Return all the elements that pass a truth test.</span>
+<span class="cm">		 * Delegates to ECMAScript 5&#39;s native filter if available. </span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method filter</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Array} obj Array to filter.</span>
+<span class="cm">		 * @param {Function} iterator Function to execute on each value in the array.</span>
+<span class="cm">		 * @param memo Object to use as the first argument to the first call of the callback.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Array} Filtered Array</span>
+<span class="cm">		 */</span>
+		<span class="nx">filter</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="p">[];</span>
+			
+            <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">results</span><span class="p">;</span> <span class="p">}</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeFilter</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span> <span class="o">===</span> <span class="nx">_nativeFilter</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span> <span class="p">}</span>
+            
+            <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">))</span> <span class="p">{</span> 
+                    <span class="nx">results</span><span class="p">[</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span> 
+                <span class="p">}</span>
+            <span class="p">});</span>
+            
+            <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Reduce builds up a single result from a list of values </span>
+<span class="cm">		 * from left-to-right.</span>
+<span class="cm">		 * Delegates to ECMAScript 5&#39;s native reduce if available. </span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method reduce</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Array} obj Array to reduce.</span>
+<span class="cm">		 * @param {Function} iterator Function to execute on each value in the array.</span>
+<span class="cm">		 * @param memo Object to use as the first argument to the first call of the callback.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Array} Reduced Array</span>
+<span class="cm">		 */</span>		
+		<span class="nx">reduce</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">initial</span> <span class="o">=</span> <span class="nx">memo</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">;</span>
+			<span class="nx">obj</span> <span class="o">=</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">;</span>
+			
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeReduce</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduce</span> <span class="o">===</span> <span class="nx">_nativeReduce</span><span class="p">)</span> <span class="p">{</span>
+		    	<span class="c1">//if (context) { iterator = _.bind(iterator, context); }		</span>
+		    	<span class="k">return</span> <span class="nx">initial</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">iterator</span><span class="p">);</span>
+		    <span class="p">}</span>
+		
+		    <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+		    	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">initial</span> <span class="o">&amp;&amp;</span> <span class="nx">index</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+		        	<span class="nx">memo</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+		        	<span class="nx">initial</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+		      	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		        	<span class="nx">memo</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">memo</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">);</span>
+		      	<span class="p">}</span>
+		    <span class="p">});</span>
+		
+		    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">initial</span><span class="p">)</span> <span class="p">{</span>
+		        <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span><span class="p">(</span><span class="s2">&quot;Reduce of empty array with no initial value&quot;</span><span class="p">);</span>
+		    <span class="p">}</span>
+		
+		    <span class="k">return</span> <span class="nx">memo</span><span class="p">;</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Reduce builds up a single result from a list of values (from right-to-left). </span>
+<span class="cm">		 * Delegates to ECMAScript 5&#39;s native reduceRight if available. </span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method reduceRight</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Array} Array to reduce.</span>
+<span class="cm">		 * @param {Function} Function to execute on each value in the array.</span>
+<span class="cm">		 * @param memo Object to use as the first argument to the first call of the callback.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Array} Reduced Array</span>
+<span class="cm">		 *</span>
+<span class="cm">		 */</span>
+		<span class="nx">reduceRight</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">[];</span> <span class="p">}</span>
+		    
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeReduceRight</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduceRight</span> <span class="o">===</span> <span class="nx">_nativeReduceRight</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">//if (context) iterator = _.bind(iterator, context);</span>
+                <span class="k">return</span> <span class="nx">memo</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduceRight</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduceRight</span><span class="p">(</span><span class="nx">iterator</span><span class="p">);</span>
+            <span class="p">}</span>
+            
+            <span class="kd">var</span> <span class="nx">reversed</span> <span class="o">=</span> <span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">()</span> <span class="o">:</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">toArray</span><span class="p">(</span><span class="nx">obj</span><span class="p">)).</span><span class="nx">reverse</span><span class="p">();</span>
+           
+            <span class="k">return</span> <span class="nx">_collection</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">reversed</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">memo</span><span class="p">);</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Creates a new array with the results of calling a provided function </span>
+<span class="cm">		 * on every element in this array.</span>
+<span class="cm">		 * Delegates to ECMAScript 5&#39;s native map if available. </span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method map</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Array} obj Original array.</span>
+<span class="cm">		 * @param {Function} iterator Function that produces an element of the new Array from an element of the current one.</span>
+<span class="cm">		 * @param {Object} context Object to use as &quot;this&quot; when executing iterator</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Array} Reduced Array</span>
+<span class="cm">		 *</span>
+<span class="cm">		 */</span>
+		<span class="nx">map</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="p">[];</span>
+			
+			<span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">results</span><span class="p">;</span> <span class="p">}</span>
+			
+			<span class="c1">// Delegate to ECMAScript 5 native map()</span>
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeMap</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">map</span> <span class="o">===</span> <span class="nx">_nativeMap</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span> <span class="p">}</span>
+			
+		    <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+		        <span class="nx">results</span><span class="p">[</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">);</span>
+		    <span class="p">});</span>
+		
+		    <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Convenience method for Sushi.utils.map to get a property from an object.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method pluck</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Object} obj Object to search through</span>
+<span class="cm">		 * @param key Property key to look for</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Object} Property in object</span>
+<span class="cm">		 *</span>
+<span class="cm">		 */</span>
+		<span class="nx">pluck</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="k">return</span> <span class="nx">map</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">value</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="p">});</span>
+		<span class="p">},</span>
+
+		<span class="cm">/**</span>
+<span class="cm">		 * Determine if at least one element in the object matches a truth test.</span>
+<span class="cm">		 * Delegates to ECMAScript 5&#39;s native some if available. </span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @method some</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Object} obj Object to search through</span>
+<span class="cm">		 * @param {Function} iterator Function that produces an element of the new Array from an element of the current one.</span>
+<span class="cm">		 * @param {Object} context Object to use as &quot;this&quot; when executing iterator</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @return {Booelan} True if an object matches the truth test.</span>
+<span class="cm">		 *</span>
+<span class="cm">		 */</span>
+		<span class="nx">some</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="nx">iterator</span> <span class="o">=</span> <span class="nx">iterator</span> <span class="o">||</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">identity</span><span class="p">;</span>
+            
+            <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">obj</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">result</span><span class="p">;</span> <span class="p">}</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nx">_nativeSome</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">some</span> <span class="o">===</span> <span class="nx">_nativeSome</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">some</span><span class="p">(</span><span class="nx">iterator</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+            <span class="p">}</span>
+            
+            <span class="nx">each</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">result</span> <span class="o">=</span> <span class="nx">iterator</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">list</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="nx">_breaker</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+            
+            <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+		<span class="p">},</span>
+		
+		<span class="nx">every</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		    <span class="c1">//TODO: Add every logic</span>
+		<span class="p">},</span>
+		
+		<span class="c1">// Cake Set::extract</span>
+		<span class="nx">extract</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		    <span class="c1">//TODO: Add extract logic</span>
+		<span class="p">};</span>
+        
+        <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">values</span><span class="o">:</span> <span class="nx">values</span><span class="p">,</span>
+            <span class="nx">toArray</span><span class="o">:</span> <span class="nx">toArray</span><span class="p">,</span>
+            <span class="nx">each</span><span class="o">:</span> <span class="nx">each</span><span class="p">,</span>
+			<span class="nx">reduce</span><span class="o">:</span> <span class="nx">reduce</span><span class="p">,</span>
+			<span class="nx">reduceRight</span><span class="o">:</span> <span class="nx">reduceRight</span><span class="p">,</span>
+			<span class="nx">map</span><span class="o">:</span> <span class="nx">map</span><span class="p">,</span>
+			<span class="nx">filter</span><span class="o">:</span> <span class="nx">filter</span><span class="p">,</span>
+			<span class="nx">some</span><span class="o">:</span> <span class="nx">some</span><span class="p">,</span>
+			<span class="nx">pluck</span><span class="o">:</span> <span class="nx">pluck</span>
+        <span class="p">});</span>
+	<span class="p">}</span>
+<span class="p">);</span>
+</pre></div>

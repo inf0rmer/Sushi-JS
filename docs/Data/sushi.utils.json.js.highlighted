@@ -1,0 +1,40 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;../plugins/JSON&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span>
+	
+	<span class="cm">/**</span>
+<span class="cm">	 * JSON handling functions</span>
+<span class="cm">	 * @namespace Sushi.utils</span>
+<span class="cm">	 * @class JSON</span>
+<span class="cm">	 * @extends Sushi.utils</span>
+<span class="cm">	 */</span>
+	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>	
+		<span class="cm">/**</span>
+<span class="cm">		 * Converts a JSON-formatted string into a Javascript literal object</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {String} string JSON-formatted string</span>
+<span class="cm">		 * @return {Object} Well formatted JS literal</span>
+<span class="cm">		 */</span>
+		<span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">string</span><span class="p">);</span>
+		<span class="p">},</span>
+		
+		<span class="cm">/**</span>
+<span class="cm">		 * Converts a Javascript literal object into a well formatted JSON string</span>
+<span class="cm">		 *</span>
+<span class="cm">		 * @param {Object} literal Literal Notated Javascript Object</span>
+<span class="cm">		 * @return {String} Well formatted JSON string</span>
+<span class="cm">		 */</span>
+		<span class="nx">stringify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">literal</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nb">window</span><span class="p">.</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">literal</span><span class="p">);</span>
+		<span class="p">};</span>
+		
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.JSON&#39;</span><span class="p">);</span>
+		
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">JSON</span><span class="p">,</span> <span class="p">{</span>
+			<span class="nx">parse</span><span class="o">:</span> <span class="nx">parse</span><span class="p">,</span>
+			<span class="nx">stringify</span><span class="o">:</span> <span class="nx">stringify</span>
+		<span class="p">});</span>
+		
+	<span class="p">}</span>
+<span class="p">);</span>
+</pre></div>

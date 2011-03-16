@@ -1,0 +1,90 @@
+<div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm"> * Sushi.events - Event management functions</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+ <span class="nx">define</span><span class="p">(</span>
+ 	<span class="c1">// Module dependencies</span>
+ 	<span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.collection&#39;</span><span class="p">],</span>
+
+ 	<span class="cm">/**</span>
+<span class="cm"> 	 * Sushi Events</span>
+<span class="cm"> 	 *</span>
+<span class="cm"> 	 * @namespace Sushi</span>
+<span class="cm"> 	 * @class events</span>
+<span class="cm">     * @requires sushi.utils.collection</span>
+<span class="cm"> 	 */</span>
+ 	<span class="kd">function</span><span class="p">(</span><span class="nx">pubsub</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">);</span>
+        
+ 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">event</span><span class="p">,</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    	    <span class="c1">// the topic/subscription hash</span>
+        	<span class="kd">var</span> <span class="nx">_cache</span> <span class="o">=</span> <span class="p">{},</span>
+
+            <span class="cm">/**</span>
+<span class="cm">             * Publish data on a named topic</span>
+<span class="cm">             * </span>
+<span class="cm">             * Example:</span>
+<span class="cm">             * Sushi.events.publish(&quot;/some/topic&quot;, [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]);</span>
+<span class="cm">             *</span>
+<span class="cm">             * @method publish</span>
+<span class="cm">             * @param {String} topic The channel to publish on</span>
+<span class="cm">             * @param {Array}  args  The data to publish. Each array item is converted into an ordered</span>
+<span class="cm">     		 *		                 arguments on the subscribed functions.</span>
+<span class="cm">     		 *</span>
+<span class="cm">             */</span>
+        	<span class="nx">publish</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">topic</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
+        		<span class="nx">_cache</span><span class="p">[</span><span class="nx">topic</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_cache</span><span class="p">[</span><span class="nx">topic</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
+        			<span class="nx">callback</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">events</span><span class="p">,</span> <span class="nx">args</span> <span class="o">||</span> <span class="p">[]);</span>
+        		<span class="p">});</span>
+        	<span class="p">},</span>
+
+            <span class="cm">/**</span>
+<span class="cm">             * Register a callback on a named topic</span>
+<span class="cm">             *</span>
+<span class="cm">             * Example:</span>
+<span class="cm">             * Sushi.events.subscribe(&quot;/some/topic&quot;, function(a, b, c){ //handle data});</span>
+<span class="cm">             *</span>
+<span class="cm">             * @method subscribe</span>
+<span class="cm">             * @param {String}   topic     The channel to subscribe to</span>
+<span class="cm">             * @param {Function} callback  The handler event. Anytime something is Sushi.events.publish&#39;ed on a </span>
+<span class="cm">     		 *		                       subscribed channel, the callback will be called with the</span>
+<span class="cm">     		 *		                       published array as ordered arguments.</span>
+<span class="cm">     		 * </span>
+<span class="cm">     		 * @return {Array} A handle which can be used to unsubscribe this particular subscription</span>
+<span class="cm">             */</span>
+        	<span class="nx">subscribe</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">topic</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+         		<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">_cache</span><span class="p">[</span><span class="nx">topic</span><span class="p">]){</span>
+        			<span class="nx">_cache</span><span class="p">[</span><span class="nx">topic</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+        		<span class="p">}</span>
+        		<span class="nx">_cache</span><span class="p">[</span><span class="nx">topic</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="nx">callback</span><span class="p">);</span>
+        		<span class="k">return</span> <span class="p">[</span><span class="nx">topic</span><span class="p">,</span> <span class="nx">callback</span><span class="p">];</span>
+        	<span class="p">},</span>
+
+            <span class="cm">/**</span>
+<span class="cm">             * Disconnect a subscribed function for a topic</span>
+<span class="cm">             * Example:</span>
+<span class="cm">             * var handle = Sushi.events.subscribe(&quot;/some/topic&quot;, function(a, b, c){ //handle data});</span>
+<span class="cm">             * Sushi.events.unsubscribe(handle);</span>
+<span class="cm">             *</span>
+<span class="cm">             * @method unsubscribe</span>
+<span class="cm">             * @param {Array} handle The return value from a Sushi.events.subscribe call</span>
+<span class="cm">             *</span>
+<span class="cm">             */</span>
+        	<span class="nx">unsubscribe</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">handle</span><span class="p">){</span>
+        		<span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">handle</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        		<span class="nx">_cache</span><span class="p">[</span><span class="nx">t</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">_cache</span><span class="p">[</span><span class="nx">t</span><span class="p">],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">idx</span><span class="p">){</span>
+        			<span class="k">if</span><span class="p">(</span><span class="k">this</span> <span class="o">==</span> <span class="nx">handle</span><span class="p">[</span><span class="mi">1</span><span class="p">]){</span>
+        				<span class="nx">_cache</span><span class="p">[</span><span class="nx">t</span><span class="p">].</span><span class="nx">splice</span><span class="p">(</span><span class="nx">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        			<span class="p">}</span>
+        		<span class="p">});</span>
+        	<span class="p">};</span>
+
+        	<span class="k">return</span> <span class="p">{</span>
+        	    <span class="nx">publish</span><span class="o">:</span> <span class="nx">publish</span><span class="p">,</span>
+        	    <span class="nx">subscribe</span><span class="o">:</span> <span class="nx">subscribe</span><span class="p">,</span>
+        	    <span class="nx">unsubscribe</span><span class="o">:</span> <span class="nx">unsubscribe</span>
+        	<span class="p">};</span>
+        <span class="p">})());</span>
+ 	<span class="p">}</span>
+ <span class="p">);</span>
+</pre></div>

@@ -1,0 +1,39 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils&#39;</span><span class="p">],</span>
+	
+	<span class="cm">/**</span>
+<span class="cm">	 * JSON handling functions</span>
+<span class="cm">	 *</span>
+<span class="cm">	 *	@namespace Sushi.utils</span>
+<span class="cm">	 *	@class HTML5</span>
+<span class="cm">	 *  @extends Sushi.utils</span>
+<span class="cm">	 */</span>
+	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		 <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;utils.HTML5&#39;</span><span class="p">);</span>	
+		<span class="cm">/**</span>
+<span class="cm">		 *	Enable HTML5 Elements inside IE (8 and before)</span>
+<span class="cm">		 *	script by Remy Sharp http://remysharp.com/2009/01/07/html5-enabling-script/</span>
+<span class="cm">		 *</span>
+<span class="cm">		 *	@method shiv</span>
+<span class="cm">		 *	@param {String} Optional. List of specific objects to create (e.g.: Sushi.HTML5.shiv(&quot;canvas, time, aside&quot;) );</span>
+<span class="cm">		 *	@return {Object} HTML5 elements created with boolean value.</span>
+<span class="cm">		 */</span>
+		<span class="kd">var</span> <span class="nx">shiv</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">e</span> <span class="o">=</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="o">?</span> <span class="nx">string</span> <span class="o">:</span> <span class="s2">&quot;abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video&quot;</span><span class="p">,</span>
+				<span class="nx">html5els</span> <span class="o">=</span> <span class="p">{};</span>
+			
+			<span class="nx">e</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
+			<span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="nx">e</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">){</span>
+				<span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+				<span class="nx">elsAvailable</span><span class="p">[</span><span class="nx">e</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">}</span>
+			<span class="k">return</span> <span class="nx">html5els</span><span class="p">;</span>
+		<span class="p">}</span>
+		
+		<span class="k">return</span> <span class="p">{</span>
+			<span class="nx">shiv</span><span class="o">:</span> <span class="nx">shiv</span>
+		<span class="p">};</span>
+		
+	<span class="p">}</span>
+<span class="p">);</span>
+</pre></div>

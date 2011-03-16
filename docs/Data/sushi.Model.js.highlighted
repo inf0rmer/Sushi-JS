@@ -1,0 +1,241 @@
+<div class="highlight"><pre><span class="nx">define</span><span class="p">(</span>
+	<span class="p">[</span><span class="s1">&#39;sushi.core&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils&#39;</span><span class="p">,</span> <span class="s1">&#39;sushi.utils.collection&#39;</span><span class="p">],</span>
+	
+	<span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">Model</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attributes</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">attributes</span> <span class="o">||</span> <span class="p">(</span><span class="nx">attributes</span> <span class="o">=</span> <span class="p">{});</span>
+			
+			<span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">defaults</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">attributes</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">defaults</span><span class="p">,</span> <span class="nx">attributes</span><span class="p">);</span>
+			<span class="p">}</span>
+			
+			<span class="k">this</span><span class="p">.</span><span class="nx">attributes</span> <span class="o">=</span> <span class="p">{};</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">attributes</span><span class="p">,</span> <span class="p">{</span><span class="nx">silent</span> <span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">mid</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">uniqueId</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">);</span>
+		    <span class="k">this</span><span class="p">.</span><span class="nx">topic</span> <span class="o">=</span> <span class="s1">&#39;model_&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">mid</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">;</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">initialize</span><span class="p">(</span><span class="nx">attributes</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+		<span class="p">};</span>
+		
+		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Model</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">_previousAttributes</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+			
+			<span class="nx">_changed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+			
+			<span class="nx">_trigger</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+			    <span class="p">}</span>
+			    
+			    <span class="nx">Sushi</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">topic</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nx">evt</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+			    
+			    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">_performValidation</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span><span class="nx">attrs</span><span class="p">);</span>
+			    
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+			            <span class="nx">options</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+			        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			            <span class="k">this</span><span class="p">.</span><span class="nx">_trigger</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+			        <span class="p">}</span>
+			        
+			        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+			    <span class="p">}</span>
+			    
+			    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">initialize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{},</span>
+			
+			<span class="nx">copyAttributes</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">({},</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+			<span class="p">},</span>
+			
+			<span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">];</span>
+			<span class="p">},</span>
+			
+			<span class="nx">set</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+				
+				<span class="nx">options</span> <span class="o">||</span> <span class="p">(</span><span class="nx">options</span> <span class="o">=</span> <span class="p">{});</span>
+				
+				<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+					<span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+				<span class="p">}</span>
+				
+				<span class="k">if</span> <span class="p">(</span><span class="nx">attrs</span><span class="p">.</span><span class="nx">attributes</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">attrs</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">.</span><span class="nx">attributes</span><span class="p">;</span>
+				<span class="p">}</span>
+				
+				<span class="kd">var</span> <span class="nx">now</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">;</span>
+				
+				<span class="c1">//Run validation...</span>
+				<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">validate</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_performValidation</span><span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="nx">options</span><span class="p">))</span> <span class="p">{</span>
+				    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+				<span class="p">}</span>
+				
+				<span class="c1">// Check for changes of id</span>
+				<span class="k">if</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span> <span class="k">in</span> <span class="nx">attrs</span><span class="p">)</span> <span class="p">{</span>
+					<span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+				<span class="p">}</span>
+				
+				<span class="c1">// Update the attributes</span>
+				<span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">)</span> <span class="p">{</span>
+					<span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">attrs</span><span class="p">[</span><span class="nx">attr</span><span class="p">];</span>
+
+					<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isEqual</span><span class="p">(</span><span class="nx">now</span><span class="p">[</span><span class="nx">attr</span><span class="p">],</span> <span class="nx">val</span><span class="p">))</span> <span class="p">{</span>
+						<span class="nx">now</span><span class="p">[</span><span class="nx">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nx">val</span><span class="p">;</span>
+						
+						<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span><span class="p">)</span> <span class="p">{</span>
+							<span class="k">this</span><span class="p">.</span><span class="nx">_changed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+						    <span class="k">this</span><span class="p">.</span><span class="nx">_trigger</span><span class="p">(</span><span class="s1">&#39;change:&#39;</span> <span class="o">+</span> <span class="nx">attr</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>
+						<span class="p">}</span>
+					<span class="p">}</span>
+				<span class="p">});</span>
+				
+				<span class="c1">// Fire a change event in case model was changed</span>
+				<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">_changed</span><span class="p">)</span> <span class="p">{</span>
+    				<span class="k">this</span><span class="p">.</span><span class="nx">change</span><span class="p">();</span>
+				<span class="p">}</span>
+				
+				<span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">unset</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="nx">options</span> <span class="o">||</span> <span class="p">(</span><span class="nx">options</span> <span class="o">=</span> <span class="p">{});</span>
+			    <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">],</span>
+			        <span class="nx">validObj</span> <span class="o">=</span> <span class="p">{};</span>
+			        
+			    <span class="nx">validObj</span><span class="p">[</span><span class="nx">attr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">validate</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_performValidation</span><span class="p">(</span><span class="nx">validObj</span><span class="p">,</span> <span class="nx">options</span><span class="p">))</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+			    <span class="p">}</span>			    
+			    
+			    <span class="c1">// Remove the attribute</span>
+			    <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">];</span>
+			    
+			    <span class="c1">// Fire changed if options.silent was not set</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">this</span><span class="p">.</span><span class="nx">_changed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+			        
+			        <span class="k">this</span><span class="p">.</span><span class="nx">_trigger</span><span class="p">(</span><span class="s1">&#39;change:&#39;</span> <span class="o">+</span> <span class="nx">attr</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">);</span>
+			        <span class="k">this</span><span class="p">.</span><span class="nx">change</span><span class="p">();</span>
+			    <span class="p">}</span>
+			    
+			    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">clear</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="nx">options</span> <span class="o">||</span> <span class="p">(</span><span class="nx">options</span> <span class="o">=</span> <span class="p">{});</span>
+			    
+			    <span class="kd">var</span> <span class="nx">old</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">,</span>
+			        <span class="nx">validObj</span> <span class="o">=</span> <span class="p">{};</span>
+			    
+			    <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">old</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">){</span>
+			        <span class="nx">validObj</span><span class="p">[</span><span class="nx">attr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+			    <span class="p">});</span>
+			    		    
+			    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">validate</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_performValidation</span><span class="p">(</span><span class="nx">validObj</span><span class="p">,</span> <span class="nx">options</span><span class="p">))</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+			    <span class="p">}</span>
+			    
+			    <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span> <span class="o">=</span> <span class="p">{};</span>
+			    
+			    <span class="c1">// Fire change event if options.silent was not set </span>
+			    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">options</span><span class="p">.</span><span class="nx">silent</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">this</span><span class="p">.</span><span class="nx">_changed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+			        <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">old</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">){</span>
+			            <span class="k">this</span><span class="p">.</span><span class="nx">_trigger</span><span class="p">(</span><span class="s1">&#39;change:&#39;</span> <span class="o">+</span> <span class="nx">attr</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">);</span>
+			        <span class="p">});</span>
+			        
+			        <span class="k">this</span><span class="p">.</span><span class="nx">change</span><span class="p">();</span>
+			    <span class="p">}</span>
+			    
+			    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">fetch</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">save</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">destroy</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">parse</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">return</span> <span class="nx">resp</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">change</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			    <span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span> <span class="o">=</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">);</span>
+			    <span class="k">this</span><span class="p">.</span><span class="nx">_changed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">hasChanged</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="nx">attr</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">]</span> <span class="o">!=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">])</span> <span class="p">{</span>
+			            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+			        <span class="p">}</span>
+			        
+			        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_changed</span><span class="p">;</span>
+			    <span class="p">}</span>
+			<span class="p">},</span>
+			
+			<span class="nx">changedAttributes</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			    <span class="kd">var</span> <span class="nx">now</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attributes</span><span class="p">,</span>
+			    <span class="nx">old</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span><span class="p">,</span>
+			    <span class="nx">changed</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			    
+			    <span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">now</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">){</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">isEqual</span><span class="p">(</span><span class="nx">old</span><span class="p">[</span><span class="nx">attr</span><span class="p">],</span> <span class="nx">now</span><span class="p">[</span><span class="nx">attr</span><span class="p">]))</span> <span class="p">{</span>
+                        <span class="nx">changed</span> <span class="o">=</span> <span class="nx">changed</span> <span class="o">||</span> <span class="p">{};</span>
+                        <span class="nx">changed</span><span class="p">[</span><span class="nx">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nx">now</span><span class="p">[</span><span class="nx">attr</span><span class="p">];</span>
+                    <span class="p">}</span>
+			    <span class="p">});</span>
+			    
+			    <span class="k">return</span> <span class="nx">changed</span><span class="p">;</span>
+			<span class="p">},</span>
+			
+			<span class="nx">previous</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">attr</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">attr</span> <span class="o">||</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span><span class="p">)</span> <span class="p">{</span>
+			        <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+			    <span class="p">}</span>
+			    
+			    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span><span class="p">[</span><span class="nx">attr</span><span class="p">];</span>
+			<span class="p">},</span>
+			
+			<span class="nx">previousAttributes</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			    <span class="k">return</span> <span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_previousAttributes</span><span class="p">);</span>
+			<span class="p">};</span>
+			
+			<span class="k">return</span> <span class="p">{</span>
+			    <span class="nx">initialize</span><span class="o">:</span> <span class="nx">initialize</span><span class="p">,</span>
+			    <span class="nx">copyAttributes</span><span class="o">:</span> <span class="nx">copyAttributes</span><span class="p">,</span>
+			    <span class="nx">get</span><span class="o">:</span> <span class="nx">get</span><span class="p">,</span>
+			    <span class="nx">set</span><span class="o">:</span> <span class="nx">set</span><span class="p">,</span>
+			    <span class="nx">unset</span><span class="o">:</span> <span class="nx">unset</span><span class="p">,</span>
+			    <span class="nx">clear</span><span class="o">:</span> <span class="nx">clear</span><span class="p">,</span>
+			    <span class="nx">fetch</span><span class="o">:</span> <span class="nx">fetch</span><span class="p">,</span>
+			    <span class="nx">save</span><span class="o">:</span> <span class="nx">save</span><span class="p">,</span>
+			    <span class="nx">destroy</span><span class="o">:</span> <span class="nx">destroy</span><span class="p">,</span>
+			    <span class="nx">parse</span><span class="o">:</span> <span class="nx">parse</span><span class="p">,</span>
+			    <span class="nx">change</span><span class="o">:</span> <span class="nx">change</span><span class="p">,</span>
+			    <span class="nx">hasChanged</span><span class="o">:</span> <span class="nx">hasChanged</span><span class="p">,</span>
+			    <span class="nx">changedAttributes</span><span class="o">:</span> <span class="nx">changedAttributes</span><span class="p">,</span>
+			    <span class="nx">previous</span><span class="o">:</span> <span class="nx">previous</span><span class="p">,</span>
+			    <span class="nx">previousAttributes</span><span class="o">:</span> <span class="nx">previousAttributes</span>
+			<span class="p">};</span>
+					
+		<span class="p">})());</span>
+		
+		<span class="k">return</span> <span class="nx">Model</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">);</span>
+</pre></div>

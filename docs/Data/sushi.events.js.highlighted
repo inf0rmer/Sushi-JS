@@ -1,0 +1,21 @@
+<div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm"> * Sushi.Events - Event management functions</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+ <span class="nx">define</span><span class="p">(</span>
+ 	<span class="c1">// Module dependencies</span>
+ 	<span class="p">[</span><span class="s1">&#39;sushi.events.pubsub&#39;</span><span class="p">],</span>
+
+ 	<span class="cm">/**</span>
+<span class="cm"> 	 * Sushi Events</span>
+<span class="cm"> 	 *</span>
+<span class="cm"> 	 * @namespace Sushi</span>
+<span class="cm"> 	 * @class Events</span>
+<span class="cm"> 	 */</span>
+ 	<span class="kd">function</span><span class="p">(</span><span class="nx">pubsub</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">Sushi</span><span class="p">.</span><span class="nx">namespace</span><span class="p">(</span><span class="s1">&#39;events&#39;</span><span class="p">);</span>
+        
+ 		<span class="nx">Sushi</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Sushi</span><span class="p">.</span><span class="nx">events</span><span class="p">,</span> <span class="nx">pubsub</span><span class="p">);</span>
+ 	<span class="p">}</span>
+ <span class="p">);</span>
+</pre></div>

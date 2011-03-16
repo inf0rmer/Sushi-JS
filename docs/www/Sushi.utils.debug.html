@@ -1,0 +1,855 @@
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+  <title>
+    API: Sushi
+    
+      &rarr; Sushi.utils.Debug class
+    
+    
+  </title>
+
+  <link rel="stylesheet" type="text/css" href="css/960fluid.min.css">
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.8.4.custom.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="css/navigation.css">
+  <link rel="stylesheet" type="text/css" href="css/content.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Sans+Mono">
+  
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+</head>
+
+<body>
+  <div id="container" class="container_16">
+
+    <!-- HEADER -->
+    <header>
+      <div id="hd" class="grid_10">
+        <h1>
+          <a href="http://campus.ua.sapo.pt/" title="Sushi Javascript Library">Sushi Javascript Library</a> v0.0.5
+        </h1>
+      </div> <!--! end of #hd -->
+    </header>
+
+    <div id="filters" class="grid_6">
+      <form action="#" method="get" id="show-toggles">
+        <fieldset>
+          <legend>Display Filters</legend>
+          <span class="classopts">
+            <input type="checkbox" name="show_private" id="show_private">
+            <label for="show_private">Show private</label>
+          </span>
+          <span class="classopts">
+            <input type="checkbox" name="show_protected" id="show_protected">
+            <label for="show_protected">Show protected</label>
+          </span>
+          <span class="classopts">
+            <input type="checkbox" name="show_deprecated" id="show_deprecated">
+            <label for="show_deprecated">Show deprecated</label>
+          </span>
+        </fieldset>
+      </form>
+
+    </div> <!--! end of #hd -->
+
+
+    <!-- SUB-HEADER w/ BREADCRUMBS -->
+
+    <div id="sub-hd" class="grid_16">
+      <div id="breadcrumbs">
+        <form id="search-form" method="get" action="#">
+          <label for="search">Search:</label>
+          <input type="text" id="search" title="Find documentation">
+        </form>
+
+        <a href="./index.html" title="Sushi Javascript Library">Sushi Javascript Library</a>
+          &rarr; module <a href="./module_sushi.html" title="Sushi">Sushi</a>
+          
+            &rarr; class Sushi.utils.Debug
+          
+          
+      </div>
+    </div> <!--! end of #sub-hd -->
+    
+    <div class="clear"></div>
+    
+
+    <!-- SIDEBAR NAVIGATION -->
+    <nav>
+      <div id="navigation" class="grid_4">
+        <div>
+
+            <div id="moduleList" class="module">
+              <h4>Modules</h4>
+              <ul>
+                  <li  class="selected" >
+                    <a href="module_sushi.html">Sushi</a>
+                  </li>
+              </ul>
+            </div>
+
+            <div id="classList" class="module">
+              <h4>Classes</h4>
+              <ul>
+                  <li >
+                    <a href="Sushi.base.html">Sushi.base</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.campus.html">Sushi.campus</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.core.html">Sushi.core</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.events.html">Sushi.events</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.utils.html">Sushi.utils</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.utils.Collection.html">Sushi.utils.Collection</a>
+                  </li>
+                  <li  class="selected" >
+                    <a href="Sushi.utils.Debug.html">Sushi.utils.Debug</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.utils.HTML5.html">Sushi.utils.HTML5</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.utils.JSON.html">Sushi.utils.JSON</a>
+                  </li>
+                  <li >
+                    <a href="Sushi.utils.Lang.html">Sushi.utils.Lang</a>
+                  </li>
+              </ul>
+            </div>
+
+            <div id="fileList" class="module">
+              <h4>Files</h4>
+              <ul>
+                  <li >
+                    <a href="requireplugins-jquery-1.4.4.js.html">requireplugins-jquery-1.4.4.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.base.js.html">sushi.base.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.campus.js.html">sushi.campus.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.core.js.html">sushi.core.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.event.js.html">sushi.event.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.history.js.html">sushi.history.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.collection.js.html">sushi.utils.collection.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.debug.js.html">sushi.utils.debug.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.HTML5.js.html">sushi.utils.HTML5.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.js.html">sushi.utils.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.json.js.html">sushi.utils.json.js</a>
+                  </li>
+                  <li >
+                    <a href="sushi.utils.lang.js.html">sushi.utils.lang.js</a>
+                  </li>
+              </ul>
+            </div>
+
+
+            <div id="methodsList" class="module">
+              <h4>Methods</h4>
+              <ul>
+                  <li class=" ">
+                    <a href="#method__supports">_supports</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_dir">dir</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_error">error</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_garbageCollect">garbageCollect</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_log">log</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_logHistory">logHistory</a>
+                  </li>
+                  <li class=" ">
+                    <a href="#method_warn">warn</a>
+                  </li>
+              </ul>
+            </div>
+
+
+
+        </div>
+      </div>  <!-- end of #navigation -->
+    </nav>
+
+
+    <div id="content" class="grid_12">
+      
+
+      
+        <h2>
+          
+
+          
+
+          
+
+          class <strong>Sushi.utils.Debug</strong>
+          
+            <span class="extends">
+              <span class="class">class</span> extends <a href="Sushi.utils.html">Sushi.utils</a>
+            </span>
+        </h2>
+
+        <!-- class tree goes here -->
+
+
+
+        <div class="summary description">
+          Defines several safe debugging methods
+        </div>
+        
+
+
+
+        <div class="clear"></div>
+
+
+
+
+
+
+          <div class="section methods" resource="#methods">
+              <h3>Methods</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Methods
+                    </th>
+                    <th>
+                      Returns
+                    </th>
+                    <th>
+                      Description
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                    <tr class=" " resource="#method__supports">
+
+                      <td class="names">
+                        <code>
+                          <a name="method__supports">_supports</a>(
+                          
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Returns the debugging methods the environment supports
+
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_dir">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_dir">dir</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.dir()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_error">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_error">error</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.error()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_garbageCollect">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_garbageCollect">garbageCollect</a>(
+                          
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void, Boolean
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Forces IE to run its garbage Collector
+
+
+
+                          <p>Returns:</p>
+                          <ul>
+                            <li>
+                                <code>
+                                  &lt;void, Boolean&gt;
+                                </code>
+                              Returns false, if it's not possible to force the Garbage Collector, otherwise nothing is returned.
+                            </li>
+                          </ul>
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_log">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_log">log</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.log()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_logHistory">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_logHistory">logHistory</a>(
+                          
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Prints the whole cached debug history to the console
+
+
+
+                      </td>
+
+                    </tr>
+                    <tr class=" " resource="#method_warn">
+
+                      <td class="names">
+                        <code>
+                          <a name="method_warn">warn</a>(
+                          Values
+                          )
+                        </code>
+                      </td>
+
+                      <td class="returns">
+                        <code>
+                          void
+                        </code>
+
+                        
+                        
+                        
+                      </td>
+
+                      <td class="description">
+                        <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+
+                        Logs comma-separated arguments to the console using console.warn()
+
+                          <p>Parameters:</p>
+                          <ul>
+                              <li>
+                                <code>
+                                  Values
+                                  &lt;object&gt;
+                                </code>
+                                 to be logged
+                              </li>
+                          <ul>
+
+
+                      </td>
+
+                    </tr>
+
+                </tbody>
+              </table>
+
+
+              <div class="inherited-methods">
+                  <h4 resource="Sushi.utils.html">
+                    Methods inherited from
+                    <a href="Sushi.utils.html" title="Sushi.utils">Sushi.utils</a>
+                  </h4>
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>
+                          Methods
+                        </th>
+                        <th>
+                          Notes
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+
+                        <tr class="" resource="Sushi.utils.html#method_identity">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_identity" title="identity">identity</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isArguments">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isArguments" title="isArguments">isArguments</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isArray">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isArray" title="isArray">isArray</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isDate">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isDate" title="isDate">isDate</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isElement">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isElement" title="isElement">isElement</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isEmpty">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isEmpty" title="isEmpty">isEmpty</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isEqual">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isEqual" title="isEqual">isEqual</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isFunction">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isFunction" title="isFunction">isFunction</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isNaN">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isNaN" title="isNaN">isNaN</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isNull">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isNull" title="isNull">isNull</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isNumber">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isNumber" title="isNumber">isNumber</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isRegExp">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isRegExp" title="isRegExp">isRegExp</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isString">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isString" title="isString">isString</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_isUndefined">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_isUndefined" title="isUndefined">isUndefined</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_keys">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_keys" title="keys">keys</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_range">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_range" title="range">range</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                        <tr class="" resource="Sushi.utils.html#method_uniqueId">
+
+                          <td class="names">
+                            <code>
+                              <a class="" href="Sushi.utils.html#method_uniqueId" title="uniqueId">uniqueId</a>
+                            </code>
+                          </td>
+
+                          <td class="description">
+                            <a href="#top" class="top" title="Jump back to the top">↑</a>
+
+                          </td>
+
+                        </tr>
+
+                    </tbody>
+                  </table>
+
+              </div>
+
+          </div>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="clear"></div>
+
+    
+    <footer>
+      <div id="footer" class="grid_16">
+        <p>
+          Copyright &copy; 2011 Sapo Campus. All rights reserved.
+          &middot;
+          Docs generated using <a href="http://developer.yahoo.com/yui/yuidoc/">YUIDoc</a> sporting the <a href="http://github.com/carlo/yuidoc-theme-dana">Dana theme</a>.
+        </p>
+      </div> <!--! end of #footer -->
+    </footer>
+
+
+    <div class="clear"></div>
+
+  </div>
+
+  <!-- Javascript at the bottom for fast page loading -->
+  <script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
+  <script src="js/jquery-ui-1.8.4.custom.min.js" type="text/javascript"></script>
+  <script src="js/jquery.cookie.min.js" type="text/javascript"></script>
+  <script src="js/main.js" type="text/javascript"></script>
+  
+</body>
+</html>
