@@ -15,6 +15,7 @@ define(
 		/**
 		 * Returns the debugging methods the environment supports
 		 *
+		 * @private
 		 * @returns {Object} Supported debugging methods
 		 */
 		_supports = (function(){

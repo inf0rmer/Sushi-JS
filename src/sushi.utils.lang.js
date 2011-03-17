@@ -7,7 +7,6 @@ define(
 	 * @namespace Sushi.utils
 	 * @class Lang
 	 * @extends Sushi.utils
-	 * @requires Sushi.utils
 	 */
 	function() {
 		/**
@@ -40,8 +39,8 @@ define(
 		})();
 		
 				
-
-		Sushi.extend(Sushi.utils, {
+		Sushi.namespace('Sushi.utils.lang');
+		Sushi.extend(Sushi.utils.lang, {
 			replaceAccents: replaceAccents
 		});
 	}

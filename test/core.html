@@ -15,14 +15,19 @@
 		require.ready(function() {
 			module('Sushi.* namespace');
 			test('Sushi is global and accessible', function() {
-				ok(Sushi, 'window.Sushi is defined');
+				ok(Sushi, 'Sushi is defined');
+				ok(Sushi === $S, 'Sushi likes sugar');
 				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
+				ok(Sushi.utils, 'Sushi is usefull');
+				ok(Sushi.event, 'Sushi is eventfull');
+				ok(Sushi.campus, 'Sushi knows how to study! (which I don\'t)');
 			});
-			module('Sushi.extend');
+			module('Sushi.extend - ');
 			test('Sushi is extendable', function() {
-				ok(Sushi.extendable, 'Sushi.extendable is defined');
+				ok(!Sushi.extendable, 'Sushi.extendable is no longer defined');
+				ok(Sushi.noConflict('Ramen', '$R'), 'Sushi is now Ramen!');
+				ok(Sushi.extendable, 'Sushi.extendable is now defined again');
 			});
-			console.log(Sushi);
 		});
 	</script>
 </head>

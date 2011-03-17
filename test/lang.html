@@ -12,9 +12,11 @@
 			test('replaceAccents', function(){
 				var accentedString = 'áàãâéèêóòõô',
 					test = 'azáfama',
-					normalString = 'aaaaeeeoooo';
+					normalString = 'aaaaeeeoooo',
+					expectedTest = 'azafama';
 					
 				equals(Sushi.utils.lang.replaceAccents(accentedString), normalString);
+				equals(Sushi.utils.lang.replaceAccents(test), expectedTest);
 			});
 		});
 	</script>
