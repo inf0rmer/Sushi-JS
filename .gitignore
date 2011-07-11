@@ -15,3 +15,7 @@ docs/template
 ######################
 linter.sh
 lint_results.log
+
+# Docs folder #
+######################
+docs/*

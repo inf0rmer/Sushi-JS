@@ -4,12 +4,6 @@
 	<title>Sushi JS Core Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script src="qunit/qunit.js"></script>
-	<script>
-		//Own Sushi object to pass configurations into Sushi Core
-		var Sushi = {
-			'extendable': true
-		}
-	</script>
 	<script data-main="../src/sushi.base.js" src="../src/requireplugins-jquery-1.4.4.js"></script>
 	<script>
 		require.ready(function() {
@@ -17,11 +11,6 @@
 			test('Sushi is global and accessible', function() {
 				ok(Sushi, 'window.Sushi is defined');
 				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
-			});
-			
-			module('Sushi.extend');
-			test('Sushi is extendable', function() {
-				ok(Sushi.extendable, 'Sushi.extendable is defined');
 			});
 		});
 	</script>

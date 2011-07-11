@@ -9,6 +9,16 @@
 // Require library-wide dependencies, not in requirejs module format
 require([], function() {
 	// require Sushi modules in requirejs format
-	require(['sushi.core', 'sushi.utils', 'sushi.utils.collection', 'sushi.utils.debug', 'sushi.utils.json', 'sushi.utils.lang', 'sushi.event'], function(){
+	require([
+		'sushi.core', 
+		'sushi.utils', 
+		'sushi.utils.collection', 
+		'sushi.utils.debug', 
+		'sushi.utils.json', 
+		'sushi.utils.lang', 
+		'sushi.event',
+		'sushi.qwery'
+		], 
+		function(){
 	});
 });

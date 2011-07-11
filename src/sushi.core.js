@@ -13,10 +13,9 @@ define(
 	 * @class core
 	 */
     function() {
-    	var $s = Sushi = {
-    		VERSION: '0.0.5',
-    		_nativeExtend = Object.create,
-				
+    	var $ = Sushi = {
+    		VERSION: '0.1',
+
     		/**
     		 * A utility that non-destructively defines namespaces
     		 *
@@ -54,11 +53,7 @@ define(
     		 * @param {Object} source Object to copy properties from
     		 * @return {Object} Extended object
     		 */
-    		extend: function(destination, source) {
-    		    if (_nativeExtend) {
-    		        return Object.create({destination}, source);
-    		    }
-    		    
+    		extend: function(destination, source) {    		    
     		    for ( var property in source ) {
         			destination[property] = source[property];
         		}
@@ -66,13 +61,8 @@ define(
     		}
     	};
 	
-    	// If window.Sushi is defined, merge params
-    	if (window.Sushi) {
-    		Sushi.extend(Sushi, window.Sushi);
-    	}
-	
     	// Sync global Sushi variable to namespaced one
     	window.Sushi = Sushi;
-    	window.$S = Sushi;
+    	window.$ = Sushi;
     }
 );

@@ -1,3 +1,21 @@
 [submodule "requirejs"]
 	path = requirejs
 	url = git@github.com:inf0rmer/requirejs.git
+[submodule "qwery"]
+	path = qwery
+	url = git://github.com/ded/qwery.git
+[submodule "bonzo"]
+	path = bonzo
+	url = git://github.com/ded/bonzo.git
+[submodule "bean"]
+	path = bean
+	url = git://github.com/fat/bean.git
+[submodule "morpheus"]
+	path = morpheus
+	url = git://github.com/ded/morpheus.git
+[submodule "reqwest"]
+	path = reqwest
+	url = git://github.com/ded/reqwest.git
+[submodule "handlebars.js"]
+	path = handlebars.js
+	url = git://github.com/wycats/handlebars.js.git
