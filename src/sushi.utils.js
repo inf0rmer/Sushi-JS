@@ -15,8 +15,7 @@ define(
 	function() {
 		var _utilsNs = Sushi.namespace('utils'),
 		    _ArrayProto = Array.prototype,
-		    _nativeIsArray = _ArrayProto.isArray,
-		    _nativeKeys = Object.keys;
+		    _nativeIsArray = _ArrayProto.isArray;
 
 		// Generic utility methods
 		Sushi.extend(Sushi.utils, {
@@ -75,34 +74,7 @@ define(
                 }
                 
                 return range;
-            },
-            
-            /**
-		     * Retrieve the names of an object's properties.
-		     * Defaults to ECMAScript 5's native Object.keys. Lifted from Underscore JS.
-		     *
-		     * @method keys
-		     * @param obj Object to retrieve keys from
-		     *
-		     * @return Array containing the object's key names.
-		     */
-			keys: function(obj) {
-			    if (_nativeKeys) {
-			        return _nativeKeys(obj);
-			    }
-			    
-                if (this.isArray(obj)) {
-                    return this.range(0, obj.length);
-                }
-                
-                var keys = [];                
-                for (var key in obj) {
-                    if (hasOwnProperty.call(obj, key)) {
-                        keys[keys.length] = key;
-                    }
-                }                
-                return keys;
-            },
+            },            
 			
 			// Utility "is" methods. Lifted from Underscore.js
 			/**

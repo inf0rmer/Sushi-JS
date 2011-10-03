@@ -23,7 +23,7 @@
              * Publish data on a named topic
              * 
              * Example:
-             * Sushi.events.publish("/some/topic", ["a","b","c"]);
+             * Sushi.event.publish("/some/topic", ["a","b","c"]);
              *
              * @method publish
              * @param {String} topic The channel to publish on
@@ -33,7 +33,7 @@
              */
         	publish = function(topic, args){
         		_cache[topic] && Sushi.utils.each(_cache[topic], function(callback){
-        			callback.apply(Sushi.events, args || []);
+        			callback.call(Sushi.events, args || []);
         		});
         	},
 
@@ -41,7 +41,7 @@
              * Register a callback on a named topic
              *
              * Example:
-             * Sushi.events.subscribe("/some/topic", function(a, b, c){ //handle data});
+             * Sushi.event.subscribe("/some/topic", function(a, b, c){ //handle data});
              *
              * @method subscribe
              * @param {String}   topic     The channel to subscribe to
@@ -73,7 +73,7 @@
         		var t = handle[0];
         		_cache[t] && Sushi.utils.each(_cache[t], function(idx){
         			if(this == handle[1]){
-        				_cache[t].splice(idx, 1);
+        				_cache[t].slice(idx, 1);
         			}
         		});
         	};

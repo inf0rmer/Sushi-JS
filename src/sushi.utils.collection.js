@@ -8,6 +8,7 @@ define(
 	function() {
 	    var _collection = this,
 	    _ArrayProto = Array.prototype,
+		_nativeKeys = Object.keys,
 	    _nativeForEach = _ArrayProto.forEach,
 		_nativeFilter = _ArrayProto.filter,
 		_nativeReduce = _ArrayProto.reduce,
@@ -28,6 +29,33 @@ define(
 	     */
 	    values = function(obj) {
             return map(obj, Sushi.utils.identity);
+        },
+
+		/**
+	     * Retrieve the names of an object's properties.
+	     * Defaults to ECMAScript 5's native Object.keys. Lifted from Underscore JS.
+	     *
+	     * @method keys
+	     * @param obj Object to retrieve keys from
+	     *
+	     * @return Array containing the object's key names.
+	     */
+		keys = function(obj) {
+		    if (_nativeKeys) {
+		        return _nativeKeys(obj);
+		    }
+		    
+            if (this.isArray(obj)) {
+                return this.range(0, obj.length);
+            }
+            
+            var keys = [];                
+            for (var key in obj) {
+                if (hasOwnProperty.call(obj, key)) {
+                    keys[keys.length] = key;
+                }
+            }                
+            return keys;
         },
         
 		/**
@@ -84,19 +112,17 @@ define(
 		 * @method contains
 		 *
 		 * @param {Object} heystack Object or Array to search in.
-		 * @param needle Value to search heystack for
+		 * @param {String} needle 	Value to search heystack for
 		 *
 		 * @return {Boolean} True if needle is present.
 		 */        
         contains = function(heystack, needle) {
             var found = false;
-            
             if (heystack === null) { return found; }
             
-            if (_nativeIndexOf && heystack.indexOf === _nativeIndexOf) { 
+            if (_nativeIndexOf && heystack.indexOf === _nativeIndexOf) {
                 return heystack.indexOf(needle) != -1; 
             }
-            
             some(heystack, function(value) {
                 if (found = value === needle) { return true; }
             });
@@ -255,7 +281,6 @@ define(
 		 */
 		some = function(obj, iterator, context) {
 		    iterator = iterator || Sushi.utils.identity;
-            
             var result = false;
             
             if (obj === null) { return result; }
@@ -281,18 +306,32 @@ define(
 		// Cake Set::extract
 		extract = function() {
 		    //TODO: Add extract logic
+		},
+		
+		remove = function(array, value) {
+			if (!Sushi.utils.isArray(array)) return false;
+			
+			var from = array.indexOf(value),
+				to = from;
+			
+			var rest = array.slice((to || from) + 1 || array.length);
+			array.length = from < 0 ? array.length + from : from;
+			return array.push.apply(array, rest);
 		};
         
         Sushi.extend(Sushi.utils, {
             values: values,
+			keys: keys,
             toArray: toArray,
             each: each,
+			contains: contains,
 			reduce: reduce,
 			reduceRight: reduceRight,
 			map: map,
 			filter: filter,
 			some: some,
-			pluck: pluck
+			pluck: pluck,
+			removeFromArray: remove
         });
 	}
 );

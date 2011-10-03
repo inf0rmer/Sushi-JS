@@ -13,7 +13,7 @@ define(
 	 * @class core
 	 */
     function() {
-    	var $ = Sushi = {
+    	var Sushi = {
     		VERSION: '0.1',
 
     		/**
@@ -23,9 +23,11 @@ define(
     		 * @param {String} namespaceString Name of namespace to create
     		 * @return {Object} Namespaced object
     		 */
-    		namespace: function(namespaceString) {
+    		namespace: function(namespaceString, global) {
+				global = (!global) ? Sushi : global;
+				
     			var parts = namespaceString.split('.'),
-    				parent = Sushi,
+    				parent = global,
     				i;
 			
     			// Strip redundant leading global
@@ -45,8 +47,7 @@ define(
     		},
 		
     		/**
-    		 * Simple extending (shallow copying) utility. Delegates to 
-    		 * native Object.create() if available.
+    		 * Simple extending (shallow copying) utility.
     		 *
     		 * @method extend
     		 * @param {Object} destination Object to copy properties to
@@ -63,6 +64,5 @@ define(
 	
     	// Sync global Sushi variable to namespaced one
     	window.Sushi = Sushi;
-    	window.$ = Sushi;
     }
 );
