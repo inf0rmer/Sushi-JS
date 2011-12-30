@@ -23,12 +23,32 @@ define(
 			  return unescape( tmp = tmp.substring( 0, (i>=0) ? i : tmp.length ));
 		   }
 		   return("");
-		}
+		},
 		
-				
+		setQuerystringOption = function (replaceParam, newVal) {
+			var oldURL = window.location.href,
+				iStart,
+				iEnd,
+				sEnd,
+				sStart,
+				newURL;
+			
+			iStart = oldURL.indexOf(replaceParam  + '='),
+			iEnd = oldURL.substring(iStart + 1).indexOf('&'),
+			sEnd = oldURL.substring(iStart + iEnd + 1),
+			sStart = oldURL.substring(0, iStart),
+			newURL = sStart + replaceParam + '=' + newVal;
+			
+			if (iEnd > 0) {
+			    newURL += sEnd;
+			}
+			
+			return (oldURL.indexOf('?') == -1) ? oldURL + '?' + newURL : newURL;
+		}			
 
 		Sushi.extend(Sushi.utils, {
-			querystring: querystring
+			querystring: querystring,
+			setQuerystringOption: setQuerystringOption
 		});
 	}
 );
