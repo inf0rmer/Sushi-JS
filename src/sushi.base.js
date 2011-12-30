@@ -15,9 +15,9 @@ require([], function() {
 		'sushi.utils.collection', 
 		'sushi.utils.debug', 
 		'sushi.utils.json', 
-		'sushi.utils.lang', 
-		'sushi.event',
-		'sushi.qwery'
+		'sushi.utils.lang',
+		'sushi.mvc.model',
+		'sushi.event'
 		], 
 		function(){
 	});
