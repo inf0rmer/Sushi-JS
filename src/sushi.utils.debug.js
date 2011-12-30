@@ -101,7 +101,7 @@ define(
 		    log(_history);
 		};
 		
-		Sushi.extend(Sushi.utils, {
+		Sushi.extend(Sushi, {
 			log: log,
 			warn: warn,
 			error: error,
