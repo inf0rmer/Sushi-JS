@@ -2,7 +2,7 @@
  * Sushi.utils - General purpose utility functions for the Sushi JS framework
  *
  */
-define(
+define('sushi.utils',
 	// Module dependencies
 	['sushi.core'],
 	
