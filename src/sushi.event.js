@@ -2,7 +2,7 @@
  * Sushi.events - Event management functions
  *
  */
- define(
+ define('sushi.event',
  	// Module dependencies
  	['sushi.core', 'sushi.utils.collection'],
 
@@ -23,17 +23,16 @@
              * Publish data on a named topic
              * 
              * Example:
-             * Sushi.event.publish("/some/topic", ["a","b","c"]);
+             * Sushi.event.publish("/some/topic", "a","b","c");
              *
              * @method publish
              * @param {String} topic The channel to publish on
-             * @param {Array}  args  The data to publish. Each array item is converted into an ordered
-     		 *		                 arguments on the subscribed functions.
      		 *
              */
-        	publish = function(topic, args){
+        	publish = function(topic){
+        		args = Array.prototype.slice.call(arguments, 1);
         		_cache[topic] && Sushi.utils.each(_cache[topic], function(callback){
-        			callback.call(Sushi.events, args || []);
+        			callback.apply(Sushi.events, args || []);
         		});
         	},
 
