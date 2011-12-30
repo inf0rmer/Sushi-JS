@@ -317,7 +317,26 @@ define(
 			var rest = array.slice((to || from) + 1 || array.length);
 			array.length = from < 0 ? array.length + from : from;
 			return array.push.apply(array, rest);
-		};
+		},
+		
+		shuffle = function(obj) {
+		    var shuffled = [], rand;
+		    each(obj, function(value, index, list) {
+		      if (index == 0) {
+		        shuffled[0] = value;
+		      } else {
+		        rand = Math.floor(Math.random() * (index + 1));
+		        shuffled[index] = shuffled[rand];
+		        shuffled[rand] = value;
+		      }
+		    });
+		    return shuffled;  
+		},
+		
+		clone = function(obj) {
+    		if (!Sushi.utils.isObject(obj)) return obj;
+    		return Sushi.utils.isArray(obj) ? obj.slice() : Sushi.extend({}, obj);
+  		};
         
         Sushi.extend(Sushi.utils, {
             values: values,
@@ -331,7 +350,9 @@ define(
 			filter: filter,
 			some: some,
 			pluck: pluck,
-			removeFromArray: remove
+			removeFromArray: remove,
+			shuffle: shuffle,
+			clone: clone
         });
 	}
 );
