@@ -2,7 +2,7 @@
  * Sushi CoreData - smart data management lib
  *
  */
- define(
+ define('sushi.CoreDataObject',
  	// Module dependencies
  	[
 		'sushi.core',
@@ -174,7 +174,7 @@
      		 *
      		 * @returns The CoreData variable instance.
              */
-        	bind : function(updateFunc){
+        	bind : function(updateFunc, syncOnBind){
 				if (typeof updateFunc != 'function') return false;
 				
 				//this.boundTo.push(elementID);
@@ -183,7 +183,7 @@
 				Sushi.event.subscribe(this.event, updateFunc);
 				
 				// Run the updateFunc the first-time, so everything is synced on bindTo
-				updateFunc(this.get(true));
+				if (syncOnBind) updateFunc(this.get(true));
 				
 				return this;
         	},
