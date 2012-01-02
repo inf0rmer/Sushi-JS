@@ -3,6 +3,7 @@
  *
  * @module Sushi
  */
+/*global Sushi:true, define:true*/
 define(
     [],
     

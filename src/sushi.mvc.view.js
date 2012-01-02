@@ -4,7 +4,7 @@
  * @module Sushi.mvc
  */
 define(
-	['sushi.core', 'sushi.event', 'sushi.utils'],
+	['sushi.core', 'sushi.event', 'sushi.utils', 'sushi.qwery', 'sushi.bonzo', 'sushi.bean'],
 
 	function() {
 		/**
@@ -16,7 +16,15 @@ define(
 		 */
 		Sushi.namespace('View');
 		
-		var utils = Sushi.utils;
+		var utils = Sushi.utils,
+			$ = function(selector) {
+				return Sushi.bonzo(Sushi.qwery(selector));
+			},
+			bean = Sushi.bean,
+			selectorDelegate = function(selector) {
+    			return $(selector, this.el);
+  			},
+  			eventSplitter = /^(\S+)\s*(.*)$/;
 		
 		Sushi.Model = Sushi.Class({
 			constructor: function(options) {
@@ -26,6 +34,74 @@ define(
 				this.delegateEvents();
 				this.initialize.apply(this, arguments);
 			},
+			
+			$: selectorDelegate,
+			
+			tagName: 'div',
+			
+			initialize: function() {},
+			
+			render: function() {
+				return this;
+			},
+			
+			remove: function() {
+				$(this.el).remove();
+				return this;
+			},
+			
+			delegateEvents: function(events) {
+			  	if (!(events || (events = this.events))) return;
+			  	if (utils.isFunction(events)) events = events.call(this);
+			  	
+			  	bean.remove(this.el, '.delegateEvents' + this.cid);
+			  	
+			  	for (var key in events) {
+					var method = this[events[key]];
+					if (!method) throw new Error('Event "' + events[key] + '" does not exist');
+					
+					var match = key.match(eventSplitter);
+					var eventName = match[1], selector = match[2];
+					
+					method = Sushi.utils.bind(method, this);
+					eventName += '.delegateEvents' + this.cid;
+					
+					if (selector === '') {
+				  		bean.add(this.el, eventName, method);
+					} else {
+						bean.add(this.el, selector, eventName, method, Sushi.qwery);
+					}
+			  }
+			},
+			
+			make : function(tagName, attributes, content) {
+			  	var el = document.createElement(tagName);
+			  	if (attributes) $(el).attr(attributes);
+			  	if (content) $(el).html(content);
+			  	return el;
+			},
+			
+			_configure: function(options) {
+			  	if (this.options) options = Sushi.extend({}, this.options, options);
+			  	
+			  	for (var i = 0, l = viewOptions.length; i < l; i++) {
+					var attr = viewOptions[i];
+					if (options[attr]) this[attr] = options[attr];
+			  	}
+			  	
+			  	this.options = options;
+			},
+			
+			_ensureElement: function() {
+			  	if (!this.el) {
+					var attrs = this.attributes || {};
+					if (this.id) attrs.id = this.id;
+					if (this.className) attrs['class'] = this.className;
+					this.el = this.make(this.tagName, attrs);
+			  	} else if (utils.isString(this.el)) {
+					this.el = $(this.el).get(0);
+			  	}
+			}
 		});	
 	}
 );

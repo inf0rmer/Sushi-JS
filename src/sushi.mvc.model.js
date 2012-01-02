@@ -27,6 +27,7 @@ define(
 				  	
 				  	attributes = Sushi.extend({}, defaults, attributes);
 				}
+				
 				this.attributes = {};
 				this._escapedAttributes = {};
 				this.cid = utils.uniqueId('c');
@@ -133,13 +134,13 @@ define(
       			for (var attr in attrs) {
 					val = attrs[attr];
 					
-					if (!_.isEqual(now[attr], val)) {
+					if (!utils.isEqual(now[attr], val)) {
 				  		now[attr] = val;
 				  		delete escaped[attr];
 				  		this._changed = true;
 				  		
 				  		//TODO: actual event code
-				  		if (!options.silent) this.trigger('change:' + attr, this, val, options);
+				  		//if (!options.silent) this.trigger('change:' + attr, this, val, options);
 					}
 			  	}
 			  	
@@ -178,7 +179,7 @@ define(
 				this._changed = true;
 				if (!options.silent) {
 					//TODO: actual event code
-					this.trigger('change:' + attr, this, void 0, options);
+					//this.trigger('change:' + attr, this, void 0, options);
 					this.change(options);
 				}
 				
@@ -211,7 +212,7 @@ define(
 				if (!options.silent) {
 					for (attr in old) {
 						//TODO: actual event code
-					  	this.trigger('change:' + attr, this, void 0, options);
+					  	//this.trigger('change:' + attr, this, void 0, options);
 					}
 					this.change(options);
 				}
@@ -239,11 +240,14 @@ define(
 			 */
 			destroy: function() {
 				options || (options = {});
-		  		if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
+		  		//TODO: Actual event code
+		  		//if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
+		  		
 		  		var model = this;
 		  		var success = options.success;
 		  		
-		  		model.trigger('destroy', model, model.collection, options);
+		  		//TODO: Actual event code
+		  		//model.trigger('destroy', model, model.collection, options);
 		  		
 		  		//TODO: Server sync
 		  		/*
@@ -304,8 +308,8 @@ define(
 			 */
 			change: function() {
 				//TODO: Actual event code
-				this.trigger('change', this, options);
-      			this._previousAttributes = _.clone(this.attributes);
+				//this.trigger('change', this, options);
+      			this._previousAttributes = utils.clone(this.attributes);
       			this._changed = false;
 			},
 			
@@ -383,7 +387,7 @@ define(
 					  	options.error(this, error, options);
 					} else {
 						//TODO: actual event code
-					  	this.trigger('error', this, error, options);
+					  	//this.trigger('error', this, error, options);
 					}
 					
 					return false;

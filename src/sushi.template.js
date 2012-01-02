@@ -4,7 +4,7 @@
  * @module Sushi
  */
 define(
-	['sushi.core', 'plugins/handlebars'],
+	['sushi.core', 'vendors/handlebars'],
 
 	function() {
 		/**

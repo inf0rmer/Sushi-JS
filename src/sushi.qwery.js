@@ -1,12 +1,11 @@
 /*
- * Sushi.qwery - CSS-style querying
+ * Sushi.qwery - CSS3 querySelectorAll utility
  *
  */
  define(
  	// Module dependencies
  	[
-        'sushi.core',
-        '../plugins/qwery.min'
+ 		'vendors/qwery'
     ],
 
  	/**
@@ -15,11 +14,8 @@
  	 * @namespace Sushi
  	 * @class qwery
  	 */
- 	function() {
-        Sushi.namespace('qwery');
-        
- 		Sushi.extend(Sushi.qwery, (function() {
-        	Sushi.q = window.qwery;
-        })());
+ 	function(qwery) {
+ 		Sushi.namespace('qwery');
+ 		Sushi.qwery = qwery;
  	}
  );

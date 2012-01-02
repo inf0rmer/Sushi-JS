@@ -58,6 +58,21 @@ define(
             return keys;
         },
         
+        /**
+		 * Bind all of an object's methods to that object. Useful for ensuring that all callbacks defined on an object belong to it.
+		 *
+		 * @method bindAll
+		 * @param {Object} obj
+		 *
+		 * @return {Object}
+		 */
+		bindAll = function(obj) {
+			var funcs = _ArrayProto.slice.call(arguments, 1);
+			if (funcs.length == 0) funcs = Sushi.utils.functions(obj);
+			Sushi.utils.each(funcs, function(f) { obj[f] = Sushi.utils.bind(obj[f], obj); });
+			return obj;
+		},
+		   
 		/**
 		 * Safely convert anything iterable into a real, live array.
 		 *
@@ -105,6 +120,22 @@ define(
                 }
             }
         },
+        
+        /**
+		 * Return a sorted list of the function names available on the object. 
+		 *
+		 * @method functions
+		 * @param {Object} obj
+		 *
+		 * @return {Array} Sorted function name list
+		 */
+		functions = function(obj) {
+			var names = [];
+			for (var key in obj) {
+				if (Sushi.utils.isFunction(obj[key])) names.push(key);
+			}
+			return names.sort();
+		}, 
         
         /**
 		 * Determine if a given value is included in the array or object using ===.
@@ -341,8 +372,10 @@ define(
         Sushi.extend(Sushi.utils, {
             values: values,
 			keys: keys,
+			bindAll: bindAll,
             toArray: toArray,
             each: each,
+            functions: functions,
 			contains: contains,
 			reduce: reduce,
 			reduceRight: reduceRight,

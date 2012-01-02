@@ -15,7 +15,10 @@ define('sushi.utils',
 	function() {
 		var _utilsNs = Sushi.namespace('utils'),
 		    _ArrayProto = Array.prototype,
-		    _nativeIsArray = _ArrayProto.isArray;
+		    _FuncProto = Function.prototype,
+		    _nativeIsArray = _ArrayProto.isArray,
+		    _nativeBind = _FuncProto.bind,
+		    ctor = function(){};
 
 		// Generic utility methods
 		Sushi.extend(Sushi.utils, {
@@ -43,6 +46,33 @@ define('sushi.utils',
 		     */
 			identity: function(value) {
 				return value;
+			},
+			
+			// Function methods
+			/**
+			 * Create a function bound to a given object (assigning this, and arguments, optionally).
+			 * Delegates to ECMAScript 5's native Function.bind if available.
+			 *
+			 * @method bind
+			 * @param {Function} func Function to be bound
+			 * @param {Object} context The value of "this" inside the function
+			 *
+			 * @return {Function} Bound function
+			 */ 
+			bind: function bind(func, context) {
+				var bound, args;
+				if (func.bind === _nativeBind && _nativeBind) return _nativeBind.apply(func, _ArrayProto.slice.call(arguments, 1));
+				if (!Sushi.utils.isFunction(func)) throw new TypeError;
+				args = _ArrayProto.slice.call(arguments, 2);
+				
+				return bound = function() {
+				  	if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));
+				  	ctor.prototype = func.prototype;
+				  	var self = new ctor;
+				  	var result = func.apply(self, args.concat(slice.call(arguments)));
+				  	if (Object(result) === result) return result;
+				  	return self;
+				};
 			},
 			
 			// Utility object methods
@@ -74,7 +104,7 @@ define('sushi.utils',
                 }
                 
                 return range;
-            },            
+            },   
 			
 			// Utility "is" methods. Lifted from Underscore.js
 			/**
@@ -283,7 +313,19 @@ define('sushi.utils',
 			 */
 			isUndefined: function(obj) {
 				return (obj === undefined);
-			}
+			},
+			
+			/**
+			 * Checks if parameter is an object
+			 *
+			 * @method isObject
+			 * @param {mixed} obj Object to test
+			 *
+			 * @return {Boolean}
+			 */
+			isObject: function(obj) {
+				return obj === Object(obj);
+		  	}
 		});
 	}
 );

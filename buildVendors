@@ -1,0 +1,6 @@
+#!/bin/bash
+node r.js -convert bean/ src/vendors/
+node r.js -convert qwery/ src/vendors/
+node r.js -convert bonzo/ src/vendors/
+node r.js -convert morpheus/ src/vendors/
+node r.js -convert reqwest/ src/vendors/
