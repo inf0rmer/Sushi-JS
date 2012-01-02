@@ -5,16 +5,16 @@
 	<title>Sushi JS Lang Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script src="qunit/qunit.js"></script>
-	<script data-main="../src/sushi.base.js" src="../src/requireplugins-jquery-1.4.4.js"></script>
+	<script data-main="../src/sushi.base" src="../src/vendors/require.js"></script>
 	<script>
-		require.ready(function() {
+		require(['vendors/domReady!'], function(doc) {	
 			module('Sushi.utils.lang replaceAccents');
 			test('replaceAccents', function(){
 				var accentedString = 'áàãâéèêóòõô',
 					test = 'azáfama',
 					normalString = 'aaaaeeeoooo';
 					
-				equals(Sushi.utils.lang.replaceAccents(accentedString), normalString);
+				equals(Sushi.utils.replaceAccents(accentedString), normalString);
 			});
 		});
 	</script>

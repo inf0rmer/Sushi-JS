@@ -4,9 +4,9 @@
 	<title>Sushi JS Events Test Suite</title>
 	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
 	<script src="qunit/qunit.js"></script>
-	<script data-main="../src/sushi.base.js" src="../src/requireplugins-jquery-1.4.4.js"></script>
+	<script data-main="../src/sushi.base" src="../src/vendors/require.js"></script>
 	<script>
-		require.ready(function() {
+
 			module('Sushi.event namespace');
 			test('Sushi.event', function() {
 				ok(Sushi.event, 'Sushi.event is defined');
@@ -24,7 +24,7 @@
 			
 			Sushi.event.publish('some/topic', 'one', 'two', 'three');
 			
-		});
+
 	</script>
 </head>
 <body>
