@@ -47,7 +47,7 @@ define(
 					if (!element.duration) return false;
 					
 					var loaded = parseInt(((element.buffered.end(0) / element.duration) * 100), 10);
-					if (loaded >= 100) Sushi.event.publish('audio/loaded', id);
+					if (loaded >= 100) Sushi.pubsub.publish('audio/loaded', id);
 				});
 			}
 		},

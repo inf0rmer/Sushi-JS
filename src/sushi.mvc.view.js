@@ -24,10 +24,11 @@ define(
 			selectorDelegate = function(selector) {
     			return $(selector, this.el);
   			},
-  			eventSplitter = /^(\S+)\s*(.*)$/;
+  			eventSplitter = /^(\S+)\s*(.*)$/,
+  			viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName'];
 		
-		Sushi.Model = Sushi.Class({
-			constructor: function(options) {
+		Sushi.View = Sushi.Class({
+			constructor: function(options) {				
 				this.cid = utils.uniqueId('view');
 				this._configure(options || {});
 				this._ensureElement();
@@ -102,6 +103,8 @@ define(
 					this.el = $(this.el).get(0);
 			  	}
 			}
-		});	
+		});
+		
+		Sushi.extendClass(Sushi.View, Sushi.Events);
 	}
 );

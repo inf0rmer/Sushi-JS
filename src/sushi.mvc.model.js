@@ -16,16 +16,19 @@ define(
 		 */
 		Sushi.namespace('Model');
 		
-		var utils = Sushi.utils;
+		var utils = Sushi.utils,
+		escapeHTML = function(string) {
+			return string.replace(/&(?!\w+;|#\d+;|#x[\da-f]+;)/gi, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
+		};
 		
 		Sushi.Model = Sushi.Class({
-			constructor: function(attributes, options) {
+			constructor: function(attributes, options) {				
 				var defaults;
 				attributes || (attributes = {});
 				if (defaults = this.defaults) {
 					if (utils.isFunction(defaults)) defaults = defaults.call(this);
 				  	
-				  	attributes = Sushi.extend({}, defaults, attributes);
+				  	attributes = Sushi.extend(defaults, attributes, true);
 				}
 				
 				this.attributes = {};
@@ -140,7 +143,7 @@ define(
 				  		this._changed = true;
 				  		
 				  		//TODO: actual event code
-				  		//if (!options.silent) this.trigger('change:' + attr, this, val, options);
+				  		if (!options.silent) this.trigger('change:' + attr, this, val, options);
 					}
 			  	}
 			  	
@@ -179,7 +182,7 @@ define(
 				this._changed = true;
 				if (!options.silent) {
 					//TODO: actual event code
-					//this.trigger('change:' + attr, this, void 0, options);
+					this.trigger('change:' + attr, this, void 0, options);
 					this.change(options);
 				}
 				
@@ -212,7 +215,7 @@ define(
 				if (!options.silent) {
 					for (attr in old) {
 						//TODO: actual event code
-					  	//this.trigger('change:' + attr, this, void 0, options);
+					  	this.trigger('change:' + attr, this, void 0, options);
 					}
 					this.change(options);
 				}
@@ -241,13 +244,13 @@ define(
 			destroy: function() {
 				options || (options = {});
 		  		//TODO: Actual event code
-		  		//if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
+		  		if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
 		  		
 		  		var model = this;
 		  		var success = options.success;
 		  		
 		  		//TODO: Actual event code
-		  		//model.trigger('destroy', model, model.collection, options);
+		  		model.trigger('destroy', model, model.collection, options);
 		  		
 		  		//TODO: Server sync
 		  		/*
@@ -306,9 +309,9 @@ define(
 			 * @method change
 			 *
 			 */
-			change: function() {
+			change: function(options) {
 				//TODO: Actual event code
-				//this.trigger('change', this, options);
+				this.trigger('change', this, options);
       			this._previousAttributes = utils.clone(this.attributes);
       			this._changed = false;
 			},
@@ -387,7 +390,7 @@ define(
 					  	options.error(this, error, options);
 					} else {
 						//TODO: actual event code
-					  	//this.trigger('error', this, error, options);
+					  	this.trigger('error', this, error, options);
 					}
 					
 					return false;
@@ -396,5 +399,7 @@ define(
 				return true;
 			}
 		});
+		
+		Sushi.extendClass(Sushi.Model, Sushi.Events);
 	}
 );
