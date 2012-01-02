@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS MVC Test Suite</title>
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<script src="qunit/qunit.js"></script>
+	<script data-main="../src/sushi.base.js" src="../src/vendors/require.js"></script>
+	<script>
+		require(['vendors/domReady!'], function(doc) {
+			module('Models');
+			test('Sushi.Model', function() {
+				ok(Sushi.Model, 'Sushi.Model is defined');
+			});
+			
+			var MyModel = new Sushi.Class(Sushi.Model, {
+				constructor: function(attributes, options) {
+					MyModel.Super.call(this, attributes, options);
+				},
+				
+				defaults: function() {
+					return {
+						content	: 'Custom content'
+					}
+				}
+			});
+			
+			test('Model get()', function() {
+				var model = new MyModel();
+				equals(model.get('content'), 'Custom content', 'Model.get() works');
+			});
+			
+			test('Model.escape()', function() {
+				var model = new MyModel({content: '<li>A list item</li>'});
+				equals(model.escape('content'), '&lt;li&gt;A list item&lt;&#x2F;li&gt;', 'Model.escape() works');
+			});
+			
+			test('Model.set()', function() {
+				var model = new MyModel();
+				model.set({content: 'New Content'});
+				equals(model.get('content'), 'New Content', 'Model.set() works');
+			});
+			
+			test('Model.has()', function() {
+				var model = new MyModel();
+				ok(model.has('content'), 'Model.has works');
+			});
+			
+			test('Model.unset()', function() {
+				var model = new MyModel();
+				model.unset('content');
+				
+				ok(!model.has('content'), 'Model.unset() works');
+			});
+			
+			test('Model.clear()', function() {
+				var model = new MyModel({a: 1, b: 2, c: 3});
+				model.clear();
+				deepEqual(model.attributes, {}, 'Model.clear() works');
+			});
+			
+			test('Model.toJSON()', function() {
+				var model = new MyModel();
+				deepEqual(model.attributes, model.toJSON(), 'Model.toJSON works');
+			});
+			
+			test('Model.clone()', function() {
+				var model = new MyModel({content: 'unique'}),
+					cloned = model.clone();
+				deepEqual(cloned.get('content'), model.get('content'), 'Model.clone() works');
+			});
+						
+			module('Views');
+			test('Sushi.View', function() {
+				ok(Sushi.View, 'Sushi.View is defined');
+			});
+			
+			var $ = function(selector) {
+				return Sushi.bonzo(Sushi.qwery(selector));
+			}
+			
+			// Set up code
+			var MyView = new Sushi.Class(Sushi.View, {
+				constructor: function(options) {
+					MyView.Super.call(this, options);
+				},
+				
+				tagName: 'article',
+				className: 'testview'
+			});
+			
+			var view = new MyView({model: 'model'});
+				
+			test('Create view', function() {
+				equals(view.model, 'model', 'View was created as Sushi.View subclass');
+			});
+			
+			test('Render view', function() {				
+				$('body').append(view.render().el);
+				var el = $('body .testview');
+				
+				ok(el.length, 'View was rendered');
+				el.remove();
+			});
+			
+			test('Render with template', function() {
+				var MyView = new Sushi.Class(Sushi.View, {
+					constructor: function(options) {
+						MyView.Super.call(this, options);
+					},
+					
+					tagName: 'article',
+					className: 'testview',
+					
+					template: Sushi.template.compile('Hello, this is {{text}}.'),
+					
+					render: function() {
+						$(this.el).html(this.template({text: 'Dog'}));
+						return this;
+					}
+				});
+				
+				var view = new MyView();
+				$('body').append(view.render().el);
+				var el = $('body .testview');
+				
+				ok(el.length, 'View was rendered');
+				equals(el.text(), 'Hello, this is Dog.', 'Render action was overriden and text was correctly set from template');
+				
+				el.remove();
+			});
+			
+			test('Render with events', function() {
+				var MyView = new Sushi.Class(Sushi.View, {
+					constructor: function(options) {
+						MyView.Super.call(this, options);
+					},
+					
+					tagName: 'article',
+					className: 'testview',
+					
+					events: {
+						'click .clickMe': 'respond'
+					},
+					
+					template: Sushi.template.compile('Hello, this is {{text}}. <button class="clickMe">Respond?</button>'),
+					
+					render: function() {
+						$(this.el).html(this.template({text: 'Dog'}));
+						return this;
+					},
+					
+					respond: function(e) {
+						equals(e.type, 'click', 'Click event was attached correctly');
+						el.remove();
+					}
+				});
+				
+				var view = new MyView();
+				$('body').append(view.render().el);
+				var el = $('body .testview');
+				Sushi.bean.fire($('body .testview .clickMe').get(0), 'click');
+				el.remove();
+			});
+			
+			test('Bind view to model', function() {
+				var model = new MyModel({content: 'Cat'}),
+					MyView = new Sushi.Class(Sushi.View, {
+						constructor: function(options) {
+							MyView.Super.call(this, options);
+							this._configure(options || {});
+						},
+						
+						tagName: 'article',
+						className: 'testview',
+						
+						template: Sushi.template.compile('Hello, this is {{content}}.'),
+						
+						initialize: function() {
+							this.model.bind('change', this.render, this);
+						},
+						
+						render: function() {
+							$(this.el).html(this.template(this.model.toJSON()));
+							return this;
+						}
+					}),
+					view = new MyView({model: model});
+					
+				$('body').append(view.render().el);
+				
+				equals($('body .testview').html(), 'Hello, this is Cat.', 'Rendered with original model content');
+				
+				model.set({content: 'Dog'});
+				
+				equals($('body .testview').html(), 'Hello, this is Dog.', 'View element was updated after model changed');
+				
+				model.set({content: 'Turtle'}, {silent: true});
+				
+				equals($('body .testview').html(), 'Hello, this is Dog.', 'View element was not updated after model changed with silent option');
+				
+				//Cleanup
+				$('body .testview').remove();
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi JS MVC Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>

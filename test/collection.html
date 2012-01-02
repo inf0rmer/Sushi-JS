@@ -7,7 +7,7 @@
 	<script data-main="../src/sushi.base.js" src="../src/vendors/require.js"></script>
 	<script>
 		
-		require.ready(function() {
+		require(['vendors/domReady!'], function(doc) {
 			module('Sushi.utils namespace');
 			test('Sushi.utils', function() {
 				ok(Sushi.utils, 'Sushi.utils is defined');

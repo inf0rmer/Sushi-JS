@@ -6,25 +6,24 @@
 	<script src="qunit/qunit.js"></script>
 	<script data-main="../src/sushi.base" src="../src/vendors/require.js"></script>
 	<script>
-
-			module('Sushi.event namespace');
-			test('Sushi.event', function() {
-				ok(Sushi.event, 'Sushi.event is defined');
+		require(['vendors/domReady!'], function(doc) {
+			module('Sushi.pubsub namespace');
+			test('Sushi.pubsub', function() {
+				ok(Sushi.pubsub, 'Sushi.pubsub is defined');
 			});
 			
 			
 			module('Sushi.pubsub');
-			Sushi.event.subscribe('some/topic', function( arg0, arg1, arg2 ) {
-				test('Sushi.event.subscribe', function() {
+			Sushi.pubsub.subscribe('some/topic', function( arg0, arg1, arg2 ) {
+				test('Sushi.pubsub.subscribe', function() {
 					equals(args[0], arg0);
 					equals(args[1], arg1);
 					equals(args[2], arg2);
 				});
 			});
 			
-			Sushi.event.publish('some/topic', 'one', 'two', 'three');
-			
-
+			Sushi.pubsub.publish('some/topic', 'one', 'two', 'three');
+		});
 	</script>
 </head>
 <body>
