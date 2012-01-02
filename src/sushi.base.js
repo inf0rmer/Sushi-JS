@@ -16,6 +16,7 @@ require([
 	'sushi.utils.lang',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
+	'sushi.template',
 	'sushi.qwery',
 	'sushi.bonzo',
 	'sushi.event'
