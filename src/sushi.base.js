@@ -18,6 +18,7 @@ require([
 	'sushi.mvc.view',
 	'sushi.template',
 	'sushi.$',
+	'sushi.mvc.router',
 	'sushi.event'
 	], 
 	function(){

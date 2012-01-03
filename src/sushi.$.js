@@ -21,16 +21,25 @@ define(
     function(qwery, bonzo, bean) {
     	Sushi.namespace('$');
     	
+    	bonzo.setQueryEngine(qwery);
+    	
     	Sushi.$ = function(selector, context) {
-    		var element = bonzo(
-    			qwery(selector, context)
-    		),
-    		_slice = Array.prototype.slice,
-    		_bind = function(fn) {
+    		var q = qwery(selector, context),
+    		element;
+    		if (q.length) {
+    			element = bonzo(q);
+    		} else {		
+	    		element = bonzo.create(selector);
+	    	}
+    		
+    		var _slice = Array.prototype.slice,
+    		_bind = function(fn, context) {
     			return function() {
     				var args = _slice.call(arguments, 0);
-    				args.unshift(element.get(0));
-					fn.apply(this, args);
+    				args.unshift(bonzo(context).get(0));
+					fn.apply(context, args);
+					
+					return bonzo(context);
 				}
     		},
     		methods = {
@@ -59,10 +68,13 @@ define(
 			};
 			
 			for (var method in methods) {
-				methods[method] = _bind(methods[method]);
+				methods[method] = _bind(methods[method], element);
 			}
     		
-    		return Sushi.extend(element, methods);
-    	}
+    		return Sushi.extend(bonzo(element), methods);
+    	};
+    	
+    	//Sugar
+    	if (!window.$) window.$ = Sushi.$;
     } 
 );

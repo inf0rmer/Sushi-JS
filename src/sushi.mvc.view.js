@@ -69,7 +69,13 @@ define(
 					} else {
 						$(this.el).delegate(selector, eventName, method, Sushi.$);
 					}
-			  }
+			  	}
+			},
+			
+			dealloc: function() {
+				if (!this.el) return false;
+				$(this.el).unbind('.delegateEvents' + this.cid);
+				$(this.el).remove();
 			},
 			
 			make : function(tagName, attributes, content) {

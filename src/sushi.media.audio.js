@@ -4,7 +4,7 @@
  * @module Sushi
  */
 define(
-	['sushi.core', 'sushi.utils', 'sushi.event', 'sushi.utils.collection', 'sushi.template', 'lib/jquery', 'sushi.utils.debug'],
+	['sushi.core', 'sushi.utils', 'sushi.event', 'sushi.utils.collection', 'sushi.template', 'sushi.$', 'sushi.utils.debug'],
 
 	/**
 	 * Sushi HTML5 Audio Manager
