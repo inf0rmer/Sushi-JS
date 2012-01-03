@@ -7,6 +7,8 @@
 	<script data-main="../src/sushi.base.js" src="../src/vendors/require.js"></script>
 	<script>
 		require(['vendors/domReady!'], function(doc) {
+			var $ = Sushi.$;
+			
 			module('Models');
 			test('Sushi.Model', function() {
 				ok(Sushi.Model, 'Sushi.Model is defined');
@@ -73,10 +75,6 @@
 			test('Sushi.View', function() {
 				ok(Sushi.View, 'Sushi.View is defined');
 			});
-			
-			var $ = function(selector) {
-				return Sushi.bonzo(Sushi.qwery(selector));
-			}
 			
 			// Set up code
 			var MyView = new Sushi.Class(Sushi.View, {
@@ -158,7 +156,7 @@
 				var view = new MyView();
 				$('body').append(view.render().el);
 				var el = $('body .testview');
-				Sushi.bean.fire($('body .testview .clickMe').get(0), 'click');
+				$('body .testview .clickMe').trigger('click');
 				el.remove();
 			});
 			

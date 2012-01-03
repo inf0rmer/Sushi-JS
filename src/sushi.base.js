@@ -17,8 +17,7 @@ require([
 	'sushi.mvc.model',
 	'sushi.mvc.view',
 	'sushi.template',
-	'sushi.qwery',
-	'sushi.bonzo',
+	'sushi.$',
 	'sushi.event'
 	], 
 	function(){

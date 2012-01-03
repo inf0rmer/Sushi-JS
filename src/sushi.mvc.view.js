@@ -4,7 +4,7 @@
  * @module Sushi.mvc
  */
 define(
-	['sushi.core', 'sushi.event', 'sushi.utils', 'sushi.qwery', 'sushi.bonzo', 'sushi.bean'],
+	['sushi.core', 'sushi.event', 'sushi.utils', 'sushi.$'],
 
 	function() {
 		/**
@@ -17,10 +17,7 @@ define(
 		Sushi.namespace('View');
 		
 		var utils = Sushi.utils,
-			$ = function(selector) {
-				return Sushi.bonzo(Sushi.qwery(selector));
-			},
-			bean = Sushi.bean,
+			$ = Sushi.$,
 			selectorDelegate = function(selector) {
     			return $(selector, this.el);
   			},
@@ -55,7 +52,7 @@ define(
 			  	if (!(events || (events = this.events))) return;
 			  	if (utils.isFunction(events)) events = events.call(this);
 			  	
-			  	bean.remove(this.el, '.delegateEvents' + this.cid);
+			  	$(this.el).unbind('.delegateEvents' + this.cid);
 			  	
 			  	for (var key in events) {
 					var method = this[events[key]];
@@ -68,9 +65,9 @@ define(
 					eventName += '.delegateEvents' + this.cid;
 					
 					if (selector === '') {
-				  		bean.add(this.el, eventName, method);
+				  		$(this.el).delegate(eventName, method);
 					} else {
-						bean.add(this.el, selector, eventName, method, Sushi.qwery);
+						$(this.el).delegate(selector, eventName, method, Sushi.$);
 					}
 			  }
 			},
