@@ -66,7 +66,7 @@ define('sushi.utils',
 				args = _ArrayProto.slice.call(arguments, 2);
 				
 				return bound = function() {
-				  	if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));
+				  	if (!(this instanceof bound)) return func.apply(context, args.concat(_ArrayProto.slice.call(arguments)));
 				  	ctor.prototype = func.prototype;
 				  	var self = new ctor;
 				  	var result = func.apply(self, args.concat(slice.call(arguments)));

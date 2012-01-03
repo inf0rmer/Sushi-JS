@@ -382,6 +382,7 @@ define(
 			map: map,
 			filter: filter,
 			some: some,
+			any: some,
 			pluck: pluck,
 			removeFromArray: remove,
 			shuffle: shuffle,
