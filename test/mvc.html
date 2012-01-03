@@ -97,7 +97,9 @@
 				var el = $('body .testview');
 				
 				ok(el.length, 'View was rendered');
-				el.remove();
+				
+				//Cleanup
+				view.dealloc();
 			});
 			
 			test('Render with template', function() {
@@ -124,7 +126,8 @@
 				ok(el.length, 'View was rendered');
 				equals(el.text(), 'Hello, this is Dog.', 'Render action was overriden and text was correctly set from template');
 				
-				el.remove();
+				//Cleanup
+				view.dealloc();
 			});
 			
 			test('Render with events', function() {
@@ -157,7 +160,9 @@
 				$('body').append(view.render().el);
 				var el = $('body .testview');
 				$('body .testview .clickMe').trigger('click');
-				el.remove();
+				
+				//Cleanup
+				view.dealloc();
 			});
 			
 			test('Bind view to model', function() {
@@ -197,7 +202,7 @@
 				equals($('body .testview').html(), 'Hello, this is Dog.', 'View element was not updated after model changed with silent option');
 				
 				//Cleanup
-				$('body .testview').remove();
+				view.dealloc();
 			});
 		});
 	</script>
