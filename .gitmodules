@@ -13,6 +13,3 @@
 [submodule "reqwest"]
 	path = reqwest
 	url = git://github.com/ded/reqwest.git
-[submodule "handlebars.js"]
-	path = handlebars.js
-	url = git://github.com/wycats/handlebars.js.git
