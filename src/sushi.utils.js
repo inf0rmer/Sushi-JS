@@ -18,11 +18,11 @@ define('sushi.utils',
 		    _FuncProto = Function.prototype,
 		    _nativeIsArray = _ArrayProto.isArray,
 		    _nativeBind = _FuncProto.bind,
-		    ctor = function(){};
+		    ctor = function(){},
+		    _idCounter = 0;
 
 		// Generic utility methods
 		Sushi.extend(Sushi.utils, {
-		    _idCounter: 0,
 			/**
 		     * Generates a unique integer ID (within the client session)
 		     *
@@ -32,7 +32,7 @@ define('sushi.utils',
 		     * @return Unique ID
 		     */
 			uniqueId: function(prefix) {
-				var id = this._idCounter++;
+				var id = _idCounter++;
 				return prefix ? prefix + id : id;
 			},
 			
@@ -73,38 +73,7 @@ define('sushi.utils',
 				  	if (Object(result) === result) return result;
 				  	return self;
 				};
-			},
-			
-			// Utility object methods
-			/**
-		     * Generate an integer Array containing an arithmetic progression.
-		     * A port of the native Python range(). Lifted from Underscore JS.
-		     * See http://docs.python.org/library/functions.html#range for more info.
-		     *
-		     * @method range
-		     * @param start Value to start progression from. Defaults to 0
-		     * @param stop Value to stop progression at
-		     * @param step Value to increment progression by. Defaults to 1
-		     *
-		     * @return Array containing the progression.
-		     */
-			range: function(start, stop, step) {
-                var args  = Array.prototype.slice.call(arguments),
-                    solo  = args.length <= 1,
-                    start = solo ? 0 : args[0],
-                    stop  = solo ? args[0] : args[1],
-                    step  = args[2] || 1,
-                    len   = Math.max(Math.ceil((stop - start) / step), 0),
-                    idx   = 0,
-                    range = new Array(len);
-                    
-                while (idx < len) {
-                    range[idx++] = start;
-                    start += step;
-                }
-                
-                return range;
-            },   
+			},   
 			
 			// Utility "is" methods. Lifted from Underscore.js
 			/**
