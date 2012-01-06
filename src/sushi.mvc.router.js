@@ -31,12 +31,27 @@
 				this.initialize.apply(this, arguments);
  			},
  			
+ 			/**
+ 			 * Initialize is an empty function by default. Override it with your own initialization logic.
+ 			 *
+ 			 * @method initialize
+ 			 */
  			initialize : function(){},
  			
+ 			/**
+			 * Manually bind a single named route to a callback
+			 *
+			 * @method route
+			 *
+			 * @param {String} route Route expression
+			 * @param {String} name Route name
+			 * @param {Function} callback Function to run on route match.
+			 *
+			 */
  			route : function(route, name, callback) {
 				Sushi.history || (Sushi.history = new Sushi.History());
 			  	if (!utils.isRegExp(route)) route = this._routeToRegExp(route);
-			  	
+
 			  	Sushi.history.route(route, utils.bind(function(fragment) {
 					var args = this._extractParameters(route, fragment);
 					callback.apply(this, args);
@@ -44,10 +59,25 @@
 			  	}, this));
 			},
 			
+			/**
+			 * Simple proxy to Sushi.history to save a fragment into the history.
+			 *
+			 * @method navigate
+			 *
+			 * @param {String} fragment
+			 * @param {Boolean} triggerRoute Trigger the route immediately?
+			 *
+			 */
 			navigate : function(fragment, triggerRoute) {
 				Sushi.history.navigate(fragment, triggerRoute);
 			},
 			
+			/**
+			 * Bind all defined routes to Backbone.history. 
+			 * The order of the routes is reversed to support behavior where the most general routes can be defined at the bottom of the route map.
+			 *
+			 * @method _bindRoutes
+			 */
 			_bindRoutes : function() {
 				if (!this.routes) return;
 			  	var routes = [];
@@ -61,6 +91,11 @@
 			  	}
 			},
 			
+			/**
+			 * Convert a route string into a regular expression, suitable for matching against the current location hash.
+			 *
+			 * @method _routeToRegExp
+			 */
 			_routeToRegExp : function(route) {
 				route = route.replace(escapeRegExp, "\\$&")
 						.replace(namedParam, "([^\/]*)")
@@ -69,6 +104,11 @@
 			  	return new RegExp('^' + route + '$');
 			},
 			
+			/**
+			 * Given a route, and a URL fragment that it matches, return the array of extracted parameters.
+			 *
+			 * @method _extractParameters
+			 */
 			_extractParameters : function(route, fragment) {
 			  	return route.exec(fragment).slice(1);
 			}
