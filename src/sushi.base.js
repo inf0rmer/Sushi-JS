@@ -16,9 +16,10 @@ require([
 	'sushi.utils.lang',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
+	'sushi.mvc.collection',
+	'sushi.mvc.router',
 	'sushi.template',
 	'sushi.$',
-	'sushi.mvc.router',
 	'sushi.event'
 	], 
 	function(){

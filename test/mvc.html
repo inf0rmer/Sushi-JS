@@ -204,6 +204,106 @@
 				//Cleanup
 				view.dealloc();
 			});
+			
+			
+			module('Collections');
+			//Set up
+			var Todo = new Sushi.Class(Sushi.Model, {
+				constructor: function(attributes, options) {
+					Todo.Super.call(this, attributes, options);
+				},
+				
+				defaults: function() {
+					return {
+						done: false,
+						order: list.nextOrder()
+					}
+				},
+				
+				toggle: function() {
+					this.save({done: !this.get('done')})
+				}
+			});
+			
+			var TodoList = new Sushi.Class(Sushi.Collection, {
+				constructor: function(models, options) {
+					TodoList.Super.call(this, models, options);
+				},
+				
+				model: Todo,
+				
+				done: function() {
+					return this.filter(function(todo){ return todo.get('done'); });
+				},
+				
+				remaining: function() {
+					return this.without.apply(this, this.done());
+				},
+				
+				nextOrder: function() {
+					if (!this.length) return 1;
+					return this.last().get('order') + 1;
+				},
+				
+				comparator: function(todo) {
+					return todo.get('order');
+				}
+			});
+			
+			var list;
+			
+			test('Create a new Sushi.Collection', function() {
+				list = new TodoList;
+				ok((list instanceof Sushi.Collection), 'Collection created successfully');
+			});
+			
+			test('Populate Collection', function() {
+				list = new TodoList;
+				list.add(
+					[
+						{text: 'Take a shower', done: true},
+						{text: 'Pick up laundry', done: false},
+						{text: 'Cook dinner', done: false},
+						{text: 'Watch the football game', done: false}
+					]
+				);
+				
+				equals(list.length, 4, 'Collection populated successfully');
+				
+				list.remove(list.last());
+				
+				equals(list.length, 3, 'Removed one item from collection successfully');
+			});
+			
+			test('Run shared collection methods', function() {
+				list = new TodoList;
+				
+				list.add(
+					[
+						{text: 'Take a shower', done: true},
+						{text: 'Pick up laundry', done: false},
+						{text: 'Cook dinner', done: false}
+					]
+				);
+				
+				equals(list.at(0).get('text'), 'Take a shower', 'Model 0 has correct attributes');
+				
+				var cid = list.at(1).cid;
+				equals(list.getByCid(cid).cid, cid);
+				
+				deepEqual(list.pluck('text'), ['Take a shower', 'Pick up laundry', 'Cook dinner'], 'list.pluck("text") correctly extracts texts');
+			});
+			
+			test('Run instance specific methods', function() {
+				var done = list.done(),
+					remaining = list.remaining();
+					
+				equals(done.length, 1, 'list.done().length is correct');
+				equals(remaining.length, 2, 'list.done().length is correct');
+				
+				equals(remaining[0].get('text'), 'Pick up laundry', 'list.remaining()[0] model is correct');
+				equals(done[0].get('text'), 'Take a shower', 'list.done()[0] model is correct');
+			});
 		});
 	</script>
 </head>
