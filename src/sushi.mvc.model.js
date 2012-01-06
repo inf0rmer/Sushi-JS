@@ -229,8 +229,11 @@ define(
 			},
 			
 			//TODO
-			save: function() {
-			
+			save: function(attrs, options) {
+				options || (options = {});
+				if (attrs && !this.set(attrs, options)) return false;
+				
+				return this;
 			},
 			
 			/**
