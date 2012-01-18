@@ -3,7 +3,7 @@
  *
  * @module Sushi
  */
-define(
+define('sushi.media.audio',
 	['sushi.core', 'sushi.utils', 'sushi.event', 'sushi.utils.collection', 'sushi.template', 'sushi.$', 'sushi.utils.debug'],
 
 	/**

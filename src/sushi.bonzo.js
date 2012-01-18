@@ -2,7 +2,7 @@
  * Sushi.bonzo - DOM utility
  *
  */
- define(
+ define('sushi.bonzo',
  	// Module dependencies
  	[
  		'vendors/bonzo'

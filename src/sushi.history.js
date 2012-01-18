@@ -2,7 +2,7 @@
  * Sushi.History - Handles cross-browser history management, based on URL fragments.
  *
  */
- define(
+ define('sushi.history',
  	// Module dependencies
  	[
  		'sushi.event',

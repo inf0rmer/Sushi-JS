@@ -1,4 +1,4 @@
-define(
+define('sushi.utils.lang',
 	['sushi.core', 'sushi.utils'],
 
 	/**

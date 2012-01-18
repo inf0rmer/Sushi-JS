@@ -3,7 +3,7 @@
  *
  * @module Sushi.mvc
  */
-define(
+define('sushi.model',
 	['sushi.core', 'sushi.event', 'sushi.utils'],
 
 	function() {
@@ -38,7 +38,7 @@ define(
 				this._changed = false;
 				this._previousAttributes = utils.clone(this.attributes);
 				
-				//if (options && options.collection) this.collection = options.collection;
+				if (options && options.collection) this.collection = options.collection;
 				
 				this.initialize(attributes, options);
 			},

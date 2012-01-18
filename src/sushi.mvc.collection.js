@@ -2,7 +2,7 @@
  * Sushi.Collection - 
  *
  */
- define(
+ define('sushi.collection',
  	// Module dependencies
  	[
  		'sushi.core',
@@ -51,6 +51,7 @@
  			},
  			
  			add: function(models, options) {
+ 				options || (options = {});
 			  	if (utils.isArray(models)) {
 					for (var i = 0, l = models.length; i < l; i++) {
 				  		this._add(models[i], options);
@@ -58,6 +59,7 @@
 			  	} else {
 					this._add(models, options);
 			  	}
+			  	
 			  	return this;
 			},
 			

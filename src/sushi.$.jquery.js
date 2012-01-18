@@ -4,7 +4,7 @@
  * @module Sushi
  */
 /*global Sushi:true, define:true*/
-define(
+define('sushi.$.jquery',
     [
     	'vendors/jquery'
     ],

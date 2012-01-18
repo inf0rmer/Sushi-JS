@@ -1,4 +1,4 @@
-define(
+define('sushi.utils.json',
 	['sushi.core', 'vendors/JSON', 'sushi.utils'],
 	
 	/**

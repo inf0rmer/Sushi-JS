@@ -1,4 +1,4 @@
-define(
+define('sushi.utils.debug',
     ['sushi.core', 'sushi.utils'],
     
     /**

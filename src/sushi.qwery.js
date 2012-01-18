@@ -2,7 +2,7 @@
  * Sushi.qwery - CSS3 querySelectorAll utility
  *
  */
- define(
+ define('sushi.qwery'
  	// Module dependencies
  	[
  		'vendors/qwery'

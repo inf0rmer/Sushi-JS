@@ -2,7 +2,7 @@
  * Sushi.bean - Event utility
  *
  */
- define(
+ define('sushi.bean',
  	// Module dependencies
  	[
  		'vendors/bean'

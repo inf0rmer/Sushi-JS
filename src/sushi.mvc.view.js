@@ -3,7 +3,7 @@
  *
  * @module Sushi.mvc
  */
-define(
+define('sushi.view',
 	['sushi.core', 'sushi.event', 'sushi.utils', 'sushi.$'],
 
 	function() {

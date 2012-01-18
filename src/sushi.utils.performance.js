@@ -1,4 +1,4 @@
-define(
+define('sushi.utils.performance',
 	['sushi.core', 'sushi.utils'],
 	
 	/**

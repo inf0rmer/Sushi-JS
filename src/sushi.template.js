@@ -3,7 +3,7 @@
  *
  * @module Sushi
  */
-define(
+define('sushi.template',
 	['sushi.core', 'vendors/handlebars'],
 
 	function() {
