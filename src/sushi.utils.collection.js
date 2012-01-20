@@ -375,6 +375,17 @@ define('sushi.utils.collection',
 			return result;
 		},
 		
+		/**
+		 * Remove a value from an array
+		 *
+		 * @method remove
+		 *
+		 * @param {Array} array
+		 * @param {mixed} value
+		 *
+		 * @return {Array} Array without the removed value
+		 *
+		 */
 		remove = function(array, value) {
 			if (!Sushi.utils.isArray(array)) return false;
 			
