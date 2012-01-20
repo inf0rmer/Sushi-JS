@@ -1,0 +1,9 @@
+#!/bin/bash
+DIR="$( cd -P "$( dirname "$0" )" && pwd )"
+cd $DIR;
+
+node r.js -convert ../bean/ ../src/vendors/
+node r.js -convert ../qwery/ ../src/vendors/
+node r.js -convert ../bonzo/ ../src/vendors/
+node r.js -convert ../morpheus/ ../src/vendors/
+node r.js -convert ../reqwest/ ../src/vendors/
