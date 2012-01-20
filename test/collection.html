@@ -92,12 +92,18 @@
 			
 			module('Sushi.utils.pluck');
 			test('Sushi.utils.pluck', function() {
-				var obj = {
-					name: "Alice",
-					age: 12
-				};
+				var arr = [
+					{
+						name: "Alice",
+						age: 12
+					},
+					{
+						name: 'Jane',
+						age: 25
+					}
+				];
 				
-				equals(Sushi.utils.pluck(obj, name), 'Alice');
+				deepEqual(Sushi.utils.pluck(arr, 'name'), ['Alice', 'Jane']);
 			});
 
 		});
