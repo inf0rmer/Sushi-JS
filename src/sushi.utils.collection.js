@@ -391,23 +391,24 @@ define('sushi.utils.collection',
 		 *
 		 * @method shuffle
 		 *
-		 * @param {Array} obj Array to shuffle
+		 * @param {Array} array Array to shuffle
 		 *
 		 * @return {Array} Shuffled array
 		 *
 		 */
-		shuffle = function(obj) {
-		    var shuffled = [], rand;
-		    each(obj, function(value, index, list) {
-		      if (index == 0) {
-		        shuffled[0] = value;
-		      } else {
-		        rand = Math.floor(Math.random() * (index + 1));
-		        shuffled[index] = shuffled[rand];
-		        shuffled[rand] = value;
-		      }
-		    });
-		    return shuffled;  
+		shuffle = function(array) {
+		    var m = array.length, t, i;
+			// While there remain elements to shuffle…
+			while (m) {
+				// Pick a remaining element…
+				i = Math.floor(Math.random() * m);
+			
+				// And swap it with the current element.
+				t = array[--m];
+				array[m] = array[i];
+				array[i] = t;
+			}
+			return array;
 		},
 		
 		/**
