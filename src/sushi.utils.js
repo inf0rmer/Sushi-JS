@@ -296,5 +296,7 @@ define('sushi.utils',
 				return obj === Object(obj);
 		  	}
 		});
+		
+		return Sushi.utils;
 	}
 );
