@@ -50,7 +50,33 @@
 				
 				ok(Sushi.utils.isArray(Sushi.utils.toArray(obj)));
 			});
-
+			
+			module('Sushi.utils.range');
+			test('Sushi.utils.range', function() {
+				same(Sushi.utils.range(10), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+				same(Sushi.utils.range(1, 11), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+				same(Sushi.utils.range(0, 30, 5), [0, 5, 10, 15, 20, 25]);
+				same(Sushi.utils.range(0, -10, -1), [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]);
+				same(Sushi.utils.range(0), []);
+				same(Sushi.utils.range(1, 0), []);
+			});
+			
+			module('Sushi.utils.keys');
+			test('Sushi.utils.keys', function() {
+				same(Sushi.utils.keys(["a", "b", "c"]), ["0","1","2"]);
+				same(Sushi.utils.keys({0: "a", 1: "b", 2: "c"}), ["0","1","2"]);
+				
+				var obj = {
+					getFoo: { 
+						value: function() {
+							return this.foo;
+						}
+					}
+				}
+				obj.foo = 1;
+				
+				same(Sushi.utils.keys(obj), ['getFoo', 'foo']);
+			});
 			
 			module('Sushi.utils.reduce');
 			test('Sushi.utils.reduce', function() {
