@@ -6,20 +6,20 @@
 	<script src="qunit/qunit.js"></script>
 	<script data-main="../src/sushi.base.js" src="../src/vendors/require.js"></script>
 	<script>
-		require.ready(function() {
-			module('Sushi.q');
-			test('Sushi.q is available', function() {
-				ok(Sushi.q, 'Sushi.q is defined');
+		require(['vendors/domReady!'], function(doc) {
+			module('Sushi.$');
+			test('Sushi.$ is available', function() {
+				ok(Sushi.$, 'Sushi.$ is defined');
 			});
 
 			module('ID selector');
 			test('Selecting #qweryID', function() {
-				equals(Sushi.q('#qweryID').length, 1);
+				equals(Sushi.$('#qweryID').length, 1);
 			});
 
 			module('Class selector');
 			test('Selecting .queryClass', function() {
-				equals(Sushi.q('.qweryClass').length, 2);
+				equals(Sushi.$('.qweryClass').length, 2);
 			});			
 		
 		});
