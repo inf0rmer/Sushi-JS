@@ -1,0 +1,22 @@
+/*
+ * {global}.{namespace}
+ *
+ */
+ define('{global}.{namespace}',
+ 	// Module dependencies
+ 	[
+ 		'sushi.core'
+ 	],
+
+ 	/**
+ 	 * {global} {namespace}
+ 	 *
+ 	 * @namespace {global}
+ 	 * @class {namespace}
+ 	 */
+ 	function(Sushi) {
+        Sushi.namespace('{namespace}', {global});
+        
+        return {global}.{namespace};
+ 	}
+ );

@@ -1,0 +1,36 @@
+#!/bin/bash
+NO_ARGS=0 
+E_OPTERROR=85
+
+if [ $# -eq "$NO_ARGS" ]    # Script invoked with no command-line args?
+then
+  echo "Usage: new-module NAMESPACE GLOBAL (optional)"
+  exit $E_OPTERROR          # Exit and explain usage.
+                            # Usage: scriptname -options
+                            # Note: dash (-) necessary
+fi
+
+NAMESPACE=$1
+GLOBAL=$2
+DIR="$( cd -P "$( dirname "$0" )" && pwd )"
+TEMPLATE=$DIR/resources/sushi.module.template
+
+if [ -z "$GLOBAL" -a "${GLOBAL+xxx}" = "xxx" ]; 
+then
+	GLOBAL="Sushi"
+fi
+
+GLOBAL_FILE_PREFIX=$(echo "$GLOBAL" | tr '[A-Z]' '[a-z]')
+NEWFILE=$DIR/../src/$GLOBAL_FILE_PREFIX.$NAMESPACE.js
+echo "Creating module $GLOBAL.$NAMESPACE..."
+
+if [ -f $NEWFILE ];
+then
+	echo "$NEWFILE already exists, aborting!"
+	echo "Module was not created."
+	exit
+fi
+
+sed -e s/{global}/$GLOBAL/ -e s/{namespace}/$NAMESPACE/ $TEMPLATE >$NEWFILE
+
+echo "All done, your file is at $NEWFILE"
