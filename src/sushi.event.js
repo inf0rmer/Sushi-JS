@@ -4,25 +4,25 @@
  */
  define('sushi.event',
  	// Module dependencies
- 	['sushi.core', 'sushi.utils.collection'],
+ 	['sushi.core'],
 
  	/**
- 	 * Sushi Events
+ 	 * Sushi event
  	 *
  	 * @namespace Sushi
- 	 * @class events
+ 	 * @class event
  	 */
- 	function(pubsub) {
-        Sushi.namespace('pubsub');
-        Sushi.namespace('Events');
+ 	function(Sushi) {
+        Sushi.namespace('event');
         
-        Sushi.extend(Sushi.Events, {
+        Sushi.event = {
         	bind : function(ev, callback, context) {
 			  	var calls = this._callbacks || (this._callbacks = {}),
 			  	list  = calls[ev] || (calls[ev] = []);
 			  	list.push([callback, context]);
 			  	return this;
 			},
+			
 			unbind : function(ev, callback) {
 			  	var calls;
 			  	if (!ev) {
@@ -66,75 +66,15 @@
 			  		}
 			  	return this;
 			}
+        }
+        
+        // Aliases for backwards compatibility
+        Sushi.extend(Sushi.event, {
+        	subscribe: Sushi.event.bind,
+        	unsubscribe: Sushi.event.unbind,
+        	publish: Sushi.event.trigger
         });
         
- 		Sushi.extend(Sushi.pubsub, (function() {
-    	    // the topic/subscription hash
-        	var _cache = {},
-
-            /**
-             * Publish data on a named topic
-             * 
-             * Example:
-             * Sushi.pubsub.publish("/some/topic", "a","b","c");
-             *
-             * @method publish
-             * @param {String} topic The channel to publish on
-     		 *
-             */
-        	publish = function(topic){
-        		args = Array.prototype.slice.call(arguments, 1);
-        		_cache[topic] && Sushi.utils.each(_cache[topic], function(callback){
-        			callback.apply(Sushi.pubsub, args || []);
-        		});
-        	},
-
-            /**
-             * Register a callback on a named topic
-             *
-             * Example:
-             * Sushi.pubsub.subscribe("/some/topic", function(a, b, c){ //handle data});
-             *
-             * @method subscribe
-             * @param {String}   topic     The channel to subscribe to
-             * @param {Function} callback  The handler event. Anytime something is Sushi.pubsub.publish'ed on a 
-     		 *		                       subscribed channel, the callback will be called with the
-     		 *		                       published array as ordered arguments.
-     		 * 
-     		 * @return {Array} A handle which can be used to unsubscribe this particular subscription
-             */
-        	subscribe = function(topic, callback){
-         		if(!_cache[topic]){
-        			_cache[topic] = [];
-        		}
-        		_cache[topic].push(callback);
-        		return [topic, callback];
-        	},
-
-            /**
-             * Disconnect a subscribed function for a topic
-             * Example:
-             * var handle = Sushi.pubsub.subscribe("/some/topic", function(a, b, c){ //handle data});
-             * Sushi.pubsub.unsubscribe(handle);
-             *
-             * @method unsubscribe
-             * @param {Array} handle The return value from a Sushi.pubsub.subscribe call
-             *
-             */
-        	unsubscribe = function(handle){
-        		var t = handle[0];
-        		_cache[t] && Sushi.utils.each(_cache[t], function(idx){
-        			if(this == handle[1]){
-        				_cache[t].slice(idx, 1);
-        			}
-        		});
-        	};
-
-        	return {
-        	    publish: publish,
-        	    subscribe: subscribe,
-        	    unsubscribe: unsubscribe
-        	};
-        })());
+        return Sushi.event;
  	}
  );
