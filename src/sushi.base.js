@@ -20,7 +20,8 @@ require([
 	'sushi.mvc.router',
 	'sushi.template',
 	'sushi.$',
-	'sushi.event'
+	'sushi.event',
+	'sushi.error'
 	], 
 	function(){
 });
