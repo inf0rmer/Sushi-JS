@@ -23,14 +23,16 @@ define('sushi.utils.json',
 		 */
 		stringify = function(literal) {
 			return window.JSON.stringify(literal);
+		},
+		
+		_publicAPI = {
+			parse: parse,
+			stringify: stringify
 		};
 		
 		Sushi.namespace('utils.json');
+		Sushi.extend(Sushi.utils.json, _publicAPI);
 		
-		Sushi.extend(Sushi.utils.json, {
-			parse: parse,
-			stringify: stringify
-		});
-		
+		return _publicAPI;		
 	}
 );

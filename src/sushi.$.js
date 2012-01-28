@@ -76,5 +76,7 @@ define('sushi.$',
     	
     	//Sugar
     	if (!window.$) window.$ = Sushi.$;
+    	
+    	return Sushi.$;
     } 
 );

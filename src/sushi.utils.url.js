@@ -44,11 +44,15 @@ define('sushi.utils.url',
 			}
 			
 			return (oldURL.indexOf('?') == -1) ? oldURL + '?' + newURL : newURL;
-		}			
-
-		Sushi.extend(Sushi.utils, {
+		},
+		
+		_publicAPI = {
 			querystring: querystring,
 			setQuerystringOption: setQuerystringOption
-		});
+		};
+
+		Sushi.extend(Sushi.utils, _publicAPI);
+		
+		return _publicAPI;
 	}
 );

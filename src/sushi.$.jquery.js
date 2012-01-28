@@ -18,5 +18,7 @@ define('sushi.$.jquery',
     function() {
     	Sushi.namespace('$');
     	Sushi.$ = jQuery.noConflict();
+    	
+    	return Sushi.$;
     }
 );

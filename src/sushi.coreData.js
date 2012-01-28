@@ -92,7 +92,7 @@
 				
 				// Notify all subscribers to this object
 				//for (var i=this.boundTo.length; i--; ) {
-				Sushi.pubsub.publish(this.event, this.get(true));
+				Sushi.event.publish(this.event, this.get(true));
 				//}
 				
 				return this;
@@ -117,7 +117,7 @@
 				
 				// Notify all subscribers to this object
 				//for (var i=this.boundTo.length; i--; ) {
-				Sushi.pubsub.publish(this.event, this.get(true));
+				Sushi.event.publish(this.event, this.get(true));
 				//}
 				
 				return this;
@@ -141,7 +141,7 @@
 				
 				// Notify all subscribers to this object
 				//for (var i=this.boundTo.length; i--; ) {
-				Sushi.pubsub.publish(this.event, this.get(true));
+				Sushi.event.publish(this.event, this.get(true));
 				//}
 				
 				return this;
@@ -180,7 +180,7 @@
 				//this.boundTo.push(elementID);
 				
 				// Subscribe this elementID to the passed-in update event
-				Sushi.pubsub.subscribe(this.event, updateFunc);
+				Sushi.event.subscribe(this.event, updateFunc);
 				
 				// Run the updateFunc the first-time, so everything is synced on bindTo
 				if (syncOnBind) updateFunc(this.get(true));
@@ -234,7 +234,7 @@
         			}
         		}
         		
-        		Sushi.pubsub.subscribe(this.event, function(value) {
+        		Sushi.event.subscribe(this.event, function(value) {
         			renderFunc(value);
         		});
         		
@@ -259,5 +259,7 @@
 				return this;
 			}
 		}
+		
+		return Sushi.CoreDataObject;
  	}
  );

@@ -114,8 +114,10 @@
 			}
  		});
  		
- 		Sushi.extendClass(Router, Sushi.Events);
+ 		Sushi.extendClass(Router, Sushi.event);
  		
  		Sushi.Router = Router;
+ 		
+ 		return Router;
  	}
  );

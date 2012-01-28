@@ -108,6 +108,8 @@ define('sushi.view',
 			}
 		});
 		
-		Sushi.extendClass(Sushi.View, Sushi.Events);
+		Sushi.extendClass(Sushi.View, Sushi.event);
+		
+		return Sushi.View;
 	}
 );

@@ -47,7 +47,7 @@ define('sushi.media.audio',
 					if (!element.duration) return false;
 					
 					var loaded = parseInt(((element.buffered.end(0) / element.duration) * 100), 10);
-					if (loaded >= 100) Sushi.pubsub.publish('audio/loaded', id);
+					if (loaded >= 100) Sushi.event.publish('audio/loaded', id);
 				});
 			}
 		},
@@ -191,5 +191,7 @@ define('sushi.media.audio',
 			stopAll: stopAll,
 			removeAll: removeAll
 		});
+		
+		return Sushi.media.audio;
 	}
 );

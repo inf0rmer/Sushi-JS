@@ -17,5 +17,7 @@
  	function(bonzo) {
  		Sushi.namespace('bonzo');
  		Sushi.bonzo = bonzo;
+ 		
+ 		return bonzo;
  	}
  );

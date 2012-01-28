@@ -22,5 +22,7 @@ define('sushi.template',
 		Sushi.extend(Sushi.template, {
 			compile: compile
 		});
+		
+		return Sushi.template;
 	}
 );

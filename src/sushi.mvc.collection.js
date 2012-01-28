@@ -232,8 +232,10 @@
 			};
 	  	});
  		
- 		Sushi.extendClass(Collection, Sushi.Events);
+ 		Sushi.extendClass(Collection, Sushi.event);
  		
  		Sushi.Collection = Collection;
+ 		
+ 		return Collection;
  	}
  );

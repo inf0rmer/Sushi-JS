@@ -99,14 +99,18 @@ define('sushi.utils.debug',
 		 */
 		logHistory = function() {
 		    log(_history);
-		};
+		},
 		
-		Sushi.extend(Sushi, {
+		_publicAPI = {
 			log: log,
 			warn: warn,
 			error: error,
 			dir: dir,
 			logHistory: logHistory
-		});
+		};
+		
+		Sushi.extend(Sushi, _publicAPI);
+		
+		return _publicAPI;
     }
 );

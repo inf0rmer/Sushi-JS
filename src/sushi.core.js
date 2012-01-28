@@ -149,5 +149,7 @@ define(
     		Class: Class,
     		extendClass: extendClass
     	});
+    	
+    	return this.Sushi;
     }
 );

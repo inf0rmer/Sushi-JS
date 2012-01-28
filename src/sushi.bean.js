@@ -17,5 +17,7 @@
  	function(bean) {
  		Sushi.namespace('bean');
  		Sushi.bean = bean;
+ 		
+ 		return bean;
  	}
  );

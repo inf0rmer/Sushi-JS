@@ -17,5 +17,7 @@
  	function(qwery) {
  		Sushi.namespace('qwery');
  		Sushi.qwery = qwery;
+ 		
+ 		return qwery;
  	}
  );

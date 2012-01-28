@@ -212,5 +212,7 @@ define('sushi.date',
 				if (newLocale in ext.locales) locale = newLocale;
 			}
 		});
+		
+		return Sushi.date;
     }
 );

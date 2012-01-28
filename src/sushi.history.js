@@ -127,5 +127,7 @@
 			  	if (triggerRoute) this.loadUrl(fragment);
 			}
  		});
+ 		
+ 		return Sushi.History;
  	}
  );

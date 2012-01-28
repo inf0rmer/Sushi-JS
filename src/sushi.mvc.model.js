@@ -403,6 +403,8 @@ define('sushi.model',
 			}
 		});
 		
-		Sushi.extendClass(Sushi.Model, Sushi.Events);
+		Sushi.extendClass(Sushi.Model, Sushi.event);
+		
+		return Sushi.Model;
 	}
 );

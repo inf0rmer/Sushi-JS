@@ -64,13 +64,15 @@ define('sushi.utils.performance',
 		  		clearTimeout(timeout);
 		  		timeout = setTimeout(later, wait);
 			};
-	  	};
-		
-		
-		Sushi.extend(utils, {
+	  	},
+	  	
+	  	_publicAPI = {
 			throttle: throttle,
 			debounce: debounce
-		});
+		};		
 		
+		Sushi.extend(utils, _publicAPI);
+		
+		return _publicAPI;
 	}
 );

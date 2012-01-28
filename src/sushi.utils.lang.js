@@ -32,12 +32,14 @@ define('sushi.utils.lang',
                     return lookupTable[match]; 
                 });
 		    };
-		})();
+		})(),
 		
-				
-
-		Sushi.extend(Sushi.utils, {
+		_publicAPI = {
 			replaceAccents: replaceAccents
-		});
+		};			
+
+		Sushi.extend(Sushi.utils, _publicAPI);
+		
+		return _publicAPI;
 	}
 );

@@ -67,7 +67,6 @@ define('sushi.utils.performance.worker',
 			Worker: Worker
 		});
 		
-		return utils.Worker;
-		
+		return utils.Worker;		
 	}
 );

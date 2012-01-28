@@ -879,9 +879,9 @@ define('sushi.utils.collection',
 			}
 			
 			return range;
-		};
-        
-        Sushi.extend(Sushi.utils, {
+		},
+		
+		_publicAPI = {
             values: values,
             find: find,
             detect: find,
@@ -931,6 +931,10 @@ define('sushi.utils.collection',
 			indexOf: indexOf,
 			lastIndexOf: lastIndexOf,
 			range: range
-        });
+        };
+        
+        Sushi.extend(Sushi.utils, _publicAPI);
+        
+        return _publicAPI;
 	}
 );
