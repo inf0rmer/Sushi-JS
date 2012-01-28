@@ -15,9 +15,10 @@ define('sushi.$.jquery',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function() {
+    function($) {
     	Sushi.namespace('$');
-    	Sushi.$ = jQuery.noConflict();
+    	Sushi.$ = require('jquery');
+    	jQuery.noConflict();
     	
     	return Sushi.$;
     }
