@@ -6,6 +6,7 @@
  	// Module dependencies
  	[
  		'sushi.core',
+ 		'sushi.utils',
  		'sushi.Enumerable',
  		'sushi.error'
  	],
@@ -16,7 +17,7 @@
  	 * @namespace Sushi
  	 * @class stores
  	 */
- 	function(Sushi, Enumerable, SushiError) {
+ 	function(Sushi, utils, Enumerable, SushiError) {
         Sushi.namespace('stores', Sushi);
         
         var stores = new Enumerable([]);
