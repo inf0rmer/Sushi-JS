@@ -2,7 +2,7 @@
  * Sushi.Router - Routers map faux-URLs to actions, and fire events when routes are matched.
  *
  */
- define('sushi.router',
+ define('sushi.mvc.router',
  	// Module dependencies
  	[
  		'sushi.event',

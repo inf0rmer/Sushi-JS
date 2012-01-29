@@ -3,10 +3,15 @@
  *
  * @module Sushi.mvc
  */
-define('sushi.model',
-	['sushi.core', 'sushi.event', 'sushi.utils'],
+define('sushi.mvc.model',
+	[
+		'sushi.core', 
+		'sushi.event', 
+		'sushi.utils',
+		'sushi.utils.collection'
+	],
 
-	function() {
+	function(Sushi, event, utils, collection) {
 		/**
 		 * Sushi MVC - Model
 		 * Heavily based on Backbone.Model
@@ -16,13 +21,12 @@ define('sushi.model',
 		 */
 		Sushi.namespace('Model');
 		
-		var utils = Sushi.utils,
-		escapeHTML = function(string) {
+		var escapeHTML = function(string) {
 			return string.replace(/&(?!\w+;|#\d+;|#x[\da-f]+;)/gi, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
 		};
 		
-		Sushi.Model = Sushi.Class({
-			constructor: function(attributes, options) {				
+		var Model = Sushi.Class({
+			constructor: function(attributes, options) {
 				var defaults;
 				attributes || (attributes = {});
 				if (defaults = this.defaults) {
@@ -36,7 +40,7 @@ define('sushi.model',
 				this.cid = utils.uniqueId('c');
 				this.set(attributes, {silent : true});
 				this._changed = false;
-				this._previousAttributes = utils.clone(this.attributes);
+				this._previousAttributes = collection.clone(this.attributes);
 				
 				if (options && options.collection) this.collection = options.collection;
 				
@@ -60,7 +64,7 @@ define('sushi.model',
 			 * @return {Object} Copy of the model's attributes.
 			 */
 			toJSON: function() {
-				return utils.clone(this.attributes);
+				return collection.clone(this.attributes);
 			},
 			
 			/**
@@ -315,7 +319,7 @@ define('sushi.model',
 			change: function(options) {
 				//TODO: Actual event code
 				this.trigger('change', this, options);
-      			this._previousAttributes = utils.clone(this.attributes);
+      			this._previousAttributes = collection.clone(this.attributes);
       			this._changed = false;
 			},
 			
@@ -374,7 +378,7 @@ define('sushi.model',
 			 * @return {Object} Model's previous attributes
 			 */
 			previousAttributes: function() {
-				return utils.clone(this._previousAttributes);
+				return collection.clone(this._previousAttributes);
 			},
 			
 			/**
@@ -403,8 +407,8 @@ define('sushi.model',
 			}
 		});
 		
-		Sushi.extendClass(Sushi.Model, Sushi.event);
-		
-		return Sushi.Model;
+		Sushi.extendClass(Model, event);
+		Sushi.Model = Model;
+		return Model;
 	}
 );

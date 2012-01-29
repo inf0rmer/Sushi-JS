@@ -2,12 +2,13 @@
  * Sushi.Collection - 
  *
  */
- define('sushi.collection',
+ define('sushi.mvc.collection',
  	// Module dependencies
  	[
  		'sushi.core',
  		'sushi.event',
  		'sushi.utils',
+ 		'sushi.utils.collection',
  		'sushi.mvc.model'
     ],
 
@@ -17,11 +18,10 @@
  	 * @namespace Sushi
  	 * @class Collection
  	 */
- 	function() {
+ 	function(Sushi, event, utils, collection, Model) {
  		Sushi.namespace('Collection');
  		
  		var Collection,
- 			utils = Sushi.utils,
  			wrapError = function(onError, model, options) {
 				return function(resp) {
 					if (onError) {
@@ -42,7 +42,7 @@
 				this.initialize.apply(this, arguments);
  			},
  			
- 			model: new Sushi.Model(),
+ 			model: new Model(),
  			
  			initialize: function() {},
  			
@@ -232,10 +232,9 @@
 			};
 	  	});
  		
- 		Sushi.extendClass(Collection, Sushi.event);
+ 		Sushi.extendClass(Collection, event);
  		
  		Sushi.Collection = Collection;
- 		
  		return Collection;
  	}
  );

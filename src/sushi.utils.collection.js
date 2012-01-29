@@ -1,11 +1,11 @@
 define('sushi.utils.collection',
-	['sushi.core', 'sushi.utils'],
+	['sushi.core', 'sushi.utils', 'sushi.error'],
 	
 	/**
      * Sushi Collection
      */
      
-	function() {
+	function(Sushi, utils, SushiError) {
 	    var _collection = this,
 	    _ArrayProto = Array.prototype,
 		_nativeKeys = Object.keys,
@@ -30,7 +30,7 @@ define('sushi.utils.collection',
 	     * @return {Array} Object properties in array format
 	     */
 	    values = function(obj) {
-            return map(obj, Sushi.utils.identity);
+            return map(obj, utils.identity);
         },
 
 		/**
@@ -48,7 +48,7 @@ define('sushi.utils.collection',
 		    }
 		    
             if (this.isArray(obj)) {
-                return Sushi.utils.range(0, obj.length);
+                return utils.range(0, obj.length);
             }
             
             var keys = [];                
@@ -70,8 +70,8 @@ define('sushi.utils.collection',
 		 */
 		bindAll = function(obj) {
 			var funcs = _slice.call(arguments, 1);
-			if (funcs.length == 0) funcs = Sushi.utils.functions(obj);
-			Sushi.utils.each(funcs, function(f) { obj[f] = Sushi.utils.bind(obj[f], obj); });
+			if (funcs.length == 0) funcs = utils.functions(obj);
+			utils.each(funcs, function(f) { obj[f] = utils.bind(obj[f], obj); });
 			return obj;
 		},
 		   
@@ -86,8 +86,8 @@ define('sushi.utils.collection',
 		toArray = function(iterable) {
             if (!iterable) {                         return []; }
             if (iterable.toArray) {                  return iterable.toArray(); }
-            if (Sushi.utils.isArray(iterable)) {     return iterable; }
-            if (Sushi.utils.isArguments(iterable)) { return _slice.call(iterable); }
+            if (utils.isArray(iterable)) {     return iterable; }
+            if (utils.isArguments(iterable)) { return _slice.call(iterable); }
             
             return values(iterable);
         },
@@ -110,7 +110,7 @@ define('sushi.utils.collection',
             
             if (_nativeForEach && obj.forEach === _nativeForEach) {
                 obj.forEach(iterator, context);
-            } else if (Sushi.utils.isNumber(obj.length)) {
+            } else if (utils.isNumber(obj.length)) {
                 for (var i = 0, l = obj.length; i < l; i++) {
                     if (iterator.call(context, obj[i], i, obj) === _breaker) { return; }
                 }
@@ -134,7 +134,7 @@ define('sushi.utils.collection',
 		functions = function(obj) {
 			var names = [];
 			for (var key in obj) {
-				if (Sushi.utils.isFunction(obj[key])) names.push(key);
+				if (utils.isFunction(obj[key])) names.push(key);
 			}
 			return names.sort();
 		}, 
@@ -243,7 +243,7 @@ define('sushi.utils.collection',
 		    });
 		
 		    if (!initial) {
-		        throw new TypeError("Reduce of empty array with no initial value");
+		        throw new SushiError("Reduce of empty array with no initial value");
 		    }
 		
 		    return memo;
@@ -270,7 +270,7 @@ define('sushi.utils.collection',
                 return memo !== undefined ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
             }
             
-            var reversed = (Sushi.utils.isArray(obj) ? obj.slice() : _collection.toArray(obj)).reverse();
+            var reversed = (utils.isArray(obj) ? obj.slice() : _collection.toArray(obj)).reverse();
            
             return _collection.reduce(reversed, iterator, memo);
 		},
@@ -305,7 +305,7 @@ define('sushi.utils.collection',
 		},
 		
 		/**
-		 * Convenience method for Sushi.utils.map to get a property from an object.
+		 * Convenience method for utils.map to get a property from an object.
 		 *
 		 * @method pluck
 		 *
@@ -333,7 +333,7 @@ define('sushi.utils.collection',
 		 *
 		 */
 		some = function(obj, iterator, context) {
-		    iterator = iterator || Sushi.utils.identity;
+		    iterator = iterator || utils.identity;
             var result = false;
             
             if (obj === null) { return result; }
@@ -387,7 +387,10 @@ define('sushi.utils.collection',
 		 *
 		 */
 		remove = function(array, value) {
-			if (!Sushi.utils.isArray(array)) return false;
+			if (!utils.isArray(array)) {
+				throw new SushiError('Value must be an Array')
+				return false;
+			}
 			
 			var from = array.indexOf(value),
 				to = from;
@@ -433,8 +436,8 @@ define('sushi.utils.collection',
 		 *
 		 */
 		clone = function(obj) {
-    		if (!Sushi.utils.isObject(obj)) return obj;
-    		return Sushi.utils.isArray(obj) ? obj.slice() : Sushi.extend({}, obj);
+    		if (!utils.isObject(obj)) return obj;
+    		return utils.isArray(obj) ? obj.slice() : Sushi.extend({}, obj);
   		},
   		
   		/**
@@ -450,7 +453,7 @@ define('sushi.utils.collection',
 		 */
   		find = function(obj, iterator, context) {
 			var result;
-			any(obj, function(value, index, list) {
+			some(obj, function(value, index, list) {
 			  if (iterator.call(context, value, index, list)) {
 				result = value;
 				return true;
@@ -472,7 +475,7 @@ define('sushi.utils.collection',
 		invoke = function(obj, method) {
 			var args = _slice.call(arguments, 2);
 			return map(obj, function(value) {
-			  	return (Sushi.utils.isFunction(method) ? method || value : value[method]).apply(value, args);
+			  	return (utils.isFunction(method) ? method || value : value[method]).apply(value, args);
 			});
 		},
 		
@@ -489,8 +492,8 @@ define('sushi.utils.collection',
 		 *
 		 */
 		max = function(obj, iterator, context) {
-			if (!iterator && Sushi.utils.isArray(obj)) return Math.max.apply(Math, obj);
-			if (!iterator && Sushi.utils.isEmpty(obj)) return -Infinity;
+			if (!iterator && utils.isArray(obj)) return Math.max.apply(Math, obj);
+			if (!iterator && utils.isEmpty(obj)) return -Infinity;
 			var result = {computed : -Infinity};
 			each(obj, function(value, index, list) {
 			  	var computed = iterator ? iterator.call(context, value, index, list) : value;
@@ -581,7 +584,7 @@ define('sushi.utils.collection',
 		 */
 		groupBy = function(obj, val) {
 			var result = {};
-			var iterator = Sushi.utils.isFunction(val) ? val : function(obj) { return obj[val]; };
+			var iterator = utils.isFunction(val) ? val : function(obj) { return obj[val]; };
 			each(obj, function(value, index) {
 			  var key = iterator(value, index);
 			  (result[key] || (result[key] = [])).push(value);
@@ -700,7 +703,7 @@ define('sushi.utils.collection',
 		 */
 		flatten = function(array, shallow) {
 			return reduce(array, function(memo, value) {
-				if (Sushi.utils.isArray(value)) return memo.concat(shallow ? value : flatten(value));
+				if (utils.isArray(value)) return memo.concat(shallow ? value : flatten(value));
 			  	memo[memo.length] = value;
 			  	return memo;
 			}, []);
@@ -903,7 +906,7 @@ define('sushi.utils.collection',
 			every: every,
 			all: every,
 			pluck: pluck,
-			removeFromArray: remove,
+			remove: remove,
 			shuffle: shuffle,
 			clone: clone,
 			max: max,
@@ -933,7 +936,7 @@ define('sushi.utils.collection',
 			range: range
         };
         
-        Sushi.extend(Sushi.utils, _publicAPI);
+        Sushi.extend(utils, _publicAPI);
         
         return _publicAPI;
 	}
