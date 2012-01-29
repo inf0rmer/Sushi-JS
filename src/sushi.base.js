@@ -22,7 +22,8 @@ require([
 	'sushi.$',
 	'sushi.event',
 	'sushi.error',
-	'sushi.enumerable'
+	'sushi.enumerable',
+	'sushi.Store.LocalStore'
 	], 
 	function(){
 });
