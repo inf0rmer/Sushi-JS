@@ -31,6 +31,6 @@ then
 	exit
 fi
 
-sed -e s/{global}/$GLOBAL/ -e s/{namespace}/$NAMESPACE/ $TEMPLATE >$NEWFILE
+sed -e s/{global}/$GLOBAL/ -e s/{namespace}/$NAMESPACE/ -e s/{globalLowercase}/$GLOBAL_FILE_PREFIX/ $TEMPLATE >$NEWFILE
 
 echo "All done, your file is at $NEWFILE"

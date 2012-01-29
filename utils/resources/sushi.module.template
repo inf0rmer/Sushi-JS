@@ -2,7 +2,7 @@
  * {global}.{namespace}
  *
  */
- define('{global}.{namespace}',
+ define('{globalLowercase}.{namespace}',
  	// Module dependencies
  	[
  		'sushi.core'
