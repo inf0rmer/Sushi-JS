@@ -2,7 +2,7 @@
  * Sushi.Enumerable
  *
  */
- define('Sushi.Enumerable',
+ define('sushi.Enumerable',
  	// Module dependencies
  	[
  		'sushi.core',
@@ -35,7 +35,7 @@
 			};
 	  	});
 	  	
-	  	Sushi.Enumerable = Enumerable;        
+	  	Sushi.Enumerable = Enumerable;  
         return Enumerable;
  	}
  );
