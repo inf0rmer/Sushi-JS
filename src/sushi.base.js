@@ -21,7 +21,8 @@ require([
 	'sushi.template',
 	'sushi.$',
 	'sushi.event',
-	'sushi.error'
+	'sushi.error',
+	'sushi.enumerable'
 	], 
 	function(){
 });
