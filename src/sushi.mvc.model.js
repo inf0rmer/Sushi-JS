@@ -8,10 +8,12 @@ define('sushi.mvc.model',
 		'sushi.core', 
 		'sushi.event', 
 		'sushi.utils',
-		'sushi.utils.collection'
+		'sushi.utils.collection',
+		'sushi.Store.LocalStore',
+		'sushi.error'
 	],
 
-	function(Sushi, event, utils, collection) {
+	function(Sushi, event, utils, collection, Store, SushiError) {
 		/**
 		 * Sushi MVC - Model
 		 * Heavily based on Backbone.Model
@@ -23,7 +25,27 @@ define('sushi.mvc.model',
 		
 		var escapeHTML = function(string) {
 			return string.replace(/&(?!\w+;|#\d+;|#x[\da-f]+;)/gi, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
-		};
+			
+		},
+		
+		wrapError = function(onError, model, options) {
+			return function(resp) {
+				if (onError) {
+					onError(model, resp, options);
+				} else {
+					model.trigger('error', model, resp, options);
+				}
+			};
+		},
+		
+		getUrl = function(object) {
+    		if (!(object && object.url)) return null;
+    		return utils.isFunction(object.url) ? object.url() : object.url;
+  		},
+  		
+		urlError = function() {
+			throw new SushiError('A "url" property or function must be specified');
+		}
 		
 		var Model = Sushi.Class({
 			constructor: function(attributes, options) {
@@ -146,7 +168,6 @@ define('sushi.mvc.model',
 				  		delete escaped[attr];
 				  		this._changed = true;
 				  		
-				  		//TODO: actual event code
 				  		if (!options.silent) this.trigger('change:' + attr, this, val, options);
 					}
 			  	}
@@ -185,7 +206,6 @@ define('sushi.mvc.model',
 				if (attr == this.idAttribute) delete this.id;
 				this._changed = true;
 				if (!options.silent) {
-					//TODO: actual event code
 					this.trigger('change:' + attr, this, void 0, options);
 					this.change(options);
 				}
@@ -218,7 +238,6 @@ define('sushi.mvc.model',
 					
 				if (!options.silent) {
 					for (attr in old) {
-						//TODO: actual event code
 					  	this.trigger('change:' + attr, this, void 0, options);
 					}
 					this.change(options);
@@ -227,17 +246,36 @@ define('sushi.mvc.model',
 				return this;
 			},
 			
-			//TODO
 			fetch: function(options) {
-			
+				options || (options = {});
+				var model = this
+				,	success = options.success;
+				
+				options.success = function(resp, status, xhr) {
+					if (!model.set(model.parse(resp, xhr), options)) return false;
+					if (success) success(model, resp);
+				};
+				
+				options.error = wrapError(options.error, model, options);
+				return (this.sync || new Store().sync).call(this, 'read', this, options);
 			},
 			
-			//TODO
 			save: function(attrs, options) {
 				options || (options = {});
 				if (attrs && !this.set(attrs, options)) return false;
 				
-				return this;
+				var model = this
+			  	,	success = options.success
+				,  	method = this.isNew() ? 'create' : 'update';
+			  	
+			  	options.success = function(resp, status, xhr) {
+					if (!model.set(model.parse(resp, xhr), options)) return false;
+					if (success) success(model, resp, xhr);
+			  	};
+			  	
+			  	options.error = wrapError(options.error, model, options);
+
+			  	return (this.sync || new Store().sync).call(this, method, this, options);
 			},
 			
 			/**
@@ -250,29 +288,25 @@ define('sushi.mvc.model',
 			 */
 			destroy: function() {
 				options || (options = {});
-		  		//TODO: Actual event code
 		  		if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
 		  		
-		  		var model = this;
-		  		var success = options.success;
+		  		var model = this
+		  		,	success = options.success;
 		  		
-		  		//TODO: Actual event code
 		  		model.trigger('destroy', model, model.collection, options);
 		  		
-		  		//TODO: Server sync
-		  		/*
 		  		options.success = function(resp) {
 					model.trigger('destroy', model, model.collection, options);
 					if (success) success(model, resp);
 		  		};
 		  		options.error = wrapError(options.error, model, options);
-		  		return (this.sync || Backbone.sync).call(this, 'delete', this, options);
-		  		*/
+		  		return (this.sync || new Store().sync).call(this, 'delete', this, options);
 			},
 			
-			//TODO
 			url: function() {
-			
+				var base = getUrl(this.collection) || this.urlRoot || urlError();
+			  	if (this.isNew()) return base;
+			  	return base + (base.charAt(base.length - 1) == '/' ? '' : '/') + encodeURIComponent(this.id);
 			},
 			
 			/**
@@ -317,7 +351,6 @@ define('sushi.mvc.model',
 			 *
 			 */
 			change: function(options) {
-				//TODO: Actual event code
 				this.trigger('change', this, options);
       			this._previousAttributes = collection.clone(this.attributes);
       			this._changed = false;
@@ -396,7 +429,6 @@ define('sushi.mvc.model',
 					if (options.error) {
 					  	options.error(this, error, options);
 					} else {
-						//TODO: actual event code
 					  	this.trigger('error', this, error, options);
 					}
 					
