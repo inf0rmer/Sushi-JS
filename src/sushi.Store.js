@@ -6,7 +6,7 @@
  	// Module dependencies
  	[
  		'sushi.core',
- 		'sushi.stores'
+ 		'sushi.stores',
  	],
 
  	/**
@@ -18,16 +18,19 @@
  	function(Sushi, stores) {
         Sushi.namespace('Store', Sushi);
         
-        var Store = new Sushi.Class({
+        var Store;
+        
+        Store = new Sushi.Class({
         	constructor: function(name) {
-        		this.name = name;
+        		if (name) this.name = name;
+        		
         		stores.register(this);
         	},
         	
         	name: 'Default Store',
         	
         	sync: function() {}
-        })
+        });
         
         Sushi.Store = Store;
         return Store;
