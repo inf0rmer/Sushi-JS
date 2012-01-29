@@ -21,11 +21,12 @@
         var Store = new Sushi.Class({
         	constructor: function(name) {
         		this.name = name;
-        		
-        		stores.push(this);
+        		stores.register(this);
         	},
         	
-        	name: 'Default Store'
+        	name: 'Default Store',
+        	
+        	sync: function() {}
         })
         
         Sushi.Store = Store;
