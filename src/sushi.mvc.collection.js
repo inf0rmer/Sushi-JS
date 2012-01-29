@@ -9,7 +9,8 @@
  		'sushi.event',
  		'sushi.utils',
  		'sushi.utils.collection',
- 		'sushi.mvc.model'
+ 		'sushi.mvc.model',
+ 		'sushi.Store.LocalStore'
     ],
 
  	/**
@@ -18,7 +19,7 @@
  	 * @namespace Sushi
  	 * @class Collection
  	 */
- 	function(Sushi, event, utils, collection, Model) {
+ 	function(Sushi, event, utils, collection, Model, Store) {
  		Sushi.namespace('Collection');
  		
  		var Collection,
@@ -42,7 +43,7 @@
 				this.initialize.apply(this, arguments);
  			},
  			
- 			model: new Model(),
+ 			model: Model,
  			
  			initialize: function() {},
  			
@@ -109,19 +110,20 @@
 			  	return this;
 			},
 			
-			/*
 			fetch : function(options) {
 			  	options || (options = {});
-			  	var collection = this;
-			  	var success = options.success;
+			  	
+			  	var collection = this
+			  	, 	success = options.success;
+			  	
 			  	options.success = function(resp, status, xhr) {
 					collection[options.add ? 'add' : 'reset'](collection.parse(resp, xhr), options);
 					if (success) success(collection, resp);
 			  	};
+			  	
 			  	options.error = wrapError(options.error, collection, options);
-			  	return (this.sync || Backbone.sync).call(this, 'read', this, options);
+			  	return (this.sync || new Store().sync).call(this, 'read', this, options);
 			},
-			*/
 			
 			create : function(model, options) {
 			  	var coll = this;
@@ -160,7 +162,7 @@
 			},
 			
 			_prepareModel: function(model, options) {
-			  	if (!(model instanceof Sushi.Model)) {
+			  	if (!(model instanceof Model)) {
 					var attrs = model;
 					model = new this.model(attrs, {collection: this});
 					if (model.validate && !model._performValidation(attrs, options)) model = false;
