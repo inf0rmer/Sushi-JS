@@ -1,2 +1,7 @@
+.PHONY: boosh test
+
 boosh:
-	node make/build.js
+	smoosh make ./build.json
+
+test:
+	npm test

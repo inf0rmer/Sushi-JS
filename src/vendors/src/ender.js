@@ -1,13 +1,26 @@
-define(["require", "exports", "module"], function(require, exports, module) {
-ender.ender({
-  ajax: reqwest
-});
-ender.ender({
-  serialize: function () {
-    return reqwest.serialize(this[0]);
-  }
-  , serializeArray: function() {
-    return reqwest.serializeArray(this[0]);
-  }
-}, true);
+define(["require", "exports", "module", "reqwest"], function(require, exports, module) {
+!function ($) {
+  var r = require('reqwest')
+    , integrate = function(method) {
+      return function() {
+        var args = (this && this.length > 0 ? this : []).concat(Array.prototype.slice.call(arguments, 0))
+        return r[method].apply(null, args)
+      }
+    }
+    , s = integrate('serialize')
+    , sa = integrate('serializeArray')
+
+  $.ender({
+      ajax: r
+    , serialize: s
+    , serializeArray: sa
+    , toQueryString: r.toQueryString
+  })
+
+  $.ender({
+      serialize: s
+    , serializeArray: sa
+  }, true)
+}(ender);
+
 });
