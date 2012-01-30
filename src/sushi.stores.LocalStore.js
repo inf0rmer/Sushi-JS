@@ -90,6 +90,16 @@
 				return this.records.map(function(id){return JSON.parse(localStorage.getItem(this.name+"-"+id));}, this);
 			},
 			
+			empty: function() {
+				this.records.map(function(id) {
+					this.records = new Enumerable(this.records).reject(function(record_id){return record_id == id.toString();});
+					localStorage.removeItem(this.name+"-"+id);
+				}, this);
+
+				this.save();
+				return this;
+			},
+			
 			// Delete a model from `this.data`, returning it.
 			destroy: function(model) {
 				localStorage.removeItem(this.name+"-"+model.id);
