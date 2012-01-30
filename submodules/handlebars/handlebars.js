@@ -1,3 +1,4 @@
+define(["require", "exports", "module", "fs","path","file","file","system"], function(require, exports, module) {
 // lib/handlebars/base.js
 var Handlebars = {};
 
@@ -1559,3 +1560,5 @@ Handlebars.VM = {
 
 Handlebars.template = Handlebars.VM.template;
 ;
+
+});

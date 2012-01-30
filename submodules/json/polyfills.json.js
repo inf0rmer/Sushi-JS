@@ -1,3 +1,4 @@
+define(["require", "exports", "module"], function(require, exports, module) {
 /*
     http://www.JSON.org/json2.js
     2010-11-17
@@ -473,3 +474,4 @@
         };
     }
 }());
+});

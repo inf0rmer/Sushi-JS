@@ -1,3 +1,4 @@
+define(["require", "exports", "module"], function(require, exports, module) {
 if (typeof window.localStorage === 'undefined' || typeof window.sessionStorage === 'undefined') (function () {
 
 var Storage = function (type) {
@@ -94,3 +95,4 @@ if (typeof window.localStorage == 'undefined') window.localStorage = new Storage
 if (typeof window.sessionStorage == 'undefined') window.sessionStorage = new Storage('session');
 
 })();
+});
