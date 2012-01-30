@@ -1,4 +1,3 @@
-define(["require", "exports", "module"], function(require, exports, module) {
 /*!
   * Reqwest! A general purpose XHR connection manager
   * (c) Dustin Diaz 2011
@@ -376,8 +375,6 @@ define(["require", "exports", "module"], function(require, exports, module) {
     context.reqwest = old
     return this
   }
-
+	
   return reqwest
-})
-
 });
