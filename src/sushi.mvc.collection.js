@@ -64,11 +64,13 @@
 			  	return this;
 			},
 			
-			remove : function(models, options) {
+			remove: function(models, options) {
 				if (utils.isArray(models)) {
+					models = models.slice(0);
 					for (var i = 0, l = models.length; i < l; i++) {
 				  		this._remove(models[i], options);
 					}
+					models = null;
 			 	} else {
 					this._remove(models, options);
 			  	}
