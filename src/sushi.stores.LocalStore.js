@@ -104,7 +104,7 @@
 			// Delete a model from `this.data`, returning it.
 			destroy: function(model) {
 				localStorage.removeItem(this.name+"-"+model.id);
-				this.records = this.records.reject(function(record_id){return record_id == model.id.toString();});
+				this.records = new Enumerable(this.records).reject(function(record_id){return record_id == model.id.toString();});
 				this.save();
 				return model;
 			},
