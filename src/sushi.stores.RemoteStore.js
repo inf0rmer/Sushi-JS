@@ -1,8 +1,8 @@
 /*
- * Sushi.Store.RemoteStore
+ * Sushi.stores.RemoteStore
  *
  */
- define('sushi.Store.RemoteStore',
+ define('sushi.stores.RemoteStore',
  	// Module dependencies
  	[
  		'sushi.core',
@@ -15,10 +15,10 @@
  	],
 
  	/**
- 	 * Sushi Store.RemoteStore
+ 	 * Sushi stores.RemoteStore
  	 *
  	 * @namespace Sushi
- 	 * @class Store.RemoteStore
+ 	 * @class stores.RemoteStore
  	 */
  	function(Sushi, utils, Store, SushiStores, JSON, SushiError, AJAX) {        
         var RemoteStore

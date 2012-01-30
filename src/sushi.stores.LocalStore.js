@@ -1,9 +1,9 @@
 /*
- * Sushi.Store.LocalStore
+ * Sushi.stores.LocalStore
  * Based on the Backbone.localStorage implementation: https://github.com/jeromegn/Backbone.localStorage
  *
  */
- define('sushi.Store.LocalStore',
+ define('sushi.stores.LocalStore',
  	// Module dependencies
  	[
  		'sushi.core',
@@ -16,10 +16,10 @@
  	],
 
  	/**
- 	 * Sushi Store.LocalStore
+ 	 * Sushi stores.LocalStore
  	 *
  	 * @namespace Sushi
- 	 * @class Store.LocalStore
+ 	 * @class stores.LocalStore
  	 */
  	function(Sushi, Store, SushiStores, Enumerable, JSON, SushiError) {        
         var LocalStore
