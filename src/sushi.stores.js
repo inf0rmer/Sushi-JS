@@ -8,6 +8,7 @@
  		'sushi.core',
  		'sushi.utils',
  		'sushi.Enumerable',
+ 		'sushi.Store',
  		'sushi.error'
  	],
 
@@ -17,7 +18,7 @@
  	 * @namespace Sushi
  	 * @class stores
  	 */
- 	function(Sushi, utils, Enumerable, SushiError) {
+ 	function(Sushi, utils, Enumerable, Store, SushiError) {
         Sushi.namespace('stores', Sushi);
         
         var stores = new Enumerable([]);
@@ -27,7 +28,9 @@
 				if (utils.isUndefined(store.name) || utils.isEmpty(store.name)) throw new SushiError('Store must have a name.');
         		
         		this.push({id: store.name, store: store});
-        	}
+        	},
+        	
+        	default: new Store()
         });
         
         Sushi.stores = stores;
