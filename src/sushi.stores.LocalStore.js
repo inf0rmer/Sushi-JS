@@ -37,11 +37,12 @@
 		
 		LocalStore = new Sushi.Class(Store, {
 			constructor: function(name) {
-				LocalStore.Super.call(this, name);
+				var store;
 				
-				var store = localStorage.getItem(name);
+				LocalStore.Super.call(this, name);
 
 				this.name = name;
+				store = localStorage.getItem(this.name);
 				this.records = (store && store.split(",")) || [];
 				this.records = new Enumerable(this.records);
 			}
@@ -110,9 +111,9 @@
 			
 			sync: function(method, model, options, error) {
 				var resp
-				,	store = model.localStorage || model.collection.localStorage;
+				,	store = model.store || model.collection.store;
 				
-				if (!store) throw new SushiError('A LocalStore instance must exist.');
+				if (!store) throw new SushiError('A LocalStore instance must exist.');	
 				
 				switch (method) {
 					case "read":    resp = model.id != undefined ? store.find(model) : store.findAll(); break;
@@ -129,7 +130,8 @@
 			}
 		});
         
-        Sushi.extend(SushiStores, {LocalStore: LocalStore})
+        Sushi.extend(SushiStores, {LocalStore: LocalStore});
+
         return LocalStore;
  	}
  );
