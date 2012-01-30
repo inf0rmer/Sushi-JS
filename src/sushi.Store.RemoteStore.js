@@ -11,6 +11,7 @@
  		'sushi.stores',
  		'sushi.utils.json',
  		'sushi.error',
+ 		'sushi.ajax'
  	],
 
  	/**
@@ -19,7 +20,7 @@
  	 * @namespace Sushi
  	 * @class Store.RemoteStore
  	 */
- 	function(Sushi, utils, Store, SushiStores, JSON, SushiError) {        
+ 	function(Sushi, utils, Store, SushiStores, JSON, SushiError, AJAX) {        
         var RemoteStore
         , 	methodMap
         ,	getUrl = function(object) {
@@ -93,7 +94,7 @@
 					params.processData = false;
 				}
 				
-				Sushi.log('mocking AJAX call with params:', params);
+				AJAX(params);
 			}
         });
         
