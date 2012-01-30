@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS Utils - JSON Test Suite</title>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: '../../src'
+		});
+		
+		require(['vendors/domReady!'], function(doc) {
+			module('Sushi.utils Namespace');
+			test('Sushi.utils', function(){
+				ok(Sushi.utils, 'Sushi.utils is defined');
+			});
+			
+			var literal = {
+				'Name': 'Alice',
+				'Age': 7.5,
+				'Location': 'Wonderland'
+				
+			},			
+			string = '{"Name":"Alice","Age":7.5,"Location":"Wonderland"}';
+			
+			module('Sushi.utils.json');
+			
+			test('Sushi.utils.json.parse', function(){
+				equals(typeof Sushi.utils.json.parse(string), 'object');
+			});
+			
+			test('Sushi.utils.json.stringify', function(){
+				equals(typeof Sushi.utils.json.stringify(literal), 'string');
+			});			
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi.Utils Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>

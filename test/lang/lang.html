@@ -3,10 +3,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>Sushi JS Lang Test Suite</title>
-	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
-	<script src="qunit/qunit.js"></script>
-	<script data-main="../src/sushi.base" src="../src/vendors/require.js"></script>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
+		require.config({
+			baseUrl: '../../src'
+		});
+		
 		require(['vendors/domReady!'], function(doc) {	
 			module('Sushi.utils.lang replaceAccents');
 			test('replaceAccents', function(){

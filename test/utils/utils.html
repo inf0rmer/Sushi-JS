@@ -2,10 +2,14 @@
 <html>
 <head>
 	<title>Sushi JS Utils Test Suite</title>
-	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
-	<script src="qunit/qunit.js"></script>
-	<script data-main="../src/sushi.base.js" src="../src/vendors/require.js"></script>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
+		require.config({
+			baseUrl: '../../src'
+		});
+		
 		require(['vendors/domReady!'], function(doc) {
 			module('Sushi.utils Namespace');
 			test('Sushi.utils', function(){
@@ -76,14 +80,9 @@
 				var args,
 				fn = (function() {
 					args = arguments;
-				})(1, 2),
-				fakeArgs = {};
-				
-				fakeArgs.callee = {};
+				})(1, 2);
 				
 				ok(Sushi.utils.isArguments(args));
-				//ok(!Sushi.utils.isArguments(fakeArgs));
-				
 			});
 			
 			test('isDate', function(){
@@ -127,34 +126,7 @@
 				ok(Sushi.utils.isUndefined(undefined));
 				ok(!Sushi.utils.isUndefined(0));
 				ok(!Sushi.utils.isUndefined('null'));
-			});
-			
-
-			module('Sushi.utils.debug');
-			test('Sushi debug functions are present', function() {
-				ok(Sushi.log, 'Sushi.utils.log is defined');
-				ok(Sushi.warn, 'Sushi.utils.warn is defined');
-				ok(Sushi.error, 'Sushi.utils.error is defined');
-				ok(Sushi.dir, 'Sushi.utils.dir is defined');
-			});
-			
-			var literal = {
-				'Name': 'Alice',
-				'Age': 7.5,
-				'Location': 'Wonderland'
-				
-			},			
-			string = '{"Name":"Alice","Age":7.5,"Location":"Wonderland"}';
-			
-			module('Sushi.utils.json');
-			
-			test('Sushi.utils.json.parse', function(){
-				equals(typeof Sushi.utils.json.parse(string), 'object');
-			});
-			
-			test('Sushi.utils.json.stringify', function(){
-				equals(typeof Sushi.utils.json.stringify(literal), 'string');
-			});			
+			});	
 		});
 	</script>
 </head>
