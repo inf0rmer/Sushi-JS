@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS Stores Test Suite</title>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: '../../src'
+		});
+		
+		require(['vendors/domReady!'], function(doc) {
+			var Animal = new Sushi.Class(Sushi.Model, {
+				constructor: function(attributes, options) {
+					Animal.Super.call(this, attributes, options);
+				},
+				
+				defaults: function() {
+					return {
+						name	: 'Puff, the magic dragon'
+					}
+				}
+			});
+				
+			var AnimalCollection = new Sushi.Class(Sushi.Collection, {
+				constructor: function(models, options) {
+					AnimalCollection.Super.call(this, models, options);
+				},
+				
+				model: Animal,
+				
+				store: new Sushi.stores.LocalStore('animals')
+			});
+			
+			animals = new AnimalCollection();
+			
+			module('LocalStore');
+			test('Emptying localStore', function() {
+				animals.create({name: 'Mittens'});
+				animals.create({name: 'Old Yeller'});
+				
+				animals.store.empty();
+				animals.fetch();
+				equals(animals.length, 0);
+			});
+			
+			test('Fetching from localStore', function() {
+				animals.store.empty();
+				animals.create({name: 'Mittens'});
+				animals.create({name: 'Old Yeller'});
+			
+				animals.reset();
+				animals.fetch();
+				equals(animals.length, 2);
+				animals.store.empty();
+			});
+			
+			asyncTest('Removing from localStore', function() {
+				animals.store.empty();
+				animals.reset();
+				animals.create({name: 'Mittens'});
+				animals.create({name: 'Old Yeller'});
+				
+				animals.fetch({
+					success: function(animals) {
+						var anAnimal = animals.at(0);
+						anAnimal.destroy();
+						animals.fetch();
+						equals(animals.length, 1);
+						animals.store.empty();
+						start();
+					}
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi JS Stores Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>
