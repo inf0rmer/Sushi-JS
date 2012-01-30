@@ -4,9 +4,14 @@
  * @module Sushi.mvc
  */
 define('sushi.mvc.view',
-	['sushi.core', 'sushi.event', 'sushi.utils', 'sushi.$'],
+	[
+		'sushi.core', 
+		'sushi.event', 
+		'sushi.utils', 
+		'sushi.$'
+	],
 
-	function() {
+	function(Sushi, event, utils, $) {
 		/**
 		 * Sushi MVC - View
 		 * Heavily based on Backbone.View
@@ -16,9 +21,7 @@ define('sushi.mvc.view',
 		 */
 		Sushi.namespace('View');
 		
-		var utils = Sushi.utils,
-			$ = Sushi.$,
-			selectorDelegate = function(selector) {
+		var	selectorDelegate = function(selector) {
     			return $(selector, this.el);
   			},
   			eventSplitter = /^(\S+)\s*(.*)$/,
@@ -108,7 +111,7 @@ define('sushi.mvc.view',
 			}
 		});
 		
-		Sushi.extendClass(Sushi.View, Sushi.event);
+		Sushi.extendClass(Sushi.View, event);
 		
 		return Sushi.View;
 	}
