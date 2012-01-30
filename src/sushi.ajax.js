@@ -20,6 +20,9 @@
         
         Sushi.ajax = reqwest;
         
+        // Alias to Sushi.$.ajax
+        if (Sushi.$ && !Sushi.$.ajax) Sushi.$.ajax = reqwest;
+        
         return reqwest;
  	}
  );
