@@ -5,8 +5,7 @@
  define('sushi.Store',
  	// Module dependencies
  	[
- 		'sushi.core',
- 		'sushi.stores',
+ 		'sushi.core'
  	],
 
  	/**
@@ -15,7 +14,7 @@
  	 * @namespace Sushi
  	 * @class Store
  	 */
- 	function(Sushi, stores) {
+ 	function(Sushi) {
         Sushi.namespace('Store', Sushi);
         
         var Store;
@@ -24,7 +23,7 @@
         	constructor: function(name) {
         		if (name) this.name = name;
         		
-        		stores.register(this);
+        		if (Sushi.stores && Sushi.stores.register) Sushi.stores.register(this);
         	},
         	
         	name: 'Default Store',
