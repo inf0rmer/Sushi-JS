@@ -9,7 +9,7 @@ define('sushi.mvc.model',
 		'sushi.event', 
 		'sushi.utils',
 		'sushi.utils.collection',
-		'sushi.Store.LocalStore',
+		'sushi.Store.RemoteStore',
 		'sushi.error'
 	],
 
