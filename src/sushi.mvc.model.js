@@ -9,11 +9,12 @@ define('sushi.mvc.model',
 		'sushi.event', 
 		'sushi.utils',
 		'sushi.utils.collection',
-		'sushi.stores.RemoteStore',
-		'sushi.error'
+		'sushi.stores',
+		'sushi.error',
+		'sushi.Enumerable'
 	],
 
-	function(Sushi, event, utils, collection, Store, SushiError) {
+	function(Sushi, event, utils, collection, stores, SushiError, Enumerable) {
 		/**
 		 * Sushi MVC - Model
 		 * Heavily based on Backbone.Model
@@ -66,12 +67,16 @@ define('sushi.mvc.model',
 				
 				if (options && options.collection) this.collection = options.collection;
 				
+				if (this.collection && this.collection.store) this.store = this.collection.store;
+				
 				this.initialize(attributes, options);
 			},
 			
 			_previousAttributes: null,
 			
 			_changed: false,
+			
+			store: {},
 			
 			idAttribute: 'id',
 			
@@ -257,7 +262,7 @@ define('sushi.mvc.model',
 				};
 				
 				options.error = wrapError(options.error, model, options);
-				return (this.sync || new Store().sync).call(this, 'read', this, options);
+				return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
 			},
 			
 			save: function(attrs, options) {
@@ -275,7 +280,7 @@ define('sushi.mvc.model',
 			  	
 			  	options.error = wrapError(options.error, model, options);
 
-			  	return (this.sync || new Store().sync).call(this, method, this, options);
+			  	return (this.sync || this.store.sync || stores.default.sync).call(this, method, this, options);
 			},
 			
 			/**
@@ -286,7 +291,7 @@ define('sushi.mvc.model',
 			 *
 			 * @return {Model} Model instance.
 			 */
-			destroy: function() {
+			destroy: function(options) {
 				options || (options = {});
 		  		if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
 		  		
@@ -299,8 +304,9 @@ define('sushi.mvc.model',
 					model.trigger('destroy', model, model.collection, options);
 					if (success) success(model, resp);
 		  		};
+		  		
 		  		options.error = wrapError(options.error, model, options);
-		  		return (this.sync || new Store().sync).call(this, 'delete', this, options);
+		  		return (this.sync || this.store.sync || stores.default.sync).call(this, 'delete', this, options);
 			},
 			
 			url: function() {

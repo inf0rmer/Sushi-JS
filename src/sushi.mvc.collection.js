@@ -10,7 +10,8 @@
  		'sushi.utils',
  		'sushi.utils.collection',
  		'sushi.mvc.model',
- 		'sushi.Store.LocalStore'
+ 		'sushi.stores',
+ 		'sushi.error'
     ],
 
  	/**
@@ -19,7 +20,7 @@
  	 * @namespace Sushi
  	 * @class Collection
  	 */
- 	function(Sushi, event, utils, collection, Model, Store) {
+ 	function(Sushi, event, utils, collection, Model, stores, SushiError) {
  		Sushi.namespace('Collection');
  		
  		var Collection,
@@ -39,9 +40,11 @@
 				if (options.comparator) this.comparator = options.comparator;
 				utils.bindAll(this, '_onModelEvent', '_removeReference');
 				this._reset();
-				if (models) this.reset(models, {silent: true});
+				if (models) this.reset(models, {silent: true});				
 				this.initialize.apply(this, arguments);
  			},
+ 			
+ 			store: {},
  			
  			model: Model,
  			
@@ -77,12 +80,12 @@
 			  	return this;
 			},
 			
-			get : function(id) {
+			get: function(id) {
 				if (id == null) return null;
 			  	return this._byId[id.id != null ? id.id : id];
 			},
 			
-			getByCid : function(cid) {
+			getByCid: function(cid) {
 			  	return cid && this._byCid[cid.cid || cid];
 			},
 			
@@ -90,19 +93,19 @@
 			  	return this.models[index];
 			},
 			
-			sort : function(options) {
+			sort: function(options) {
 			  	options || (options = {});
-			  	if (!this.comparator) throw new Error('Cannot sort a set without a comparator');
+			  	if (!this.comparator) throw new SushiError('Cannot sort a set without a comparator');
 			  	this.models = this.sortBy(this.comparator);
 			  	if (!options.silent) this.trigger('reset', this, options);
 			  	return this;
 			},
 			
-			pluck : function(attr) {
+			pluck: function(attr) {
 			  	return Sushi.utils.map(this.models, function(model){ return model.get(attr); });
 			},
 			
-			reset : function(models, options) {
+			reset: function(models, options) {
 			  	models  || (models = []);
 			  	options || (options = {});
 			  	this.each(this._removeReference);
@@ -112,7 +115,7 @@
 			  	return this;
 			},
 			
-			fetch : function(options) {
+			fetch: function(options) {
 			  	options || (options = {});
 			  	
 			  	var collection = this
@@ -124,10 +127,10 @@
 			  	};
 			  	
 			  	options.error = wrapError(options.error, collection, options);
-			  	return (this.sync || new Store().sync).call(this, 'read', this, options);
+			  	return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
 			},
 			
-			create : function(model, options) {
+			create: function(model, options) {
 			  	var coll = this;
 			  	options || (options = {});
 			  	model = this._prepareModel(model, options);
@@ -141,7 +144,7 @@
 			  	return model;
 			},
 			
-			parse : function(resp, xhr) {
+			parse: function(resp, xhr) {
 				return resp;
 			},
 			
@@ -156,7 +159,7 @@
 				return this.at(this.indexOf(model) - 1);
 			},
 			
-			_reset : function(options) {
+			_reset: function(options) {
 			  	this.length = 0;
 			  	this.models = [];
 			  	this._byId  = {};
@@ -179,7 +182,7 @@
 			  	model = this._prepareModel(model, options);
 			  	if (!model) return false;
 			  	var already = this.getByCid(model);
-			  	if (already) throw new Error(["Can't add the same model to a set twice", already.id]);
+			  	if (already) throw new SushiError(["Can't add the same model to a set twice", already.id]);
 			  	this._byId[model.id] = model;
 			  	this._byCid[model.cid] = model;
 			  	var index = options.at != null ? options.at :
@@ -232,7 +235,7 @@
 			
 		utils.each(methods, function(method) {
 			Collection.prototype[method] = function() {
-			  return utils[method].apply(Sushi, [this.models].concat(utils.toArray(arguments)));
+			  	return collection[method].apply(Sushi, [this.models].concat(collection.toArray(arguments)));
 			};
 	  	});
  		
