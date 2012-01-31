@@ -61,6 +61,13 @@ define('sushi.$',
 	    		element = bonzo.create(selector);
 	    	}
     		
+    		// If the selector is a tag-like string, create it instead of qwerying it.
+    		if (/^<(\w+)\s*\/?>(?:<\/\1>)?$/.test(selector)) {
+    			element = bonzo.create(selector);
+    		} else {
+    			element = bonzo(qwery(selector, context))
+    		}
+    		
     		var _slice = Array.prototype.slice,
     		_bind = function(fn, context) {
     			return function() {
@@ -85,6 +92,7 @@ define('sushi.$',
 			
 				emit: bean.fire,
 				trigger: bean.fire,
+				trigger: bean.fire
 				/*
 				hover: function (enter, leave) {
 				  for (var i = 0, l = this.elements.length; i < l; i++) {
