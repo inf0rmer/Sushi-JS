@@ -8,7 +8,8 @@
  */
 // require Sushi modules in requirejs format
 require([
-	'sushi.$'
+	'sushi.$',
+	'vendors/qwery.pseudos'
 	], 
 	function(){
 });
