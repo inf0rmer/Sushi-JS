@@ -10,7 +10,6 @@ define('sushi.$',
     	'vendors/qwery',
     	'vendors/bonzo',
     	'vendors/bean',
-    	'sushi.utils',
     	'vendors/morpheus'
     ],
     
@@ -20,14 +19,13 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(qwery, bonzo, bean) {
     function(Sushi, qwery, bonzo, bean, morpheus) {
     	Sushi.namespace('$');
     	
+    	var $;
+    	
     	bonzo.setQueryEngine(qwery);
     	
-    	Sushi.$ = function(selector, context) {
-    		var q = qwery(selector, context),
     	function _parseAnimationDuration(d) {
     		if (typeof d === 'string') {
 				switch (d) {
@@ -55,11 +53,6 @@ define('sushi.$',
     	$ = function(selector, context) {
     		var q,
     		element;
-    		if (q.length) {
-    			element = bonzo(q);
-    		} else {		
-	    		element = bonzo.create(selector);
-	    	}
     		
     		// If the selector is a tag-like string, create it instead of qwerying it.
     		if (/^<(\w+)\s*\/?>(?:<\/\1>)?$/.test(selector)) {
@@ -91,7 +84,6 @@ define('sushi.$',
 				undelegate: bean.remove,
 			
 				emit: bean.fire,
-				trigger: bean.fire,
 				trigger: bean.fire
 				/*
 				hover: function (enter, leave) {
@@ -108,7 +100,6 @@ define('sushi.$',
 				methods[method] = _bind(methods[method], element);
 			}
     		
-    		return Sushi.extend(bonzo(element), methods);
     		var bonzoed = Sushi.extend(bonzo(element), methods);
     		
     		return Sushi.extend(bonzoed, {
@@ -138,9 +129,16 @@ define('sushi.$',
     		});
     	};
     	
-    	//Sugar
-    	if (!window.$) window.$ = Sushi.$;
+    	//Sugars
+    	Sushi.$ = $;
+    	if (!window.$) window.$ = $;
     	
-    	return Sushi.$;
+    	// Make raw objects available
+    	$.morpheus = morpheus;
+    	$.bonzo = bonzo;
+    	$.qwery = qwery;
+    	$.bean = bean;
+    	
+    	return $;
     } 
 );
