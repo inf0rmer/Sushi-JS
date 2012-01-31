@@ -10,6 +10,7 @@ define('sushi.$',
     	'vendors/bonzo',
     	'vendors/bean',
     	'sushi.utils',
+    	'vendors/morpheus'
     ],
     
 	/**
@@ -19,12 +20,39 @@ define('sushi.$',
 	 * @class $
 	 */
     function(qwery, bonzo, bean) {
+    function(Sushi, qwery, bonzo, bean, morpheus) {
     	Sushi.namespace('$');
     	
     	bonzo.setQueryEngine(qwery);
     	
     	Sushi.$ = function(selector, context) {
     		var q = qwery(selector, context),
+    	function _parseAnimationDuration(d) {
+    		if (typeof d === 'string') {
+				switch (d) {
+					case 'fast':
+						d = 500;
+						break;
+					
+					case 'normal':
+						d = 1000;
+						break;
+					
+					case 'slow':
+						d = 2000;
+						break;
+					
+					default:
+						d = 1000;
+						break;
+				}
+			}
+			
+			return d;
+    	}
+    	
+    	$ = function(selector, context) {
+    		var q,
     		element;
     		if (q.length) {
     			element = bonzo(q);
@@ -72,6 +100,33 @@ define('sushi.$',
 			}
     		
     		return Sushi.extend(bonzo(element), methods);
+    		var bonzoed = Sushi.extend(bonzo(element), methods);
+    		
+    		return Sushi.extend(bonzoed, {
+    			animate: function (options) {
+    				if (options && options.duration) {
+    					options.duration = _parseAnimationDuration(options.duration);
+    				}
+    				
+				  	return morpheus(this, options)
+				},
+			  	
+			  	fadeIn: function (d, fn) {			  		
+				  	return morpheus(this, {
+					  	duration: _parseAnimationDuration(d),
+						opacity: 1,
+						complete: fn
+				  	})
+				},
+				
+				fadeOut: function (d, fn) {
+				  	return morpheus(this, {
+					  	duration: _parseAnimationDuration(d),
+						opacity: 0,
+						complete: fn
+				  	})
+				}
+    		});
     	};
     	
     	//Sugar
