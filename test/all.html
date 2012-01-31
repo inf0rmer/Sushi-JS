@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>Sushi JS Test Suite</title>
+
+	<link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="qunit/qunit-composite.css">
+	<script src="qunit/qunit.js"></script>
+	<script src="qunit/qunit-composite.js"></script>
+
+	<script>
+	QUnit.testSuites([
+		"collection/collection.html",
+		"core/core.html",
+		"dom/qwery.html",
+		"event/event.html",
+		"json/json.html",
+		"lang/lang.html",
+		"mvc/mvc.html",
+		"store/store.html",
+		"utils/utils.html",
+		"ajax/ajax.html"
+   	]);
+	</script>
+</head>
+<body>
+
+<h1 id="qunit-header">Sushi JS Test Suite</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">
+
+</div>
+</body>
+</html>
