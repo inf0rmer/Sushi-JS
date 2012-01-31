@@ -1,15 +1,15 @@
 [submodule "qwery"]
-	path = qwery
+	path = submodules/qwery
 	url = git://github.com/ded/qwery.git
 [submodule "bonzo"]
-	path = bonzo
+	path = submodules/bonzo
 	url = git://github.com/ded/bonzo.git
 [submodule "bean"]
-	path = bean
+	path = submodules/bean
 	url = git://github.com/fat/bean.git
 [submodule "morpheus"]
-	path = morpheus
+	path = submodules/morpheus
 	url = git://github.com/ded/morpheus.git
 [submodule "reqwest"]
-	path = reqwest
+	path = submodules/reqwest
 	url = git://github.com/ded/reqwest.git
