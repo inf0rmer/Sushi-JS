@@ -18,7 +18,7 @@
 
 		module('MIME Types');
 		test('JSON', 1, function() {
-			stop(1000);
+			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures.json',
 			  	type: 'json',
@@ -32,7 +32,7 @@
 		// in the testing suite. Using .js instead for now.
 		
 		test('JSONP', 3, function() {
-			stop(1000);
+			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures_jsonp.js?callback=?',
 			  	type: 'jsonp',
@@ -65,7 +65,7 @@
 		});
 
 		test('JS', 1, function() {
-			stop(1000);
+			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures.js',
 			  	type: 'js',
@@ -77,7 +77,7 @@
 		});
 		
 		test('HTML', 1, function() {
-			stop(1000);
+			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures.html',
 			  	type: 'html',
@@ -90,7 +90,7 @@
 		
 		module('Callbacks');
 		test('no callbacks', 1, function () {
-			stop(1000);
+			stop(1);
 			var pass = true;
 			try {
 			  	Sushi.ajax('fixtures/fixtures.js');
@@ -103,7 +103,7 @@
 		  });
 		
 		test('complete is called', 1, function () {
-			stop(1000);
+			stop(1);
 			Sushi.ajax({
 		  		url: 'fixtures/fixtures.js',
 			  	complete: function () {
@@ -131,7 +131,7 @@
   		});
 
 	  	test('can inspect http before send', 2, function () {	
-	  		stop(1000);
+	  		stop(1);
 			var connection = Sushi.ajax({
 		  		url: 'fixtures/fixtures.js',
 		  		method: 'post',
@@ -176,7 +176,7 @@
     	
     	module('Parallel calls');
     	test('multiple named callbacks', 4, function () {
-    		stop(1000);
+    		stop(1);
 		  	Sushi.ajax({
 				url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
 				type: 'jsonp',
