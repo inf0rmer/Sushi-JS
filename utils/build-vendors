@@ -19,23 +19,23 @@ rm -rf $DIR/../src/vendors/*
 # Bean
 echo 'Converting Bean...'
 node r.js -convert $TMP/bean/ $TMP/bean
-cp $DIR/tmp/bean/bean.js $DIR/../src/vendors/bean.js
+cp $TMP/bean/bean.js $DIR/../src/vendors/bean.js
 
 # Qwery
 echo 'Converting Qwery...'
 node r.js -convert $TMP/qwery/ $TMP/qwery
-cp $DIR/tmp/qwery/qwery.js $DIR/../src/vendors/qwery.js
-cp $DIR/tmp/qwery/qwery-mobile.js $DIR/../src/vendors/qwery.mobile.js
+cp $TMP/qwery/qwery.js $DIR/../src/vendors/qwery.js
+cp $TMP/qwery-pseudos/qwery.pseudos.js $DIR/../src/vendors/qwery.pseudos.js
+cp $TMP/qwery/qwery-mobile.js $DIR/../src/vendors/qwery.mobile.js
 
 # Bonzo
 echo 'Converting Bonzo...'
 node r.js -convert $TMP/bonzo/ $TMP/bonzo
-cp $DIR/tmp/bonzo/bonzo.js $DIR/../src/vendors/bonzo.js
+cp $TMP/bonzo/bonzo.js $DIR/../src/vendors/bonzo.js
 
 # Morpheus
 echo 'Converting Morpheus...'
-node r.js -convert $TMP/morpheus/ $TMP/morpheus
-cp $DIR/tmp/morpheus/morpheus.js $DIR/../src/vendors/morpheus.js
+cp $TMP/morpheus/morpheus.js $DIR/../src/vendors/morpheus.js
 
 # Reqwest
 echo 'Converting Reqwest...'
