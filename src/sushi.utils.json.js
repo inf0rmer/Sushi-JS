@@ -1,10 +1,14 @@
 define('sushi.utils.json',
-	['sushi.core', 'vendors/JSON', 'sushi.utils'],
+	[
+		'sushi.core', 
+		'sushi.utils',
+		'vendors/polyfills.json'
+	],
 	
 	/**
 	 * JSON handling functions
 	 */
-	function() {	
+	function(Sushi, utils) {
 		/**
 		 * Converts a JSON-formatted string into a Javascript literal object
 		 *

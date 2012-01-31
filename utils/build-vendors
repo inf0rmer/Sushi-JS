@@ -1,9 +1,73 @@
 #!/bin/bash
 DIR="$( cd -P "$( dirname "$0" )" && pwd )"
-cd $DIR;
+SUBMODULES=$DIR/../submodules
 
-node r.js -convert ../bean/ ../src/vendors/
-node r.js -convert ../qwery/ ../src/vendors/
-node r.js -convert ../bonzo/ ../src/vendors/
-node r.js -convert ../morpheus/ ../src/vendors/
-cp ../reqwest/reqwest.js ../src/vendors/reqwest.js
+# Set up temporary folder
+rm -rf $DIR/tmp
+mkdir $DIR/tmp
+chmod 777 $DIR/tmp
+TMP=$DIR/tmp
+
+# Copy over everything from $SUBMODULES
+cp -R $SUBMODULES/* $TMP/
+
+cd $DIR
+
+# Empty the src/vendors folder
+rm -rf $DIR/../src/vendors/*
+
+# Bean
+echo 'Converting Bean...'
+node r.js -convert $TMP/bean/ $TMP/bean
+cp $DIR/tmp/bean/bean.js $DIR/../src/vendors/bean.js
+
+# Qwery
+echo 'Converting Qwery...'
+node r.js -convert $TMP/qwery/ $TMP/qwery
+cp $DIR/tmp/qwery/qwery.js $DIR/../src/vendors/qwery.js
+cp $DIR/tmp/qwery/qwery-mobile.js $DIR/../src/vendors/qwery.mobile.js
+
+# Bonzo
+echo 'Converting Bonzo...'
+node r.js -convert $TMP/bonzo/ $TMP/bonzo
+cp $DIR/tmp/bonzo/bonzo.js $DIR/../src/vendors/bonzo.js
+
+# Morpheus
+echo 'Converting Morpheus...'
+node r.js -convert $TMP/morpheus/ $TMP/morpheus
+cp $DIR/tmp/morpheus/morpheus.js $DIR/../src/vendors/morpheus.js
+
+# Reqwest
+echo 'Converting Reqwest...'
+node r.js -convert $TMP/reqwest/ $TMP/reqwest
+cp $DIR/tmp/reqwest/reqwest.js $DIR/../src/vendors/reqwest.js
+
+# JSON Polyfill - can't be converted because it's a shim
+echo 'Converting JSON Polyfill...'
+node r.js -convert $TMP/json/ $TMP/json
+cp $TMP/json/polyfills.json.js $DIR/../src/vendors/polyfills.json.js
+
+# localStorage Polyfill - can't be converted because it's a shim
+echo 'Converting localStorage Polyfill...'
+cp $TMP/localstorage/polyfills.localstorage.js $DIR/../src/vendors/polyfills.localstorage.js
+
+# Handlebars - can't be converted because of async dependencies on node modules
+echo 'Converting Handlebars...'
+cp $TMP/handlebars/handlebars.js $DIR/../src/vendors/handlebars.js
+
+# jQuery
+echo 'Converting jQuery...'
+cp $TMP/jquery/jquery.js $DIR/../src/vendors/jquery.js
+
+# Require
+echo 'Converting Require...'
+cp $TMP/require/require.js $DIR/../src/vendors/require.js
+
+# domReady
+echo 'Converting domReady...'
+cp $TMP/domready/domReady.js $DIR/../src/vendors/domReady.js
+
+
+# Cleanup
+rm -rf $TMP
+echo 'Success!'

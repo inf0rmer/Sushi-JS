@@ -6,7 +6,7 @@
 define('sushi.template',
 	['sushi.core', 'vendors/handlebars'],
 
-	function() {
+	function(Sushi) {
 		/**
 		 * Sushi Template
 		 *
