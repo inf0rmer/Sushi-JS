@@ -11,20 +11,19 @@ define(["require", "exports", "module"], function(require, exports, module) {
   else if (typeof define == 'function' && typeof define.amd == 'object') define(definition)
   else this[name] = definition()
 }('qwery', function () {
-  var context = this
-    , doc = document
-    , old = context.qwery
+  var doc = document
     , html = doc.documentElement
     , byClass = 'getElementsByClassName'
     , byTag = 'getElementsByTagName'
     , qSA = 'querySelectorAll'
+
+    // OOOOOOOOOOOOH HERE COME THE ESSSXXSSPRESSSIONSSSSSSSS!!!!!
     , id = /#([\w\-]+)/
     , clas = /\.[\w\-]+/g
     , idOnly = /^#([\w\-]+)$/
     , classOnly = /^\.([\w\-]+)$/
     , tagOnly = /^([\w\-]+)$/
     , tagAndOrClass = /^([\w]+)?\.([\w\-]+)$/
-    , easy = new RegExp(idOnly.source + '|' + tagOnly.source + '|' + classOnly.source)
     , splittable = /(^|,)\s*[>~+]/
     , normalizr = /^\s+|\s*([,\s\+\~>]|$)\s*/g
     , splitters = /[\s\>\+\~]/
@@ -33,13 +32,14 @@ define(["require", "exports", "module"], function(require, exports, module) {
     , simple = /^(\*|[a-z0-9]+)?(?:([\.\#]+[\w\-\.#]+)?)/
     , attr = /\[([\w\-]+)(?:([\|\^\$\*\~]?\=)['"]?([ \w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^]+)["']?)?\]/
     , pseudo = /:([\w\-]+)(\(['"]?([\s\w\+\-]+)['"]?\))?/
-    , dividers = new RegExp('(' + splitters.source + ')' + splittersMore.source, 'g')
-    , tokenizr = new RegExp(splitters.source + splittersMore.source)
-    , chunker = new RegExp(simple.source + '(' + attr.source + ')?' + '(' + pseudo.source + ')?')
       // check if we can pass a selector to a non-CSS3 compatible qSA.
       // *not* suitable for validating a selector, it's too lose; it's the users' responsibility to pass valid selectors
       // this regex must be kept in sync with the one in tests.js
     , css2 = /^(([\w\-]*[#\.]?[\w\-]+|\*)?(\[[\w\-]+([\~\|]?=['"][ \w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^]+["'])?\])?(\:(link|visited|active|hover))?([\s>+~\.,]|(?:$)))+$/
+    , easy = new RegExp(idOnly.source + '|' + tagOnly.source + '|' + classOnly.source)
+    , dividers = new RegExp('(' + splitters.source + ')' + splittersMore.source, 'g')
+    , tokenizr = new RegExp(splitters.source + splittersMore.source)
+    , chunker = new RegExp(simple.source + '(' + attr.source + ')?' + '(' + pseudo.source + ')?')
     , walker = {
         ' ': function (node) {
           return node && node !== html && node.parentNode
@@ -63,7 +63,8 @@ define(["require", "exports", "module"], function(require, exports, module) {
     g: function (k) {
       return this.c[k] || undefined
     }
-  , s: function (k, v) {
+  , s: function (k, v, r) {
+      v = r ? new RegExp(v) : v
       return (this.c[k] = v)
     }
   }
@@ -74,7 +75,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
     , tokenCache = new cache()
 
   function classRegex(c) {
-    return classCache.g(c) || classCache.s(c, new RegExp('(^|\\s+)' + c + '(\\s+|$)'));
+    return classCache.g(c) || classCache.s(c, '(^|\\s+)' + c + '(\\s+|$)', 1)
   }
 
   // not quite as fast as inline loops in older browsers so don't use liberally
@@ -143,15 +144,15 @@ define(["require", "exports", "module"], function(require, exports, module) {
     case '=':
       return actual == val
     case '^=':
-      return actual.match(attrCache.g('^=' + val) || attrCache.s('^=' + val, new RegExp('^' + clean(val))))
+      return actual.match(attrCache.g('^=' + val) || attrCache.s('^=' + val, '^' + clean(val), 1))
     case '$=':
-      return actual.match(attrCache.g('$=' + val) || attrCache.s('$=' + val, new RegExp(clean(val) + '$')))
+      return actual.match(attrCache.g('$=' + val) || attrCache.s('$=' + val, clean(val) + '$', 1))
     case '*=':
-      return actual.match(attrCache.g(val) || attrCache.s(val, new RegExp(clean(val))))
+      return actual.match(attrCache.g(val) || attrCache.s(val, clean(val), 1))
     case '~=':
-      return actual.match(attrCache.g('~=' + val) || attrCache.s('~=' + val, new RegExp('(?:^|\\s+)' + clean(val) + '(?:\\s+|$)')))
+      return actual.match(attrCache.g('~=' + val) || attrCache.s('~=' + val, '(?:^|\\s+)' + clean(val) + '(?:\\s+|$)', 1))
     case '|=':
-      return actual.match(attrCache.g('|=' + val) || attrCache.s('|=' + val, new RegExp('^' + clean(val) + '(-|$)')))
+      return actual.match(attrCache.g('|=' + val) || attrCache.s('|=' + val, '^' + clean(val) + '(-|$)', 1))
     }
     return 0
   }
@@ -212,7 +213,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
     // recursively work backwards through the tokens and up the dom, covering all options
     function crawl(e, i, p) {
       while (p = walker[dividedTokens[i]](p, e)) {
-        if (isNode(p) && (found = interpret.apply(p, q(tokens[i])))) {
+        if (isNode(p) && (interpret.apply(p, q(tokens[i])))) {
           if (i) {
             if (cand = crawl(p, i - 1, p)) return cand
           } else return p
@@ -229,11 +230,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
   function uniq(ar) {
     var a = [], i, j
     o: for (i = 0; i < ar.length; ++i) {
-      for (j = 0; j < a.length; ++j) {
-        if (a[j] == ar[i]) {
-          continue o
-        }
-      }
+      for (j = 0; j < a.length; ++j) if (a[j] == ar[i]) continue o
       a[a.length] = ar[i]
     }
     return a
@@ -382,16 +379,15 @@ define(["require", "exports", "module"], function(require, exports, module) {
       }))
       return ss.length > 1 && result.length > 1 ? uniq(result) : result
     }
-  , select = supportsCSS3 ? selectCSS3 : doc[qSA] ? selectCSS2qSA : selectNonNative
+  , select = function () {
+      var q = qwery.nonStandardEngine ? selectNonNative : supportsCSS3 ? selectCSS3 : doc[qSA] ? selectCSS2qSA : selectNonNative
+      return q.apply(q, arguments)
+    }
 
   qwery.uniq = uniq
   qwery.is = is
   qwery.pseudos = {}
-
-  qwery.noConflict = function () {
-    context.qwery = old
-    return this
-  }
+  qwery.nonStandardEngine = false
 
   return qwery
 })
