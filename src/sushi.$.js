@@ -6,6 +6,7 @@
 /*global Sushi:true, define:true*/
 define('sushi.$',
     [
+    	'sushi.core',
     	'vendors/qwery',
     	'vendors/bonzo',
     	'vendors/bean',
