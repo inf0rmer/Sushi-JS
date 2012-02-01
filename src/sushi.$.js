@@ -19,9 +19,7 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, qwery, bonzo, bean, morpheus) {
-    	Sushi.namespace('$');
-    	
+    function(Sushi, qwery, bonzo, bean, morpheus) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
@@ -132,14 +130,13 @@ define('sushi.$',
     	};
     	
     	//Sugars
-    	Sushi.$ = $;
-    	if (!window.$) window.$ = $;
+    	Sushi.fn = $;
     	
     	// Make raw objects available
-    	$.morpheus = morpheus;
-    	$.bonzo = bonzo;
-    	$.qwery = qwery;
-    	$.bean = bean;
+    	Sushi.morpheus = morpheus;
+    	Sushi.bonzo = bonzo;
+    	Sushi.qwery = qwery;
+    	Sushi.bean = bean;
     	
     	return $;
     } 

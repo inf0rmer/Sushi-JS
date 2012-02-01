@@ -1,12 +1,13 @@
 define('qwery.pseudos',
 [
 	'sushi.core',
-	'sushi.error'
+	'sushi.error',
+	'sushi.$'
 ],
-function (Sushi, SushiError) {
-  if (!Sushi.$ || !Sushi.$.qwery) throw new SushiError('Qwery must be accessible through Sushi.qwery');
+function (Sushi, SushiError, $) {
+  if (!Sushi.qwery) throw new SushiError('Qwery must be accessible through Sushi.qwery');
   
-  var q = Sushi.$.qwery, pseudos = q.pseudos, i, l, p, r, nodes, m, nthPattern = /\s*((?:\+|\-)?(\d*))n\s*((?:\+|\-)\s*\d+)?\s*/
+  var q = Sushi.qwery, pseudos = q.pseudos, i, l, p, r, nodes, m, nthPattern = /\s*((?:\+|\-)?(\d*))n\s*((?:\+|\-)\s*\d+)?\s*/
 
   function children(node, ofType) {
     nodes = node.childNodes, r = []

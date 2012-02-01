@@ -16,12 +16,22 @@ define('sushi.core',
     function() {
     	var root = this,
     	previousSushi = root.Sushi,
-    	Sushi = root.Sushi = {};
+    	Sushi = root.Sushi = root.$ = function( selector, context ) {
+    		return Sushi.fn( selector, context )
+    	},
     	
+    	_$ = window.$,
     	
-    	var VERSION = '1.0',
+    	VERSION = '1.0',
+    	
+    	fn = function() {
+    		return Sushi;
+    	}
     	
     	noConflict = function() {
+    		if (root.$ === Sushi) {
+    			root.$ = _$;
+    		}
     		root.Sushi = previousSushi;
     		return Sushi;
     	},
@@ -143,6 +153,7 @@ define('sushi.core',
     	// Sync global Sushi variable to namespaced one
     	extend(this.Sushi, {
     		VERSION: VERSION,
+    		fn: fn,
     		noConflict: noConflict,
     		namespace: namespace,
     		extend: extend,
