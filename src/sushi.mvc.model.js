@@ -48,14 +48,14 @@ define('sushi.mvc.model',
 			throw new SushiError('A "url" property or function must be specified');
 		}
 		
-		var Model = Sushi.Class({
+		var Model = new Sushi.Class({
 			constructor: function(attributes, options) {
 				var defaults;
 				attributes || (attributes = {});
 				if (defaults = this.defaults) {
 					if (utils.isFunction(defaults)) defaults = defaults.call(this);
 				  	
-				  	attributes = Sushi.extend(defaults, attributes, true);
+				  	attributes = Sushi.extend(attributes, defaults, true);
 				}
 				
 				this.attributes = {};
