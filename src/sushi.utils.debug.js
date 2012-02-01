@@ -4,7 +4,7 @@ define('sushi.utils.debug',
     /**
 	 * Defines several safe debugging methods
 	 */
-    function() {
+    function(Sushi, utils) {
 		// Cached logging history
 		var _history = [],
 		
