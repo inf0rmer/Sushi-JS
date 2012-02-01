@@ -85,15 +85,6 @@ define('sushi.$',
 			
 				emit: bean.fire,
 				trigger: bean.fire
-				/*
-				hover: function (enter, leave) {
-				  for (var i = 0, l = this.elements.length; i < l; i++) {
-					b.add.call(this, this.elements[i], 'mouseenter', enter);
-					b.add.call(this, this.elements[i], 'mouseleave', leave);
-				  }
-				  return this;
-				}
-				*/
 			};
 			
 			for (var method in methods) {
@@ -103,6 +94,17 @@ define('sushi.$',
     		var bonzoed = Sushi.extend(bonzo(element), methods);
     		
     		return Sushi.extend(bonzoed, {
+    			find: function (s) {
+					var r = [], i, l, j, k, els;
+					for (i = 0, l = this.length; i < l; i++) {
+				 	 	els = qwery(s, this[i]);
+						for (j = 0, k = els.length; j < k; j++) {
+							r.push(els[j]);
+						}
+					}
+					return $(qwery.uniq(r));
+			  	},
+			  	
     			animate: function (options) {
     				if (options && options.duration) {
     					options.duration = _parseAnimationDuration(options.duration);
