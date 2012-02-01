@@ -1,5 +1,5 @@
 define [
-	'contacts.data',
+	'cs!contacts.data',
 	'text!templates/app.tpl',
 	'text!templates/person.tpl',
 	'text!templates/personDetail.tpl',
@@ -20,9 +20,6 @@ define [
 		
 		template: Sushi.template.compile PersonTemplate
 		
-		events:
-			"click .remove"	: "destroy"
-		
 		initialize: () ->
 			@model.bind('change', @render, @)
 			@model.bind('destroy', @remove, @)
@@ -34,9 +31,6 @@ define [
 		remove: () ->
 			$(@el).remove()
 			delete @
-		
-		destroy: () ->
-			@model.destroy()
 	)
 
 	PersonDetailView = new Sushi.Class(Sushi.View,
@@ -50,7 +44,8 @@ define [
 		invalidTemplate: Sushi.template.compile PersonInvalidTemplate
 		
 		events:
-			"click .edit": "edit"
+			"click .edit"	: "edit"
+			"click .remove"	: "destroy"
 		
 		initialize: () ->
 			if @model
@@ -77,6 +72,9 @@ define [
 		
 		edit: () ->
 			new PersonEditView(model: @model).render()
+			
+		destroy: () ->
+			@model.destroy()
 	)
 	
 	PersonEditView = new Sushi.Class(Sushi.View, 
@@ -203,7 +201,8 @@ define [
 			People.each(@addOne)
 		
 		createContact: () ->
-			People.create()
+			newPerson = People.create()
+			Sushi.event.publish 'contact/created', newPerson
 	);
 	
 	{

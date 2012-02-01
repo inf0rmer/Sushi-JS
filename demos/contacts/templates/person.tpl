@@ -1,1 +1,1 @@
-<a href="#/people/{{id}}"><strong>{{firstName}}</strong> {{lastName}}</a> <button class="remove">Remove</button>
+<a href="#/people/{{id}}"><strong>{{firstName}}</strong> {{lastName}}</a>

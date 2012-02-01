@@ -10,3 +10,11 @@ define [
 	
 	ContactsApp.Router = new AppRouter
 	Sushi.history.start()
+	
+	Data.bind('destroy', () ->
+		ContactsApp.Router.navigate '/'
+	)
+	
+	Sushi.event.subscribe('contact/created', (model) ->
+		ContactsApp.Router.navigate '/people/' + model.get('id'), true
+	)

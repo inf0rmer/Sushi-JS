@@ -10,7 +10,7 @@ define	[
 		routes: 
 			"/people/:id": "getPerson"
 		
-		getPerson: (id) ->			
+		getPerson: (id) ->		
 			detail = new Views.PersonDetailView( model: Data.get(id) )
 			detail.render()
 	)
