@@ -1,0 +1,1 @@
+<input type="text" data-field="phoneNr" value="{{this}}" placeholder="Phone Nr."/> <button class="remove">Remove</button>

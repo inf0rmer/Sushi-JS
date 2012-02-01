@@ -8,7 +8,7 @@ define	[
 		defaults:
 			firstName: 'John'
 			lastName: 'Appleseed'
-			phoneNr: '+000 000000000'
+			phoneNr: ['+000 000000000']
 	)
 	
 	PeopleList = new Sushi.Class(Sushi.Collection,
