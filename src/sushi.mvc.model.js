@@ -55,7 +55,7 @@ define('sushi.mvc.model',
 				if (defaults = this.defaults) {
 					if (utils.isFunction(defaults)) defaults = defaults.call(this);
 				  	
-				  	attributes = Sushi.extend(attributes, defaults, true);
+				  	Sushi.extend(attributes, defaults, false);
 				}
 				
 				this.attributes = {};

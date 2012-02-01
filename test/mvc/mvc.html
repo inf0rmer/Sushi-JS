@@ -30,6 +30,8 @@
 				}
 			});
 			
+			window.MyModel = MyModel;
+			
 			test('Model get()', function() {
 				var model = new MyModel();
 				equals(model.get('content'), 'Custom content', 'Model.get() works');
