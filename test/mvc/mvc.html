@@ -301,6 +301,15 @@
 			});
 			
 			test('Run instance specific methods', function() {
+				list = new TodoList;
+				list.add(
+					[
+						{text: 'Take a shower', done: true},
+						{text: 'Pick up laundry', done: false},
+						{text: 'Cook dinner', done: false}
+					]
+				);
+				
 				var done = list.done(),
 					remaining = list.remaining();
 					
