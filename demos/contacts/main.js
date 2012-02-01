@@ -1,0 +1,2 @@
+require({
+}, ['cs!contacts.main']);
