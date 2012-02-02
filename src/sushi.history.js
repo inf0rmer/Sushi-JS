@@ -5,7 +5,6 @@
  define('sushi.history',
  	// Module dependencies
  	[
- 		'sushi.event',
  		'sushi.utils',
  		'sushi.$'
     ],
@@ -16,14 +15,12 @@
  	 * @namespace Sushi
  	 * @class history
  	 */
- 	function() {
+ 	function(utils, $) {
  		Sushi.namespace('History');
  		
  		var hashStrip = /^#*/,
  		isExplorer = /msie [\w.]+/,
- 		historyStarted = false,
-	  	utils = Sushi.utils,
-	  	$ = Sushi.$;
+ 		historyStarted = false;
 	  	
  		Sushi.History = function() {
 			this.handlers = [];

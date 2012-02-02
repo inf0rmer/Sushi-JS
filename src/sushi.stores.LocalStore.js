@@ -62,6 +62,8 @@
 					
 					if (model.attributes) model.attributes.id = model.id;
 				}
+				if (this.records && this.records.length && this.records.contains(model.id)) return false;
+				
 				localStorage.setItem(this.name+"-"+model.id, JSON.stringify(model));
 				this.records.push(model.id.toString());
 				this.save();

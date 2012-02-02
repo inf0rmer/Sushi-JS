@@ -7,11 +7,25 @@ define	[
 		constructor: (options) ->
 			AppRouter.Super.call(this, options)
 
-		routes: 
+		routes:
+			"": "home"
 			"/people/:id": "getPerson"
 		
-		getPerson: (id) ->		
-			detail = new Views.PersonDetailView( model: Data.get(id) )
+		home: () ->
+			Data.invoke(
+				() -> this.set(active: false)
+			)
+		
+		getPerson: (id) ->
+			person = Data.get id
+			if person
+				Data.invoke(
+					() -> this.set(active: false)
+				)
+				
+				person.set({active: true})
+				
+			detail = new Views.PersonDetailView( model: person )
 			detail.render()
 	)
 	
