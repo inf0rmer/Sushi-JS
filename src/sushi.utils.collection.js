@@ -157,7 +157,7 @@ define('sushi.utils.collection',
                 return heystack.indexOf(needle) != -1; 
             }
             some(heystack, function(value) {
-                if (found = value === needle) { return true; }
+                if (value === needle) { found = true; return true; }
             });
             
             return found;
