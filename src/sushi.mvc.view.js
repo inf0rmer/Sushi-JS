@@ -70,7 +70,7 @@ define('sushi.mvc.view',
 					if (selector === '') {
 				  		$(this.el).delegate(eventName, method);
 					} else {
-						$(this.el).delegate(selector, eventName, method, Sushi.$);
+						$(this.el).delegate(selector, eventName, method, $);
 					}
 			  	}
 			},
