@@ -1,0 +1,50 @@
+@import "bootstrap/bootstrap.less";
+@import "bootstrap/responsive.less";
+
+@border: 1px @grayLighter solid;
+
+#contactsApp {
+	width: 80%;
+	margin: 50px auto;
+	border: @border;
+	padding: 0;
+	height: 60%;
+	
+	ul {
+		list-style-type: none;
+	}
+	
+	.navbar-inner {
+		border-radius: 0 0 4px 4px;
+		background: @infoBackground;
+	}
+	
+	#detailView {
+		margin: 0;
+		section {
+			padding-left: 20px;
+		}
+	}
+	
+	#peopleList {
+		margin: 0;
+		border-right: @border;
+		/*
+		li {
+			padding: 10px;
+			
+			a {
+				display: block;
+			}
+		}
+		
+		li:nth-child(2) {
+			border-top: @border;
+		}
+		
+		li:last-child {
+			border-bottom: @border;
+		}
+		*/
+	}
+}
