@@ -1,11 +1,7 @@
-<div class="row-fluid">
-	<div class="span3">
-		<div class="navbar">
-			<div class="navbar-inner">
-				<button class="btn" id="addContact"><i class="icon-plus icon-black"></i>&nbsp;Add Contact</button>
-			</div>
-		</div>
-		<ul id="peopleList" class="nav nav-list"></ul>
+<div class="row-fluid app-content">
+	<div class="span4 app-nav">
+		<h2>Contacts <button class="btn btn-small right" id="addContact"><i class="icon-plus icon-black"></i><span class="text">&nbsp;New</span></button></h2>
+		<ul id="peopleList" class="nav nav-pills nav-stacked well"></ul>
 	</div>
-	<div id="detailView" class="span9"></div>
+	<div id="detailView" class="span7"></div>
 </div>

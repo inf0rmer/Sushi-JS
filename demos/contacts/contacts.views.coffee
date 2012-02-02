@@ -25,6 +25,11 @@ define [
 			@model.bind('destroy', @remove, @)
 		
 		render: () ->
+			if @model.get('active')
+				$(@el).addClass('active')
+			else
+				$(@el).removeClass('active')
+			
 			$(@el).html(@template(@model.toJSON()))
 			@
 				
@@ -63,7 +68,7 @@ define [
 			
 			new Sushi.Enumerable(@model.get 'phoneNr' ).each (number) ->
 				$('.phone-numbers', @el).append new PhoneNrView(model:number).render()
-			
+				
 			@
 		
 		remove: () ->
@@ -74,7 +79,8 @@ define [
 			new PersonEditView(model: @model).render()
 			
 		destroy: () ->
-			@model.destroy()
+			if confirm('Really delete ' + @model.get('firstName') + ' ' + @model.get('lastName') + '?')
+				@model.destroy()
 	)
 	
 	PersonEditView = new Sushi.Class(Sushi.View, 

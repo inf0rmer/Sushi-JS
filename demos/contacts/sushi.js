@@ -296,12 +296,22 @@ define('sushi.core',
     function() {
     	var root = this,
     	previousSushi = root.Sushi,
-    	Sushi = root.Sushi = {};
+    	Sushi = root.Sushi = root.$ = function( selector, context ) {
+    		return Sushi.fn( selector, context )
+    	},
     	
+    	_$ = window.$,
     	
-    	var VERSION = '1.0',
+    	VERSION = '1.0',
+    	
+    	fn = function() {
+    		return Sushi;
+    	}
     	
     	noConflict = function() {
+    		if (root.$ === Sushi) {
+    			root.$ = _$;
+    		}
     		root.Sushi = previousSushi;
     		return Sushi;
     	},
@@ -423,6 +433,7 @@ define('sushi.core',
     	// Sync global Sushi variable to namespaced one
     	extend(this.Sushi, {
     		VERSION: VERSION,
+    		fn: fn,
     		noConflict: noConflict,
     		namespace: namespace,
     		extend: extend,
@@ -1087,7 +1098,7 @@ define('sushi.utils.collection',
                 return heystack.indexOf(needle) != -1; 
             }
             some(heystack, function(value) {
-                if (found = value === needle) { return true; }
+                if (value === needle) { found = true; return true; }
             });
             
             return found;
@@ -2418,19 +2429,20 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
   else if (typeof define == 'function' && typeof define.amd == 'object') define(definition)
   else this[name] = definition()
 }('qwery', function () {
-  var doc = document
+  var context = this
+    , doc = document
+    , old = context.qwery
     , html = doc.documentElement
     , byClass = 'getElementsByClassName'
     , byTag = 'getElementsByTagName'
     , qSA = 'querySelectorAll'
-
-    // OOOOOOOOOOOOH HERE COME THE ESSSXXSSPRESSSIONSSSSSSSS!!!!!
     , id = /#([\w\-]+)/
     , clas = /\.[\w\-]+/g
     , idOnly = /^#([\w\-]+)$/
     , classOnly = /^\.([\w\-]+)$/
     , tagOnly = /^([\w\-]+)$/
     , tagAndOrClass = /^([\w]+)?\.([\w\-]+)$/
+    , easy = new RegExp(idOnly.source + '|' + tagOnly.source + '|' + classOnly.source)
     , splittable = /(^|,)\s*[>~+]/
     , normalizr = /^\s+|\s*([,\s\+\~>]|$)\s*/g
     , splitters = /[\s\>\+\~]/
@@ -2439,14 +2451,13 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
     , simple = /^(\*|[a-z0-9]+)?(?:([\.\#]+[\w\-\.#]+)?)/
     , attr = /\[([\w\-]+)(?:([\|\^\$\*\~]?\=)['"]?([ \w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^]+)["']?)?\]/
     , pseudo = /:([\w\-]+)(\(['"]?([\s\w\+\-]+)['"]?\))?/
+    , dividers = new RegExp('(' + splitters.source + ')' + splittersMore.source, 'g')
+    , tokenizr = new RegExp(splitters.source + splittersMore.source)
+    , chunker = new RegExp(simple.source + '(' + attr.source + ')?' + '(' + pseudo.source + ')?')
       // check if we can pass a selector to a non-CSS3 compatible qSA.
       // *not* suitable for validating a selector, it's too lose; it's the users' responsibility to pass valid selectors
       // this regex must be kept in sync with the one in tests.js
     , css2 = /^(([\w\-]*[#\.]?[\w\-]+|\*)?(\[[\w\-]+([\~\|]?=['"][ \w\-\/\?\&\=\:\.\(\)\!,@#%<>\{\}\$\*\^]+["'])?\])?(\:(link|visited|active|hover))?([\s>+~\.,]|(?:$)))+$/
-    , easy = new RegExp(idOnly.source + '|' + tagOnly.source + '|' + classOnly.source)
-    , dividers = new RegExp('(' + splitters.source + ')' + splittersMore.source, 'g')
-    , tokenizr = new RegExp(splitters.source + splittersMore.source)
-    , chunker = new RegExp(simple.source + '(' + attr.source + ')?' + '(' + pseudo.source + ')?')
     , walker = {
         ' ': function (node) {
           return node && node !== html && node.parentNode
@@ -2470,8 +2481,7 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
     g: function (k) {
       return this.c[k] || undefined
     }
-  , s: function (k, v, r) {
-      v = r ? new RegExp(v) : v
+  , s: function (k, v) {
       return (this.c[k] = v)
     }
   }
@@ -2482,7 +2492,7 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
     , tokenCache = new cache()
 
   function classRegex(c) {
-    return classCache.g(c) || classCache.s(c, '(^|\\s+)' + c + '(\\s+|$)', 1)
+    return classCache.g(c) || classCache.s(c, new RegExp('(^|\\s+)' + c + '(\\s+|$)'));
   }
 
   // not quite as fast as inline loops in older browsers so don't use liberally
@@ -2551,15 +2561,15 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
     case '=':
       return actual == val
     case '^=':
-      return actual.match(attrCache.g('^=' + val) || attrCache.s('^=' + val, '^' + clean(val), 1))
+      return actual.match(attrCache.g('^=' + val) || attrCache.s('^=' + val, new RegExp('^' + clean(val))))
     case '$=':
-      return actual.match(attrCache.g('$=' + val) || attrCache.s('$=' + val, clean(val) + '$', 1))
+      return actual.match(attrCache.g('$=' + val) || attrCache.s('$=' + val, new RegExp(clean(val) + '$')))
     case '*=':
-      return actual.match(attrCache.g(val) || attrCache.s(val, clean(val), 1))
+      return actual.match(attrCache.g(val) || attrCache.s(val, new RegExp(clean(val))))
     case '~=':
-      return actual.match(attrCache.g('~=' + val) || attrCache.s('~=' + val, '(?:^|\\s+)' + clean(val) + '(?:\\s+|$)', 1))
+      return actual.match(attrCache.g('~=' + val) || attrCache.s('~=' + val, new RegExp('(?:^|\\s+)' + clean(val) + '(?:\\s+|$)')))
     case '|=':
-      return actual.match(attrCache.g('|=' + val) || attrCache.s('|=' + val, '^' + clean(val) + '(-|$)', 1))
+      return actual.match(attrCache.g('|=' + val) || attrCache.s('|=' + val, new RegExp('^' + clean(val) + '(-|$)')))
     }
     return 0
   }
@@ -2620,7 +2630,7 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
     // recursively work backwards through the tokens and up the dom, covering all options
     function crawl(e, i, p) {
       while (p = walker[dividedTokens[i]](p, e)) {
-        if (isNode(p) && (interpret.apply(p, q(tokens[i])))) {
+        if (isNode(p) && (found = interpret.apply(p, q(tokens[i])))) {
           if (i) {
             if (cand = crawl(p, i - 1, p)) return cand
           } else return p
@@ -2637,7 +2647,11 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
   function uniq(ar) {
     var a = [], i, j
     o: for (i = 0; i < ar.length; ++i) {
-      for (j = 0; j < a.length; ++j) if (a[j] == ar[i]) continue o
+      for (j = 0; j < a.length; ++j) {
+        if (a[j] == ar[i]) {
+          continue o
+        }
+      }
       a[a.length] = ar[i]
     }
     return a
@@ -2786,15 +2800,16 @@ define('vendors/qwery',["require", "exports", "module"], function(require, expor
       }))
       return ss.length > 1 && result.length > 1 ? uniq(result) : result
     }
-  , select = function () {
-      var q = qwery.nonStandardEngine ? selectNonNative : supportsCSS3 ? selectCSS3 : doc[qSA] ? selectCSS2qSA : selectNonNative
-      return q.apply(q, arguments)
-    }
+  , select = supportsCSS3 ? selectCSS3 : doc[qSA] ? selectCSS2qSA : selectNonNative
 
   qwery.uniq = uniq
   qwery.is = is
   qwery.pseudos = {}
-  qwery.nonStandardEngine = false
+
+  qwery.noConflict = function () {
+    context.qwery = old
+    return this
+  }
 
   return qwery
 })
@@ -4428,9 +4443,7 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, qwery, bonzo, bean, morpheus) {
-    	Sushi.namespace('$');
-    	
+    function(Sushi, qwery, bonzo, bean, morpheus) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
@@ -4541,14 +4554,13 @@ define('sushi.$',
     	};
     	
     	//Sugars
-    	Sushi.$ = $;
-    	if (!window.$) window.$ = $;
+    	Sushi.fn = $;
     	
     	// Make raw objects available
-    	$.morpheus = morpheus;
-    	$.bonzo = bonzo;
-    	$.qwery = qwery;
-    	$.bean = bean;
+    	Sushi.morpheus = morpheus;
+    	Sushi.bonzo = bonzo;
+    	Sushi.qwery = qwery;
+    	Sushi.bean = bean;
     	
     	return $;
     } 
@@ -4626,7 +4638,7 @@ define('sushi.mvc.view',
 					if (selector === '') {
 				  		$(this.el).delegate(eventName, method);
 					} else {
-						$(this.el).delegate(selector, eventName, method, Sushi.$);
+						$(this.el).delegate(selector, eventName, method, $);
 					}
 			  	}
 			},
@@ -4926,7 +4938,6 @@ define('sushi.mvc.view',
  define('sushi.history',
  	// Module dependencies
  	[
- 		'sushi.event',
  		'sushi.utils',
  		'sushi.$'
     ],
@@ -4937,14 +4948,12 @@ define('sushi.mvc.view',
  	 * @namespace Sushi
  	 * @class history
  	 */
- 	function() {
+ 	function(utils, $) {
  		Sushi.namespace('History');
  		
  		var hashStrip = /^#*/,
  		isExplorer = /msie [\w.]+/,
- 		historyStarted = false,
-	  	utils = Sushi.utils,
-	  	$ = Sushi.$;
+ 		historyStarted = false;
 	  	
  		Sushi.History = function() {
 			this.handlers = [];
@@ -5858,6 +5867,8 @@ if (typeof window.sessionStorage == 'undefined') window.sessionStorage = new Sto
 					
 					if (model.attributes) model.attributes.id = model.id;
 				}
+				if (this.records && this.records.length && this.records.contains(model.id)) return false;
+				
 				localStorage.setItem(this.name+"-"+model.id, JSON.stringify(model));
 				this.records.push(model.id.toString());
 				this.save();
