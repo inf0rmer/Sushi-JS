@@ -75,6 +75,8 @@ define('sushi.core',
 		 * @return {Object} Extended object
 		 */
 		extend = function(obj, extension, override) {
+			obj = obj || {};
+			extension = extension || {};
 			var prop;
 			if (override === false) {
 				for (prop in extension)
