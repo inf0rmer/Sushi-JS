@@ -32,13 +32,13 @@
 						model.trigger('error', model, resp, options);
 					}
 				};
-		  	};
+		  	},
+		  	splice = Array.prototype.splice;
  		
  		Collection = new Sushi.Class({
  			constructor: function(models, options) {
  				options || (options = {});
 				if (options.comparator) this.comparator = options.comparator;
-				utils.bindAll(this, '_onModelEvent', '_removeReference');
 				this._reset();
 				if (models) this.reset(models, {silent: true});				
 				this.initialize.apply(this, arguments);
@@ -55,29 +55,63 @@
  			},
  			
  			add: function(models, options) {
- 				options || (options = {});
-			  	if (utils.isArray(models)) {
-					for (var i = 0, l = models.length; i < l; i++) {
-				  		this._add(models[i], options);
+ 				var i, index, length, model, cid, id, cids = {}, ids = {};
+				options || (options = {});
+				models = utils.isArray(models) ? models.slice() : [models];
+				
+				//Begin by turning bare objects into model references, and preventing invalid models or duplicate models from being added.
+				for (i = 0, length = models.length; i < length; i++) {
+					if (!(model = models[i] = this._prepareModel(models[i], options))) {
+				  		throw new SushiError("Can't add an invalid model to a collection");
 					}
-			  	} else {
-					this._add(models, options);
+					if (cids[cid = model.cid] || this._byCid[cid] ||
+				  		(((id = model.id) != null) && (ids[id] || this._byId[id]))) {
+				  		throw new SushiError("Can't add the same model to a collection twice");
+					}
+					cids[cid] = ids[id] = model;
+			 	}
+			 	
+			 	//Listen to added models' events, and index models for lookup by id and by cid.
+			 	for (i = 0; i < length; i++) {
+					(model = models[i]).bind('all', this._onModelEvent, this);
+					this._byCid[model.cid] = model;
+					if (model.id != null) this._byId[model.id] = model;
 			  	}
 			  	
-			  	return this;
+			  	//Insert models into the collection, re-sorting if needed, and triggering add events unless silenced.
+			  	this.length += length;
+				index = options.at != null ? options.at : this.models.length;
+				splice.apply(this.models, [index, 0].concat(models));
+				if (this.comparator) this.sort({silent: true});
+				if (options.silent) return this;
+				for (i = 0, length = this.models.length; i < length; i++) {
+					if (!cids[(model = this.models[i]).cid]) continue;
+					options.index = i;
+					model.trigger('add', model, this, options);
+				}
+				return this;
 			},
 			
 			remove: function(models, options) {
-				if (utils.isArray(models)) {
-					models = models.slice(0);
-					for (var i = 0, l = models.length; i < l; i++) {
-				  		this._remove(models[i], options);
-					}
-					models = null;
-			 	} else {
-					this._remove(models, options);
-			  	}
-			  	return this;
+				var i, l, index, model;
+				options || (options = {});
+				models = utils.isArray(models) ? models.slice() : [models];
+				for (i = 0, l = models.length; i < l; i++) {
+					model = this.getByCid(models[i]) || this.get(models[i]);
+					if (!model) continue;
+					delete this._byId[model.id];
+					delete this._byCid[model.cid];
+					index = this.indexOf(model);
+					this.models.splice(index, 1);
+					this.length--;
+					if (!options.silent) {
+					  options.index = index;
+					  model.trigger('remove', model, this, options);
+				}
+					this._removeReference(model);
+				}
+				
+				return this;
 			},
 			
 			get: function(id) {
@@ -96,9 +130,16 @@
 			sort: function(options) {
 			  	options || (options = {});
 			  	if (!this.comparator) throw new SushiError('Cannot sort a set without a comparator');
-			  	this.models = this.sortBy(this.comparator);
-			  	if (!options.silent) this.trigger('reset', this, options);
-			  	return this;
+			  	
+			  	var boundComparator = utils.bind(this.comparator, this);
+				if (this.comparator.length == 1) {
+					this.models = this.sortBy(boundComparator);
+				} else {
+					this.models.sort(boundComparator);
+				}
+				
+				if (!options.silent) this.trigger('reset', this, options);
+				return this;
 			},
 			
 			pluck: function(attr) {
@@ -107,41 +148,49 @@
 			
 			reset: function(models, options) {
 			  	models  || (models = []);
-			  	options || (options = {});
-			  	this.each(this._removeReference);
-			  	this._reset();
-			  	this.add(models, {silent: true});
-			  	if (!options.silent) this.trigger('reset', this, options);
-			  	return this;
+				options || (options = {});
+				for (var i = 0, l = this.models.length; i < l; i++) {
+					this._removeReference(this.models[i]);
+				}
+				this._reset();
+				this.add(models, {silent: true, parse: options.parse});
+				if (!options.silent) this.trigger('reset', this, options);
+				return this;
 			},
 			
 			fetch: function(options) {
-			  	options || (options = {});
+			  	options = options ? collection.clone(options) : {};
+      			if (options.parse === undefined) options.parse = true;
 			  	
-			  	var collection = this
+			  	var coll = this
 			  	, 	success = options.success;
 			  	
 			  	options.success = function(resp, status, xhr) {
-					collection[options.add ? 'add' : 'reset'](collection.parse(resp, xhr), options);
+					coll[options.add ? 'add' : 'reset'](coll.parse(resp, xhr), options);
 					if (success) success(collection, resp);
 			  	};
 			  	
-			  	options.error = wrapError(options.error, collection, options);
+			  	options.error = wrapError(options.error, coll, options);
 			  	return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
 			},
 			
 			create: function(model, options) {
 			  	var coll = this;
-			  	options || (options = {});
-			  	model = this._prepareModel(model, options);
-			  	if (!model) return false;
-			  	var success = options.success;
-			  	options.success = function(nextModel, resp, xhr) {
-					coll.add(nextModel, options);
-					if (success) success(nextModel, resp, xhr);
-			  	};
-			  	model.save(null, options);
-			  	return model;
+				options = options ? _.clone(options) : {};
+				model = this._prepareModel(model, options);
+				if (!model) return false;
+				if (!options.wait) coll.add(model, options);
+				var success = options.success;
+				options.success = function(nextModel, resp, xhr) {
+					if (options.wait) coll.add(nextModel, options);
+					if (success) {
+					  	success(nextModel, resp);
+					} else {
+					  	nextModel.trigger('sync', model, resp, options);
+					}
+				};
+				model.save(null, options);
+				return model;
 			},
 			
 			parse: function(resp, xhr) {
@@ -169,43 +218,13 @@
 			_prepareModel: function(model, options) {
 			  	if (!(model instanceof Model)) {
 					var attrs = model;
-					model = new this.model(attrs, {collection: this});
-					if (model.validate && !model._performValidation(attrs, options)) model = false;
+					options.collection = this;
+					model = new this.model(attrs, options);
+					if (!model._validate(model.attributes, options)) model = false;
 			  	} else if (!model.collection) {
 					model.collection = this;
 			  	}
-			  	return model;
-			},
-			
-			_add : function(model, options) {
-			  	options || (options = {});
-			  	model = this._prepareModel(model, options);
-			  	if (!model) return false;
-			  	var already = this.getByCid(model);
-			  	if (already) throw new SushiError(["Can't add the same model to a set twice", already.id]);
-			  	this._byId[model.id] = model;
-			  	this._byCid[model.cid] = model;
-			  	var index = options.at != null ? options.at :
-						  this.comparator ? this.sortedIndex(model, this.comparator) :
-						  this.length;
-			  	this.models.splice(index, 0, model);
-			  	model.bind('all', this._onModelEvent);
-			  	this.length++;
-			  	if (!options.silent) model.trigger('add', model, this, options);
-			  	return model;
-			},
-			
-			_remove : function(model, options) {
-			  	options || (options = {});
-			  	model = this.getByCid(model) || this.get(model);
-			  	if (!model) return null;
-			  	delete this._byId[model.id];
-			  	delete this._byCid[model.cid];
-			  	this.models.splice(this.indexOf(model), 1);
-			  	this.length--;
-			  	if (!options.silent) model.trigger('remove', model, this, options);
-			  	this._removeReference(model);
-			  	return model;
+			  return model;
 			},
 			
 			_removeReference : function(model) {

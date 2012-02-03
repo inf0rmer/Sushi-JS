@@ -16,13 +16,12 @@
  	 * @namespace Sushi
  	 * @class router
  	 */
- 	function() {
+ 	function(event, utils, History) {
  		Sushi.namespace('Router');
  		
- 		var namedParam    = /:([\w\d]+)/g,
-		splatParam    = /\*([\w\d]+)/g,
+ 		var namedParam    = /:\w+/g,
+		splatParam    = /\*\w+/g,
 	  	escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g,
-	  	utils = Sushi.utils,
  		Router = new Sushi.Class({
  			constructor: function(options) {
  				options || (options = {});
@@ -49,14 +48,18 @@
 			 *
 			 */
  			route : function(route, name, callback) {
-				Sushi.history || (Sushi.history = new Sushi.History());
+				Sushi.history || (Sushi.history = new History());
 			  	if (!utils.isRegExp(route)) route = this._routeToRegExp(route);
+			  	if (!callback) callback = this[name];
 
 			  	Sushi.history.route(route, utils.bind(function(fragment) {
 					var args = this._extractParameters(route, fragment);
-					callback.apply(this, args);
+					callback && callback.apply(this, args);
 					this.trigger.apply(this, ['route:' + name].concat(args));
+					Sushi.history.trigger('route', this, name, args);
 			  	}, this));
+			  	
+			  	return this;
 			},
 			
 			/**
@@ -65,11 +68,11 @@
 			 * @method navigate
 			 *
 			 * @param {String} fragment
-			 * @param {Boolean} triggerRoute Trigger the route immediately?
+			 * @param {Object} options Options Hash
 			 *
 			 */
-			navigate : function(fragment, triggerRoute) {
-				Sushi.history.navigate(fragment, triggerRoute);
+			navigate : function(fragment, options) {
+				Sushi.history.navigate(fragment, options);
 			},
 			
 			/**
@@ -114,7 +117,7 @@
 			}
  		});
  		
- 		Sushi.extendClass(Router, Sushi.event);
+ 		Sushi.extendClass(Router, event);
  		
  		Sushi.Router = Router;
  		

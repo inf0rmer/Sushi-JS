@@ -6,7 +6,9 @@
  	// Module dependencies
  	[
  		'sushi.utils',
- 		'sushi.$'
+ 		'sushi.event',
+ 		'sushi.$',
+ 		'sushi.error'
     ],
 
  	/**
@@ -15,12 +17,19 @@
  	 * @namespace Sushi
  	 * @class history
  	 */
- 	function(utils, $) {
+ 	function(utils, event, $, SushiError) {
  		Sushi.namespace('History');
  		
- 		var hashStrip = /^#*/,
+ 		var routeStripper = /^[#\/]/,
  		isExplorer = /msie [\w.]+/,
- 		historyStarted = false;
+ 		historyStarted = false,
+ 		_updateHash = function(location, fragment, replace) {
+		  	if (replace) {
+				location.replace(location.toString().replace(/(javascript:|#).*$/, '') + '#' + fragment);
+		  	} else {
+				location.hash = fragment;
+		  	}
+		}
 	  	
  		Sushi.History = function() {
 			this.handlers = [];
@@ -36,17 +45,18 @@
 				  		fragment = window.location.pathname;
 				  		var search = window.location.search;
 				  		if (search) fragment += search;
-				  		if (fragment.indexOf(this.options.root) == 0) fragment = fragment.substr(this.options.root.length);
 					} else {
 				  		fragment = window.location.hash;
 					}
 			  	}
-			  	return decodeURIComponent(fragment.replace(hashStrip, ''));
+			  	fragment = decodeURIComponent(fragment);
+			  	if (fragment.indexOf(this.options.root) == 0) fragment = fragment.substr(this.options.root.length);
+			  	return fragment.replace(routeStripper, '');
 			},
 			
 			start : function(options) {
-				if (historyStarted) throw new Error("Sushi.history has already been started");
-				this.options          = Sushi.extend({}, {root: '/'}, this.options, options);
+				if (historyStarted) throw new SushiError("Sushi.history has already been started");
+				this.options          = Sushi.extend({root: '/'}, Sushi.extend(this.options, options), true);
 				this._wantsPushState  = !!this.options.pushState;
 				this._hasPushState    = !!(this.options.pushState && window.history && window.history.pushState);
 				var fragment          = this.getFragment();
@@ -69,18 +79,26 @@
 			  	historyStarted = true;
 			  	var loc = window.location;
 			  	var atRoot  = loc.pathname == this.options.root;
-			  	if (this._wantsPushState && !this._hasPushState && !atRoot) {
+			  	
+			  	if (this._wantsHashChange && this._wantsPushState && !this._hasPushState && !atRoot) {
 					this.fragment = this.getFragment(null, true);
 					window.location.replace(this.options.root + '#' + this.fragment);
+					
 					return true;
-			  	} else if (this._wantsPushState && this._hasPushState && atRoot && loc.hash) {
-					this.fragment = loc.hash.replace(hashStrip, '');
+				} else if (this._wantsPushState && this._hasPushState && atRoot && loc.hash) {
+					this.fragment = loc.hash.replace(routeStripper, '');
 					window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root + this.fragment);
-			  	}
+				}
 		
 			  	if (!this.options.silent) {
 					return this.loadUrl();
 			  	}
+			},
+			
+			stop: function() {
+				$(window).unbind('popstate', this.checkUrl).unbind('hashchange', this.checkUrl);
+				clearInterval(this._checkUrlInterval);
+				historyStarted = false;
 			},
 			
 			route : function(route, callback) {
@@ -106,24 +124,32 @@
 			  	return matched;
 			},
 			
-			navigate : function(fragment, triggerRoute) {
-				var frag = (fragment || '').replace(hashStrip, '');
+			navigate : function(fragment, options) {
+				if (!historyStarted) return false;
+				if (!options || options === true) options = {trigger: options};
+				var frag = (fragment || '').replace(routeStripper, '');
+				
 			  	if (this.fragment == frag || this.fragment == decodeURIComponent(frag)) return;
+			  	
 			  	if (this._hasPushState) {
-					var loc = window.location;
 					if (frag.indexOf(this.options.root) != 0) frag = this.options.root + frag;
 					this.fragment = frag;
-					window.history.pushState({}, document.title, loc.protocol + '//' + loc.host + frag);
-			  	} else {
-					window.location.hash = this.fragment = frag;
+					window.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, frag);
+			  	} else if (this._wantsHashChange) {
+					this.fragment = frag;
+					_updateHash(window.location, frag, options.replace);
 					if (this.iframe && (frag != this.getFragment(this.iframe.location.hash))) {
-				  		this.iframe.document.open().close();
-				  		this.iframe.location.hash = frag;
-					}
+						if(!options.replace) this.iframe.document.open().close();
+			          	_updateHash(this.iframe.location, frag, options.replace);
+			        }
+			  	} else {
+			  		window.location.assign(this.options.root + fragment);
 			  	}
-			  	if (triggerRoute) this.loadUrl(fragment);
+			  	if (options.trigger) this.loadUrl(fragment);
 			}
  		});
+ 		
+ 		Sushi.extend(Sushi.History.prototype, event);
  		
  		return Sushi.History;
  	}

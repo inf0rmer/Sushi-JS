@@ -39,10 +39,10 @@ define('sushi.mvc.model',
 			};
 		},
 		
-		getUrl = function(object) {
-    		if (!(object && object.url)) return null;
-    		return utils.isFunction(object.url) ? object.url() : object.url;
-  		},
+		getValue = function(object, prop) {	
+			if (!(object && object[prop])) return null;	
+			return utils.isFunction(object[prop]) ? object[prop]() : object[prop];
+		},
   		
 		urlError = function() {
 			throw new SushiError('A "url" property or function must be specified');
@@ -52,24 +52,27 @@ define('sushi.mvc.model',
 			constructor: function(attributes, options) {
 				var defaults;
 				attributes || (attributes = {});
-				if (defaults = this.defaults) {
-					if (utils.isFunction(defaults)) defaults = defaults.call(this);
-				  	
+				if (options && options.parse) attributes = this.parse(attributes);
+				
+				if (defaults = getValue(this, 'defaults')) {				  	
 				  	Sushi.extend(attributes, defaults, false);
 				}
 				
 				this.attributes = {};
 				this._escapedAttributes = {};
 				this.cid = utils.uniqueId('c');
-				this.set(attributes, {silent : true});
-				this._changed = false;
+				this._changed = {};
+				if (!this.set(attributes, {silent: true})) {
+					throw new SushiError("Can't create an invalid model");
+				}
+				
 				this._previousAttributes = collection.clone(this.attributes);
 				
 				if (options && options.collection) this.collection = options.collection;
 				
 				if (this.collection && this.collection.store) this.store = this.collection.store;
 				
-				this.initialize(attributes, options);
+				this.initialize.apply(this, arguments);
 			},
 			
 			_previousAttributes: null,
@@ -145,40 +148,60 @@ define('sushi.mvc.model',
 			 *
 			 * @return {Model} Model instance.
 			 */
-			set: function(attrs, options) {
+			set: function(key, value, options) {
 				var now,
+					attrs,
+					attr,
 					escaped,
-					alreadyChanging,
+					prev,
+					alreadySetting,
 					val;
+					
+				if (utils.isObject(key) || key == null) {
+					attrs = key;
+					options = value;
+				} else {
+					attrs = {};
+					attrs[key] = value;
+				}
 					
 				options || (options = {});
 				if (!attrs) return this;
-				if (attrs.attributes) attrs = attrs.attributes;
+				if (attrs instanceof Model) attrs = attrs.attributes;
+				if (options.unset) for (var attr in attrs) attrs[attr] = void 0;
+				
+				if (!this._validate(attrs, options)) return false;
+				if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
 				
 				now = this.attributes; 
 				escaped = this._escapedAttributes;
-				
-				if (!options.silent && this.validate && !this._performValidation(attrs, options)) return false;
-				
-				if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
-				
-				alreadyChanging = this._changing;
-      			this._changing = true;
+				prev = this._previousAttributes || {};
+				alreadySetting = this._setting;
+				this._changed || (this._changed = {});
+      			this._setting = true;
       			
       			for (var attr in attrs) {
 					val = attrs[attr];
 					
-					if (!utils.isEqual(now[attr], val)) {
-				  		now[attr] = val;
-				  		delete escaped[attr];
-				  		this._changed = true;
-				  		
-				  		if (!options.silent) this.trigger('change:' + attr, this, val, options);
+					if (!utils.isEqual(now[attr], val)) delete escaped[attr];
+
+					options.unset ? delete now[attr] : now[attr] = val;
+		
+					if (this._changing && !_.isEqual(this._changed[attr], val)) {
+						this.trigger('change:' + attr, this, val, options);
+						this._moreChanges = true;
+					}
+					delete this._changed[attr];
+				  	
+				  	if (!utils.isEqual(prev[attr], val) || (utils.has(now, attr) != utils.has(prev, attr))) {
+						this._changed[attr] = val;
 					}
 			  	}
 			  	
-			  	if (!alreadyChanging && !options.silent && this._changed) this.change(options);
-				this._changing = false;
+			  	if (!alreadySetting) {
+					if (!options.silent && this.hasChanged()) this.change(options);
+					this._setting = false;
+			  }
 				
 				return this;
 			},
@@ -193,29 +216,8 @@ define('sushi.mvc.model',
 			 * @return {Model} Model instance.
 			 */
 			unset: function(attr, options) {
-				var value,
-					validObj = {};
-				
-				if (!(attr in this.attributes)) return this;
-				options || (options = {});
-				value = this.attributes[attr];
-				
-				// Run validation
-				validObj[attr] = void 0;
-				if (!options.silent && this.validate && !this._performValidation(validObj, options)) return false;
-				
-				// Remove the attribute
-				delete this.attributes[attr];
-				delete this._escapedAttributes[attr];
-				
-				if (attr == this.idAttribute) delete this.id;
-				this._changed = true;
-				if (!options.silent) {
-					this.trigger('change:' + attr, this, void 0, options);
-					this.change(options);
-				}
-				
-				return this;
+				(options || (options = {})).unset = true;
+      			return this.set(attr, null, options);
 			},
 			
 			/**
@@ -227,32 +229,12 @@ define('sushi.mvc.model',
 			 * @return {Model} Model instance.
 			 */
 			clear: function(options) {
-				options || (options = {});
-     			var attr,
-			    	old = this.attributes,
-			    	validObj = {};
-				
-				// Run validation
-				for (attr in old) validObj[attr] = void 0;
-				
-				if (!options.silent && this.validate && !this._performValidation(validObj, options)) return false;
-				
-				this.attributes = {};
-				this._escapedAttributes = {};
-				this._changed = true;
-					
-				if (!options.silent) {
-					for (attr in old) {
-					  	this.trigger('change:' + attr, this, void 0, options);
-					}
-					this.change(options);
-				}
-					
-				return this;
+				(options || (options = {})).unset = true;
+      			return this.set(collection.clone(this.attributes), options);
 			},
 			
 			fetch: function(options) {
-				options || (options = {});
+				options = options ? collection.clone(options) : {};
 				var model = this
 				,	success = options.success;
 				
@@ -265,26 +247,49 @@ define('sushi.mvc.model',
 				return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
 			},
 			
-			save: function(attrs, options) {
-				options || (options = {});
-				if (attrs && !this.set(attrs, options)) return false;
+			save: function(key, value, options) {
+				var attrs, current;
+				if (utils.isObject(key) || key == null) {
+					attrs = key;
+					options = value;
+				} else {
+					attrs = {};
+					attrs[key] = value;
+				}
+				
+				options = options ? collection.clone(options) : {};
+				if (options.wait) current = collection.clone(this.attributes);
+				var silentOptions = Sushi.extend(options, {silent: true});
+				
+				if (attrs && !this.set(attrs, options.wait ? silentOptions : options)) {
+					return false;
+			  	}
 				
 				var model = this
 			  	,	success = options.success
 				,  	method = this.isNew() ? 'create' : 'update';
 			  	
 			  	options.success = function(resp, status, xhr) {
-					if (!model.set(model.parse(resp, xhr), options)) return false;
-					if (success) success(model, resp, xhr);
+					var serverAttrs = model.parse(resp, xhr);
+					if (options.wait) serverAttrs = Sushi.extend(attrs || {}, serverAttrs);
+					if (!model.set(serverAttrs, options)) return false;
+					if (success) {
+					  	success(model, resp);
+					} else {
+					  	model.trigger('sync', model, resp, options);
+					}
 			  	};
 			  	
 			  	options.error = wrapError(options.error, model, options);
-
-			  	return (this.sync || this.store.sync || stores.default.sync).call(this, method, this, options);
+				var method = this.isNew() ? 'create' : 'update';
+				var xhr = (this.sync || this.store.sync || stores.default.sync).call(this, method, this, options);
+				if (options.wait) this.set(current, silentOptions);
+				return xhr;
 			},
 			
 			/**
-			 * Destroy this model on the server if it was already persisted. Upon success, the model is removed from its collection, if it has one.
+			 * Destroy this model on the server if it was already persisted. Optimistically removes the model from its collection, if it has one. 
+			 * If wait: true is passed, waits for the server to respond before removal.
 			 *
 			 * @method clear
 			 * @param {Object} options 
@@ -292,25 +297,36 @@ define('sushi.mvc.model',
 			 * @return {Model} Model instance.
 			 */
 			destroy: function(options) {
-				options || (options = {});
-		  		if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
-		  		
-		  		var model = this
-		  		,	success = options.success;
+				options = options ? collection.clone(options) : {};
+				var model = this
+			  	, 	
+			  	success = options.success
+			  	, 	
+			  	triggerDestroy = function() {
+						model.trigger('destroy', model, model.collection, options);
+			  	};
+			  	
+		  		if (this.isNew()) return triggerDestroy();
 		  		
 		  		model.trigger('destroy', model, model.collection, options);
 		  		
 		  		options.success = function(resp) {
-					model.trigger('destroy', model, model.collection, options);
-					if (success) success(model, resp);
+					if (options.wait) triggerDestroy();
+					if (success) {
+					  	success(model, resp);
+					} else {
+					  	model.trigger('sync', model, resp, options);
+					}
 		  		};
 		  		
 		  		options.error = wrapError(options.error, model, options);
-		  		return (this.sync || this.store.sync || stores.default.sync).call(this, 'delete', this, options);
+		  		var xhr = (this.sync || this.store.sync || stores.default.sync).call(this, 'delete', this, options);
+		  		if (!options.wait) triggerDestroy();
+      			return xhr;
 			},
 			
 			url: function() {
-				var base = getUrl(this.collection) || this.urlRoot || urlError();
+				var base = getValue(this.collection, 'url') || getValue(this, 'urlRoot') || urlError();
 			  	if (this.isNew()) return base;
 			  	return base + (base.charAt(base.length - 1) == '/' ? '' : '/') + encodeURIComponent(this.id);
 			},
@@ -357,9 +373,20 @@ define('sushi.mvc.model',
 			 *
 			 */
 			change: function(options) {
-				this.trigger('change', this, options);
-      			this._previousAttributes = collection.clone(this.attributes);
-      			this._changed = false;
+				if (this._changing || !this.hasChanged()) return this;
+				this._changing = true;
+				this._moreChanges = true;
+				for (var attr in this._changed) {
+					this.trigger('change:' + attr, this, this._changed[attr], options);
+				}
+				while (this._moreChanges) {
+					this._moreChanges = false;
+					this.trigger('change', this, options);
+				}
+				this._previousAttributes = collection.clone(this.attributes);
+				delete this._changed;
+				this._changing = false;
+				return this;
 			},
 			
 			/**
@@ -371,8 +398,8 @@ define('sushi.mvc.model',
 			 * @return {Boolean}
 			 */
 			hasChanged: function(attr) {
-				if (attr) return this._previousAttributes[attr] != this.attributes[attr];
-      			return this._changed;
+				if (!arguments.length) return !utils.isEmpty(this._changed);
+      			return this._changed && utils.has(this._changed, attr);
 			},
 			
 			/**
@@ -383,15 +410,13 @@ define('sushi.mvc.model',
 			 *
 			 * @return {Object|Boolean}
 			 */
-			changedAttributes: function(now) {
-				now || (now = this.attributes);
-				var old = this._previousAttributes;
-				var changed = false;
-				for (var attr in now) {
-					if (!utils.isEqual(old[attr], now[attr])) {
-					  	changed = changed || {};
-					  	changed[attr] = now[attr];
-					}
+			changedAttributes: function(diff) {
+				if (!diff) return this.hasChanged() ? collection.clone(this._changed) : false;
+				var val, changed = false, old = this._previousAttributes;
+				
+				for (var attr in diff) {
+					if (utils.isEqual(old[attr], (val = diff[attr]))) continue;
+					(changed || (changed = {}))[attr] = val;
 				}
 				
 				return changed;
@@ -423,25 +448,26 @@ define('sushi.mvc.model',
 			/**
 			 * Run validation against a set of incoming attributes, returning true if all is well. If a specific error callback has been passed, call that instead of firing the general "error" event.
 			 *
-			 * @method _performValidation
+			 * @method _validate
 			 * @param {Object} attrs Hash of attributes to validate
 			 * @param {Object} options
 			 *
 			 * @return {Boolean}
 			 */
-			_performValidation: function(attrs, options) {
-				var error = this.validate(attrs);
-				if (error) {
-					if (options.error) {
-					  	options.error(this, error, options);
-					} else {
-					  	this.trigger('error', this, error, options);
-					}
-					
-					return false;
-				}
-				
-				return true;
+			_validate: function(attrs, options) {
+			  	if (options.silent || !this.validate) return true;
+			  	attrs = Sushi.extend(this.attributes, attrs);
+			  	
+			  	var error = this.validate(attrs, options);
+			  	if (!error) return true;
+			  	
+			  	if (options && options.error) {
+					options.error(this, error, options);
+			  	} else {
+					this.trigger('error', this, error, options);
+			  	}
+			  	
+			  	return false;
 			}
 		});
 		
