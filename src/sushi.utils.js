@@ -75,7 +75,15 @@ define('sushi.utils',
 				  	if (Object(result) === result) return result;
 				  	return self;
 				};
-			},   
+			},
+			
+			/**
+			* Alias for hasOwnProperty
+			*
+			*/
+			has: function(obj, key) {
+				return hasOwnProperty.call(obj, key);
+			},
 			
 			// Utility "is" methods. Lifted from Underscore.js
 			/**
