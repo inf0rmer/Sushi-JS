@@ -9,7 +9,7 @@ define [
 	ContactsApp.Data = Data
 	
 	ContactsApp.Router = new AppRouter
-	Sushi.history.start()
+	Sushi.history.start( root: "/~brunoabrantes/sushi/demos/contacts/");
 	
 	Data.bind('destroy', () ->
 		ContactsApp.Router.navigate '/'

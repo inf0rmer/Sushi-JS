@@ -355,6 +355,8 @@ define('sushi.core',
 		 * @return {Object} Extended object
 		 */
 		extend = function(obj, extension, override) {
+			obj = obj || {};
+			extension = extension || {};
 			var prop;
 			if (override === false) {
 				for (prop in extension)
@@ -602,7 +604,15 @@ define('sushi.utils',
 				  	if (Object(result) === result) return result;
 				  	return self;
 				};
-			},   
+			},
+			
+			/**
+			* Alias for hasOwnProperty
+			*
+			*/
+			has: function(obj, key) {
+				return hasOwnProperty.call(obj, key);
+			},
 			
 			// Utility "is" methods. Lifted from Underscore.js
 			/**
@@ -2005,10 +2015,10 @@ define('sushi.mvc.model',
 			};
 		},
 		
-		getUrl = function(object) {
-    		if (!(object && object.url)) return null;
-    		return utils.isFunction(object.url) ? object.url() : object.url;
-  		},
+		getValue = function(object, prop) {	
+			if (!(object && object[prop])) return null;	
+			return utils.isFunction(object[prop]) ? object[prop]() : object[prop];
+		},
   		
 		urlError = function() {
 			throw new SushiError('A "url" property or function must be specified');
@@ -2018,24 +2028,27 @@ define('sushi.mvc.model',
 			constructor: function(attributes, options) {
 				var defaults;
 				attributes || (attributes = {});
-				if (defaults = this.defaults) {
-					if (utils.isFunction(defaults)) defaults = defaults.call(this);
-				  	
+				if (options && options.parse) attributes = this.parse(attributes);
+				
+				if (defaults = getValue(this, 'defaults')) {				  	
 				  	Sushi.extend(attributes, defaults, false);
 				}
 				
 				this.attributes = {};
 				this._escapedAttributes = {};
 				this.cid = utils.uniqueId('c');
-				this.set(attributes, {silent : true});
-				this._changed = false;
+				this._changed = {};
+				if (!this.set(attributes, {silent: true})) {
+					throw new SushiError("Can't create an invalid model");
+				}
+				
 				this._previousAttributes = collection.clone(this.attributes);
 				
 				if (options && options.collection) this.collection = options.collection;
 				
 				if (this.collection && this.collection.store) this.store = this.collection.store;
 				
-				this.initialize(attributes, options);
+				this.initialize.apply(this, arguments);
 			},
 			
 			_previousAttributes: null,
@@ -2111,40 +2124,60 @@ define('sushi.mvc.model',
 			 *
 			 * @return {Model} Model instance.
 			 */
-			set: function(attrs, options) {
+			set: function(key, value, options) {
 				var now,
+					attrs,
+					attr,
 					escaped,
-					alreadyChanging,
+					prev,
+					alreadySetting,
 					val;
+					
+				if (utils.isObject(key) || key == null) {
+					attrs = key;
+					options = value;
+				} else {
+					attrs = {};
+					attrs[key] = value;
+				}
 					
 				options || (options = {});
 				if (!attrs) return this;
-				if (attrs.attributes) attrs = attrs.attributes;
+				if (attrs instanceof Model) attrs = attrs.attributes;
+				if (options.unset) for (var attr in attrs) attrs[attr] = void 0;
+				
+				if (!this._validate(attrs, options)) return false;
+				if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
 				
 				now = this.attributes; 
 				escaped = this._escapedAttributes;
-				
-				if (!options.silent && this.validate && !this._performValidation(attrs, options)) return false;
-				
-				if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
-				
-				alreadyChanging = this._changing;
-      			this._changing = true;
+				prev = this._previousAttributes || {};
+				alreadySetting = this._setting;
+				this._changed || (this._changed = {});
+      			this._setting = true;
       			
       			for (var attr in attrs) {
 					val = attrs[attr];
 					
-					if (!utils.isEqual(now[attr], val)) {
-				  		now[attr] = val;
-				  		delete escaped[attr];
-				  		this._changed = true;
-				  		
-				  		if (!options.silent) this.trigger('change:' + attr, this, val, options);
+					if (!utils.isEqual(now[attr], val)) delete escaped[attr];
+
+					options.unset ? delete now[attr] : now[attr] = val;
+		
+					if (this._changing && !_.isEqual(this._changed[attr], val)) {
+						this.trigger('change:' + attr, this, val, options);
+						this._moreChanges = true;
+					}
+					delete this._changed[attr];
+				  	
+				  	if (!utils.isEqual(prev[attr], val) || (utils.has(now, attr) != utils.has(prev, attr))) {
+						this._changed[attr] = val;
 					}
 			  	}
 			  	
-			  	if (!alreadyChanging && !options.silent && this._changed) this.change(options);
-				this._changing = false;
+			  	if (!alreadySetting) {
+					if (!options.silent && this.hasChanged()) this.change(options);
+					this._setting = false;
+			  }
 				
 				return this;
 			},
@@ -2159,29 +2192,8 @@ define('sushi.mvc.model',
 			 * @return {Model} Model instance.
 			 */
 			unset: function(attr, options) {
-				var value,
-					validObj = {};
-				
-				if (!(attr in this.attributes)) return this;
-				options || (options = {});
-				value = this.attributes[attr];
-				
-				// Run validation
-				validObj[attr] = void 0;
-				if (!options.silent && this.validate && !this._performValidation(validObj, options)) return false;
-				
-				// Remove the attribute
-				delete this.attributes[attr];
-				delete this._escapedAttributes[attr];
-				
-				if (attr == this.idAttribute) delete this.id;
-				this._changed = true;
-				if (!options.silent) {
-					this.trigger('change:' + attr, this, void 0, options);
-					this.change(options);
-				}
-				
-				return this;
+				(options || (options = {})).unset = true;
+      			return this.set(attr, null, options);
 			},
 			
 			/**
@@ -2193,32 +2205,12 @@ define('sushi.mvc.model',
 			 * @return {Model} Model instance.
 			 */
 			clear: function(options) {
-				options || (options = {});
-     			var attr,
-			    	old = this.attributes,
-			    	validObj = {};
-				
-				// Run validation
-				for (attr in old) validObj[attr] = void 0;
-				
-				if (!options.silent && this.validate && !this._performValidation(validObj, options)) return false;
-				
-				this.attributes = {};
-				this._escapedAttributes = {};
-				this._changed = true;
-					
-				if (!options.silent) {
-					for (attr in old) {
-					  	this.trigger('change:' + attr, this, void 0, options);
-					}
-					this.change(options);
-				}
-					
-				return this;
+				(options || (options = {})).unset = true;
+      			return this.set(collection.clone(this.attributes), options);
 			},
 			
 			fetch: function(options) {
-				options || (options = {});
+				options = options ? collection.clone(options) : {};
 				var model = this
 				,	success = options.success;
 				
@@ -2231,26 +2223,49 @@ define('sushi.mvc.model',
 				return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
 			},
 			
-			save: function(attrs, options) {
-				options || (options = {});
-				if (attrs && !this.set(attrs, options)) return false;
+			save: function(key, value, options) {
+				var attrs, current;
+				if (utils.isObject(key) || key == null) {
+					attrs = key;
+					options = value;
+				} else {
+					attrs = {};
+					attrs[key] = value;
+				}
+				
+				options = options ? collection.clone(options) : {};
+				if (options.wait) current = collection.clone(this.attributes);
+				var silentOptions = Sushi.extend(options, {silent: true});
+				
+				if (attrs && !this.set(attrs, options.wait ? silentOptions : options)) {
+					return false;
+			  	}
 				
 				var model = this
 			  	,	success = options.success
 				,  	method = this.isNew() ? 'create' : 'update';
 			  	
 			  	options.success = function(resp, status, xhr) {
-					if (!model.set(model.parse(resp, xhr), options)) return false;
-					if (success) success(model, resp, xhr);
+					var serverAttrs = model.parse(resp, xhr);
+					if (options.wait) serverAttrs = Sushi.extend(attrs || {}, serverAttrs);
+					if (!model.set(serverAttrs, options)) return false;
+					if (success) {
+					  	success(model, resp);
+					} else {
+					  	model.trigger('sync', model, resp, options);
+					}
 			  	};
 			  	
 			  	options.error = wrapError(options.error, model, options);
-
-			  	return (this.sync || this.store.sync || stores.default.sync).call(this, method, this, options);
+				var method = this.isNew() ? 'create' : 'update';
+				var xhr = (this.sync || this.store.sync || stores.default.sync).call(this, method, this, options);
+				if (options.wait) this.set(current, silentOptions);
+				return xhr;
 			},
 			
 			/**
-			 * Destroy this model on the server if it was already persisted. Upon success, the model is removed from its collection, if it has one.
+			 * Destroy this model on the server if it was already persisted. Optimistically removes the model from its collection, if it has one. 
+			 * If wait: true is passed, waits for the server to respond before removal.
 			 *
 			 * @method clear
 			 * @param {Object} options 
@@ -2258,25 +2273,36 @@ define('sushi.mvc.model',
 			 * @return {Model} Model instance.
 			 */
 			destroy: function(options) {
-				options || (options = {});
-		  		if (this.isNew()) return this.trigger('destroy', this, this.collection, options);
-		  		
-		  		var model = this
-		  		,	success = options.success;
+				options = options ? collection.clone(options) : {};
+				var model = this
+			  	, 	
+			  	success = options.success
+			  	, 	
+			  	triggerDestroy = function() {
+						model.trigger('destroy', model, model.collection, options);
+			  	};
+			  	
+		  		if (this.isNew()) return triggerDestroy();
 		  		
 		  		model.trigger('destroy', model, model.collection, options);
 		  		
 		  		options.success = function(resp) {
-					model.trigger('destroy', model, model.collection, options);
-					if (success) success(model, resp);
+					if (options.wait) triggerDestroy();
+					if (success) {
+					  	success(model, resp);
+					} else {
+					  	model.trigger('sync', model, resp, options);
+					}
 		  		};
 		  		
 		  		options.error = wrapError(options.error, model, options);
-		  		return (this.sync || this.store.sync || stores.default.sync).call(this, 'delete', this, options);
+		  		var xhr = (this.sync || this.store.sync || stores.default.sync).call(this, 'delete', this, options);
+		  		if (!options.wait) triggerDestroy();
+      			return xhr;
 			},
 			
 			url: function() {
-				var base = getUrl(this.collection) || this.urlRoot || urlError();
+				var base = getValue(this.collection, 'url') || getValue(this, 'urlRoot') || urlError();
 			  	if (this.isNew()) return base;
 			  	return base + (base.charAt(base.length - 1) == '/' ? '' : '/') + encodeURIComponent(this.id);
 			},
@@ -2323,9 +2349,20 @@ define('sushi.mvc.model',
 			 *
 			 */
 			change: function(options) {
-				this.trigger('change', this, options);
-      			this._previousAttributes = collection.clone(this.attributes);
-      			this._changed = false;
+				if (this._changing || !this.hasChanged()) return this;
+				this._changing = true;
+				this._moreChanges = true;
+				for (var attr in this._changed) {
+					this.trigger('change:' + attr, this, this._changed[attr], options);
+				}
+				while (this._moreChanges) {
+					this._moreChanges = false;
+					this.trigger('change', this, options);
+				}
+				this._previousAttributes = collection.clone(this.attributes);
+				delete this._changed;
+				this._changing = false;
+				return this;
 			},
 			
 			/**
@@ -2337,8 +2374,8 @@ define('sushi.mvc.model',
 			 * @return {Boolean}
 			 */
 			hasChanged: function(attr) {
-				if (attr) return this._previousAttributes[attr] != this.attributes[attr];
-      			return this._changed;
+				if (!arguments.length) return !utils.isEmpty(this._changed);
+      			return this._changed && utils.has(this._changed, attr);
 			},
 			
 			/**
@@ -2349,15 +2386,13 @@ define('sushi.mvc.model',
 			 *
 			 * @return {Object|Boolean}
 			 */
-			changedAttributes: function(now) {
-				now || (now = this.attributes);
-				var old = this._previousAttributes;
-				var changed = false;
-				for (var attr in now) {
-					if (!utils.isEqual(old[attr], now[attr])) {
-					  	changed = changed || {};
-					  	changed[attr] = now[attr];
-					}
+			changedAttributes: function(diff) {
+				if (!diff) return this.hasChanged() ? collection.clone(this._changed) : false;
+				var val, changed = false, old = this._previousAttributes;
+				
+				for (var attr in diff) {
+					if (utils.isEqual(old[attr], (val = diff[attr]))) continue;
+					(changed || (changed = {}))[attr] = val;
 				}
 				
 				return changed;
@@ -2389,25 +2424,26 @@ define('sushi.mvc.model',
 			/**
 			 * Run validation against a set of incoming attributes, returning true if all is well. If a specific error callback has been passed, call that instead of firing the general "error" event.
 			 *
-			 * @method _performValidation
+			 * @method _validate
 			 * @param {Object} attrs Hash of attributes to validate
 			 * @param {Object} options
 			 *
 			 * @return {Boolean}
 			 */
-			_performValidation: function(attrs, options) {
-				var error = this.validate(attrs);
-				if (error) {
-					if (options.error) {
-					  	options.error(this, error, options);
-					} else {
-					  	this.trigger('error', this, error, options);
-					}
-					
-					return false;
-				}
-				
-				return true;
+			_validate: function(attrs, options) {
+			  	if (options.silent || !this.validate) return true;
+			  	attrs = Sushi.extend(this.attributes, attrs);
+			  	
+			  	var error = this.validate(attrs, options);
+			  	if (!error) return true;
+			  	
+			  	if (options && options.error) {
+					options.error(this, error, options);
+			  	} else {
+					this.trigger('error', this, error, options);
+			  	}
+			  	
+			  	return false;
 			}
 		});
 		
@@ -4589,22 +4625,25 @@ define('sushi.mvc.view',
 		 */
 		Sushi.namespace('View');
 		
-		var	selectorDelegate = function(selector) {
-    			return $(selector, this.el);
-  			},
-  			eventSplitter = /^(\S+)\s*(.*)$/,
-  			viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName'];
+		var	eventSplitter = /^(\S+)\s*(.*)$/,
+  			viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName'],
+  			getValue = function(object, prop) {	
+				if (!(object && object[prop])) return null;	
+				return utils.isFunction(object[prop]) ? object[prop]() : object[prop];
+			};
 		
 		Sushi.View = Sushi.Class({
 			constructor: function(options) {				
 				this.cid = utils.uniqueId('view');
 				this._configure(options || {});
 				this._ensureElement();
-				this.delegateEvents();
 				this.initialize.apply(this, arguments);
+				this.delegateEvents();
 			},
 			
-			$: selectorDelegate,
+			$: function(selector) {
+			  	return this.$el.find(selector);
+			},
 			
 			tagName: 'div',
 			
@@ -4615,38 +4654,49 @@ define('sushi.mvc.view',
 			},
 			
 			remove: function() {
-				$(this.el).remove();
+				this.$el.remove();
 				return this;
 			},
 			
+			setElement: function(element, delegate) {
+				this.$el = $(element);
+			  	this.el = this.$el[0];
+			  	if (delegate !== false) this.delegateEvents();
+			  	return this;
+			},
+			
 			delegateEvents: function(events) {
-			  	if (!(events || (events = this.events))) return;
-			  	if (utils.isFunction(events)) events = events.call(this);
+			  	if (!(events || (events = getValue(this, 'events')))) return;
 			  	
-			  	$(this.el).unbind('.delegateEvents' + this.cid);
+			  	this.undelegateEvents();
 			  	
 			  	for (var key in events) {
 					var method = this[events[key]];
+					if (!utils.isFunction(method)) method = this[events[key]];
 					if (!method) throw new Error('Event "' + events[key] + '" does not exist');
 					
 					var match = key.match(eventSplitter);
 					var eventName = match[1], selector = match[2];
 					
-					method = Sushi.utils.bind(method, this);
+					method = utils.bind(method, this);
 					eventName += '.delegateEvents' + this.cid;
 					
 					if (selector === '') {
-				  		$(this.el).delegate(eventName, method);
+				  		this.$el.delegate(eventName, method);
 					} else {
-						$(this.el).delegate(selector, eventName, method, $);
+						this.$el.delegate(selector, eventName, method, $);
 					}
 			  	}
 			},
 			
+			undelegateEvents: function() {
+			  	this.$el.unbind('.delegateEvents' + this.cid);
+			},
+			
 			dealloc: function() {
 				if (!this.el) return false;
-				$(this.el).unbind('.delegateEvents' + this.cid);
-				$(this.el).remove();
+				this.$el.unbind('.delegateEvents' + this.cid);
+				this.$el.remove();
 			},
 			
 			make : function(tagName, attributes, content) {
@@ -4672,9 +4722,9 @@ define('sushi.mvc.view',
 					var attrs = this.attributes || {};
 					if (this.id) attrs.id = this.id;
 					if (this.className) attrs['class'] = this.className;
-					this.el = this.make(this.tagName, attrs);
+					this.setElement(this.make(this.tagName, attrs));
 			  	} else if (utils.isString(this.el)) {
-					this.el = $(this.el).get(0);
+					this.setElement(this.el, false);
 			  	}
 			}
 		});
@@ -4718,13 +4768,13 @@ define('sushi.mvc.view',
 						model.trigger('error', model, resp, options);
 					}
 				};
-		  	};
+		  	},
+		  	splice = Array.prototype.splice;
  		
  		Collection = new Sushi.Class({
  			constructor: function(models, options) {
  				options || (options = {});
 				if (options.comparator) this.comparator = options.comparator;
-				utils.bindAll(this, '_onModelEvent', '_removeReference');
 				this._reset();
 				if (models) this.reset(models, {silent: true});				
 				this.initialize.apply(this, arguments);
@@ -4741,29 +4791,63 @@ define('sushi.mvc.view',
  			},
  			
  			add: function(models, options) {
- 				options || (options = {});
-			  	if (utils.isArray(models)) {
-					for (var i = 0, l = models.length; i < l; i++) {
-				  		this._add(models[i], options);
+ 				var i, index, length, model, cid, id, cids = {}, ids = {};
+				options || (options = {});
+				models = utils.isArray(models) ? models.slice() : [models];
+				
+				//Begin by turning bare objects into model references, and preventing invalid models or duplicate models from being added.
+				for (i = 0, length = models.length; i < length; i++) {
+					if (!(model = models[i] = this._prepareModel(models[i], options))) {
+				  		throw new SushiError("Can't add an invalid model to a collection");
 					}
-			  	} else {
-					this._add(models, options);
+					if (cids[cid = model.cid] || this._byCid[cid] ||
+				  		(((id = model.id) != null) && (ids[id] || this._byId[id]))) {
+				  		throw new SushiError("Can't add the same model to a collection twice");
+					}
+					cids[cid] = ids[id] = model;
+			 	}
+			 	
+			 	//Listen to added models' events, and index models for lookup by id and by cid.
+			 	for (i = 0; i < length; i++) {
+					(model = models[i]).bind('all', this._onModelEvent, this);
+					this._byCid[model.cid] = model;
+					if (model.id != null) this._byId[model.id] = model;
 			  	}
 			  	
-			  	return this;
+			  	//Insert models into the collection, re-sorting if needed, and triggering add events unless silenced.
+			  	this.length += length;
+				index = options.at != null ? options.at : this.models.length;
+				splice.apply(this.models, [index, 0].concat(models));
+				if (this.comparator) this.sort({silent: true});
+				if (options.silent) return this;
+				for (i = 0, length = this.models.length; i < length; i++) {
+					if (!cids[(model = this.models[i]).cid]) continue;
+					options.index = i;
+					model.trigger('add', model, this, options);
+				}
+				return this;
 			},
 			
 			remove: function(models, options) {
-				if (utils.isArray(models)) {
-					models = models.slice(0);
-					for (var i = 0, l = models.length; i < l; i++) {
-				  		this._remove(models[i], options);
-					}
-					models = null;
-			 	} else {
-					this._remove(models, options);
-			  	}
-			  	return this;
+				var i, l, index, model;
+				options || (options = {});
+				models = utils.isArray(models) ? models.slice() : [models];
+				for (i = 0, l = models.length; i < l; i++) {
+					model = this.getByCid(models[i]) || this.get(models[i]);
+					if (!model) continue;
+					delete this._byId[model.id];
+					delete this._byCid[model.cid];
+					index = this.indexOf(model);
+					this.models.splice(index, 1);
+					this.length--;
+					if (!options.silent) {
+					  options.index = index;
+					  model.trigger('remove', model, this, options);
+				}
+					this._removeReference(model);
+				}
+				
+				return this;
 			},
 			
 			get: function(id) {
@@ -4782,9 +4866,16 @@ define('sushi.mvc.view',
 			sort: function(options) {
 			  	options || (options = {});
 			  	if (!this.comparator) throw new SushiError('Cannot sort a set without a comparator');
-			  	this.models = this.sortBy(this.comparator);
-			  	if (!options.silent) this.trigger('reset', this, options);
-			  	return this;
+			  	
+			  	var boundComparator = utils.bind(this.comparator, this);
+				if (this.comparator.length == 1) {
+					this.models = this.sortBy(boundComparator);
+				} else {
+					this.models.sort(boundComparator);
+				}
+				
+				if (!options.silent) this.trigger('reset', this, options);
+				return this;
 			},
 			
 			pluck: function(attr) {
@@ -4793,41 +4884,49 @@ define('sushi.mvc.view',
 			
 			reset: function(models, options) {
 			  	models  || (models = []);
-			  	options || (options = {});
-			  	this.each(this._removeReference);
-			  	this._reset();
-			  	this.add(models, {silent: true});
-			  	if (!options.silent) this.trigger('reset', this, options);
-			  	return this;
+				options || (options = {});
+				for (var i = 0, l = this.models.length; i < l; i++) {
+					this._removeReference(this.models[i]);
+				}
+				this._reset();
+				this.add(models, {silent: true, parse: options.parse});
+				if (!options.silent) this.trigger('reset', this, options);
+				return this;
 			},
 			
 			fetch: function(options) {
-			  	options || (options = {});
+			  	options = options ? collection.clone(options) : {};
+      			if (options.parse === undefined) options.parse = true;
 			  	
-			  	var collection = this
+			  	var coll = this
 			  	, 	success = options.success;
 			  	
 			  	options.success = function(resp, status, xhr) {
-					collection[options.add ? 'add' : 'reset'](collection.parse(resp, xhr), options);
+					coll[options.add ? 'add' : 'reset'](coll.parse(resp, xhr), options);
 					if (success) success(collection, resp);
 			  	};
 			  	
-			  	options.error = wrapError(options.error, collection, options);
+			  	options.error = wrapError(options.error, coll, options);
 			  	return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
 			},
 			
 			create: function(model, options) {
 			  	var coll = this;
-			  	options || (options = {});
-			  	model = this._prepareModel(model, options);
-			  	if (!model) return false;
-			  	var success = options.success;
-			  	options.success = function(nextModel, resp, xhr) {
-					coll.add(nextModel, options);
-					if (success) success(nextModel, resp, xhr);
-			  	};
-			  	model.save(null, options);
-			  	return model;
+				options = options ? _.clone(options) : {};
+				model = this._prepareModel(model, options);
+				if (!model) return false;
+				if (!options.wait) coll.add(model, options);
+				var success = options.success;
+				options.success = function(nextModel, resp, xhr) {
+					if (options.wait) coll.add(nextModel, options);
+					if (success) {
+					  	success(nextModel, resp);
+					} else {
+					  	nextModel.trigger('sync', model, resp, options);
+					}
+				};
+				model.save(null, options);
+				return model;
 			},
 			
 			parse: function(resp, xhr) {
@@ -4855,43 +4954,13 @@ define('sushi.mvc.view',
 			_prepareModel: function(model, options) {
 			  	if (!(model instanceof Model)) {
 					var attrs = model;
-					model = new this.model(attrs, {collection: this});
-					if (model.validate && !model._performValidation(attrs, options)) model = false;
+					options.collection = this;
+					model = new this.model(attrs, options);
+					if (!model._validate(model.attributes, options)) model = false;
 			  	} else if (!model.collection) {
 					model.collection = this;
 			  	}
-			  	return model;
-			},
-			
-			_add : function(model, options) {
-			  	options || (options = {});
-			  	model = this._prepareModel(model, options);
-			  	if (!model) return false;
-			  	var already = this.getByCid(model);
-			  	if (already) throw new SushiError(["Can't add the same model to a set twice", already.id]);
-			  	this._byId[model.id] = model;
-			  	this._byCid[model.cid] = model;
-			  	var index = options.at != null ? options.at :
-						  this.comparator ? this.sortedIndex(model, this.comparator) :
-						  this.length;
-			  	this.models.splice(index, 0, model);
-			  	model.bind('all', this._onModelEvent);
-			  	this.length++;
-			  	if (!options.silent) model.trigger('add', model, this, options);
-			  	return model;
-			},
-			
-			_remove : function(model, options) {
-			  	options || (options = {});
-			  	model = this.getByCid(model) || this.get(model);
-			  	if (!model) return null;
-			  	delete this._byId[model.id];
-			  	delete this._byCid[model.cid];
-			  	this.models.splice(this.indexOf(model), 1);
-			  	this.length--;
-			  	if (!options.silent) model.trigger('remove', model, this, options);
-			  	this._removeReference(model);
-			  	return model;
+			  return model;
 			},
 			
 			_removeReference : function(model) {
@@ -4939,7 +5008,9 @@ define('sushi.mvc.view',
  	// Module dependencies
  	[
  		'sushi.utils',
- 		'sushi.$'
+ 		'sushi.event',
+ 		'sushi.$',
+ 		'sushi.error'
     ],
 
  	/**
@@ -4948,12 +5019,19 @@ define('sushi.mvc.view',
  	 * @namespace Sushi
  	 * @class history
  	 */
- 	function(utils, $) {
+ 	function(utils, event, $, SushiError) {
  		Sushi.namespace('History');
  		
- 		var hashStrip = /^#*/,
+ 		var routeStripper = /^[#\/]/,
  		isExplorer = /msie [\w.]+/,
- 		historyStarted = false;
+ 		historyStarted = false,
+ 		_updateHash = function(location, fragment, replace) {
+		  	if (replace) {
+				location.replace(location.toString().replace(/(javascript:|#).*$/, '') + '#' + fragment);
+		  	} else {
+				location.hash = fragment;
+		  	}
+		}
 	  	
  		Sushi.History = function() {
 			this.handlers = [];
@@ -4969,17 +5047,18 @@ define('sushi.mvc.view',
 				  		fragment = window.location.pathname;
 				  		var search = window.location.search;
 				  		if (search) fragment += search;
-				  		if (fragment.indexOf(this.options.root) == 0) fragment = fragment.substr(this.options.root.length);
 					} else {
 				  		fragment = window.location.hash;
 					}
 			  	}
-			  	return decodeURIComponent(fragment.replace(hashStrip, ''));
+			  	fragment = decodeURIComponent(fragment);
+			  	if (fragment.indexOf(this.options.root) == 0) fragment = fragment.substr(this.options.root.length);
+			  	return fragment.replace(routeStripper, '');
 			},
 			
 			start : function(options) {
-				if (historyStarted) throw new Error("Sushi.history has already been started");
-				this.options          = Sushi.extend({}, {root: '/'}, this.options, options);
+				if (historyStarted) throw new SushiError("Sushi.history has already been started");
+				this.options          = Sushi.extend({root: '/'}, Sushi.extend(this.options, options), true);
 				this._wantsPushState  = !!this.options.pushState;
 				this._hasPushState    = !!(this.options.pushState && window.history && window.history.pushState);
 				var fragment          = this.getFragment();
@@ -5002,18 +5081,26 @@ define('sushi.mvc.view',
 			  	historyStarted = true;
 			  	var loc = window.location;
 			  	var atRoot  = loc.pathname == this.options.root;
-			  	if (this._wantsPushState && !this._hasPushState && !atRoot) {
+			  	
+			  	if (this._wantsHashChange && this._wantsPushState && !this._hasPushState && !atRoot) {
 					this.fragment = this.getFragment(null, true);
 					window.location.replace(this.options.root + '#' + this.fragment);
+					
 					return true;
-			  	} else if (this._wantsPushState && this._hasPushState && atRoot && loc.hash) {
-					this.fragment = loc.hash.replace(hashStrip, '');
+				} else if (this._wantsPushState && this._hasPushState && atRoot && loc.hash) {
+					this.fragment = loc.hash.replace(routeStripper, '');
 					window.history.replaceState({}, document.title, loc.protocol + '//' + loc.host + this.options.root + this.fragment);
-			  	}
+				}
 		
 			  	if (!this.options.silent) {
 					return this.loadUrl();
 			  	}
+			},
+			
+			stop: function() {
+				$(window).unbind('popstate', this.checkUrl).unbind('hashchange', this.checkUrl);
+				clearInterval(this._checkUrlInterval);
+				historyStarted = false;
 			},
 			
 			route : function(route, callback) {
@@ -5039,24 +5126,32 @@ define('sushi.mvc.view',
 			  	return matched;
 			},
 			
-			navigate : function(fragment, triggerRoute) {
-				var frag = (fragment || '').replace(hashStrip, '');
+			navigate : function(fragment, options) {
+				if (!historyStarted) return false;
+				if (!options || options === true) options = {trigger: options};
+				var frag = (fragment || '').replace(routeStripper, '');
+				
 			  	if (this.fragment == frag || this.fragment == decodeURIComponent(frag)) return;
+			  	
 			  	if (this._hasPushState) {
-					var loc = window.location;
 					if (frag.indexOf(this.options.root) != 0) frag = this.options.root + frag;
 					this.fragment = frag;
-					window.history.pushState({}, document.title, loc.protocol + '//' + loc.host + frag);
-			  	} else {
-					window.location.hash = this.fragment = frag;
+					window.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, frag);
+			  	} else if (this._wantsHashChange) {
+					this.fragment = frag;
+					_updateHash(window.location, frag, options.replace);
 					if (this.iframe && (frag != this.getFragment(this.iframe.location.hash))) {
-				  		this.iframe.document.open().close();
-				  		this.iframe.location.hash = frag;
-					}
+						if(!options.replace) this.iframe.document.open().close();
+			          	_updateHash(this.iframe.location, frag, options.replace);
+			        }
+			  	} else {
+			  		window.location.assign(this.options.root + fragment);
 			  	}
-			  	if (triggerRoute) this.loadUrl(fragment);
+			  	if (options.trigger) this.loadUrl(fragment);
 			}
  		});
+ 		
+ 		Sushi.extend(Sushi.History.prototype, event);
  		
  		return Sushi.History;
  	}
@@ -5079,13 +5174,12 @@ define('sushi.mvc.view',
  	 * @namespace Sushi
  	 * @class router
  	 */
- 	function() {
+ 	function(event, utils, History) {
  		Sushi.namespace('Router');
  		
- 		var namedParam    = /:([\w\d]+)/g,
-		splatParam    = /\*([\w\d]+)/g,
+ 		var namedParam    = /:\w+/g,
+		splatParam    = /\*\w+/g,
 	  	escapeRegExp  = /[-[\]{}()+?.,\\^$|#\s]/g,
-	  	utils = Sushi.utils,
  		Router = new Sushi.Class({
  			constructor: function(options) {
  				options || (options = {});
@@ -5112,14 +5206,18 @@ define('sushi.mvc.view',
 			 *
 			 */
  			route : function(route, name, callback) {
-				Sushi.history || (Sushi.history = new Sushi.History());
+				Sushi.history || (Sushi.history = new History());
 			  	if (!utils.isRegExp(route)) route = this._routeToRegExp(route);
+			  	if (!callback) callback = this[name];
 
 			  	Sushi.history.route(route, utils.bind(function(fragment) {
 					var args = this._extractParameters(route, fragment);
-					callback.apply(this, args);
+					callback && callback.apply(this, args);
 					this.trigger.apply(this, ['route:' + name].concat(args));
+					Sushi.history.trigger('route', this, name, args);
 			  	}, this));
+			  	
+			  	return this;
 			},
 			
 			/**
@@ -5128,11 +5226,11 @@ define('sushi.mvc.view',
 			 * @method navigate
 			 *
 			 * @param {String} fragment
-			 * @param {Boolean} triggerRoute Trigger the route immediately?
+			 * @param {Object} options Options Hash
 			 *
 			 */
-			navigate : function(fragment, triggerRoute) {
-				Sushi.history.navigate(fragment, triggerRoute);
+			navigate : function(fragment, options) {
+				Sushi.history.navigate(fragment, options);
 			},
 			
 			/**
@@ -5177,7 +5275,7 @@ define('sushi.mvc.view',
 			}
  		});
  		
- 		Sushi.extendClass(Router, Sushi.event);
+ 		Sushi.extendClass(Router, event);
  		
  		Sushi.Router = Router;
  		
