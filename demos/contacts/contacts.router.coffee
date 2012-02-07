@@ -13,7 +13,7 @@ define	[
 		
 		home: () ->
 			Data.invoke(
-				() -> this.set(active: false)
+				() -> @.set(active: false)
 			)
 		
 		getPerson: (id) ->
