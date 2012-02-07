@@ -23,7 +23,11 @@ require([
 	'sushi.event',
 	'sushi.error',
 	'sushi.enumerable',
-	'sushi.Store.LocalStore'
+	'sushi.stores.LocalStore',
+	'sushi.stores.RemoteStore',
+	'sushi.ajax',
+	'sushi.utils.performance',
+	'sushi.utils.performance.worker'
 	], 
 	function(){
 });
