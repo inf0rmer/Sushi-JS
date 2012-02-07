@@ -62,9 +62,13 @@ define('sushi.$',
     		var _slice = Array.prototype.slice,
     		_bind = function(fn, context) {
     			return function() {
-    				var args = _slice.call(arguments, 0);
-    				args.unshift(bonzo(context).get(0));
-					fn.apply(context, args);
+    				var theArgs = arguments;
+    				
+    				bonzo(context).each(function() {
+						args = _slice.call(theArgs, 0);
+						args.unshift(bonzo(this).get(0));
+						fn.apply(context, args);
+					});
 					
 					return bonzo(context);
 				}
