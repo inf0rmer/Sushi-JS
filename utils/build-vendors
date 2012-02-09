@@ -39,6 +39,7 @@ cp $TMP/morpheus/morpheus.js $DIR/../src/vendors/morpheus.js
 
 # Reqwest
 echo 'Converting Reqwest...'
+node r.js -convert $TMP/reqwest/ $TMP/reqwest
 cp $TMP/reqwest/reqwest.js $DIR/../src/vendors/reqwest.js
 
 # JSON Polyfill - can't be converted because it's a shim
