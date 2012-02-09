@@ -271,7 +271,7 @@ require(['vendors/domReady!'], function(doc) {
 		equals(Sushi.qwery.uniq(['a', 'b', 'c', 'c', 'c']).length, 3, 'result should be a, b, c')
 	})
 	
-	module('Element-context Sushiueries');
+	module('Element-context queries');
 	test('relationship-first queries', 5, function() {
 		var pass = false
 		try { pass = Sushi('> .direct-descend', Sushi('#direct-descend')).length == 2 } catch (e) { }
