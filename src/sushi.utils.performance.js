@@ -66,9 +66,41 @@ define('sushi.utils.performance',
 			};
 	  	},
 	  	
+	  	/*
+	     * Executes an array of functions one at a time,
+	     * at predefined intervals
+	     *
+	     * @method multistep
+	     * @param steps {Array} Array of tasks to perform
+	     * @param args {Array} Array of arguments to feed each task
+	     * @param callback {Function} Function to run when all tasks are done
+	     * @param time {Number} Interval between each task
+	     *
+	     */
+	  	multistep = function(steps, args, callback, time) {
+			var tasks = steps.slice(0); //clone array
+			
+			time = time || 25;
+			
+			setTimeout(function() {
+				var task;
+				//execute next task
+				task = tasks.shift();
+				task.apply(null, args || []);
+				
+				//determine if there are more tasks
+				if (tasks.length) {
+					setTimeout(arguments.callee, 25);
+				} else {
+					if (typeof callback == 'function') callback();
+				}
+			}, time);
+		},
+	  	
 	  	_publicAPI = {
 			throttle: throttle,
-			debounce: debounce
+			debounce: debounce,
+			multistep: multistep
 		};		
 		
 		Sushi.extend(utils, _publicAPI);
