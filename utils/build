@@ -1,0 +1,18 @@
+#!/bin/bash
+NO_ARGS=0 
+E_OPTERROR=85
+
+if [ $# -eq "$NO_ARGS" ]    # Script invoked with no command-line args?
+then
+  echo "Usage: build BASE_FILE"
+  exit $E_OPTERROR          # Exit and explain usage.
+                            # Usage: scriptname -options
+                            # Note: dash (-) necessary
+fi  
+
+DIR="$( cd -P "$( dirname "$0" )" && pwd )"
+
+echo "Building Sushi from $1..."
+cd $DIR;
+
+node r.js -o $1

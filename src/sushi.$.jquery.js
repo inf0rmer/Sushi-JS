@@ -6,6 +6,7 @@
 /*global Sushi:true, define:true*/
 define('sushi.$.jquery',
     [
+    	'sushi.core',
     	'vendors/jquery'
     ],
     
@@ -15,9 +16,9 @@ define('sushi.$.jquery',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(jQuery) {
+    function(Sushi) {
 	    //Sugars
-    	Sushi.fn = $;
+    	Sushi.fn = jQuery;
     	jQuery.noConflict();
     	
     	return jQuery;

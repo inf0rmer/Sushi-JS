@@ -244,7 +244,7 @@ define('sushi.mvc.model',
 				};
 				
 				options.error = wrapError(options.error, model, options);
-				return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
+				return (this.sync || this.store.sync || stores.def.sync).call(this, 'read', this, options);
 			},
 			
 			save: function(key, value, options) {
@@ -282,7 +282,7 @@ define('sushi.mvc.model',
 			  	
 			  	options.error = wrapError(options.error, model, options);
 				var method = this.isNew() ? 'create' : 'update';
-				var xhr = (this.sync || this.store.sync || stores.default.sync).call(this, method, this, options);
+				var xhr = (this.sync || this.store.sync || stores.def.sync).call(this, method, this, options);
 				if (options.wait) this.set(current, silentOptions);
 				return xhr;
 			},
@@ -320,7 +320,7 @@ define('sushi.mvc.model',
 		  		};
 		  		
 		  		options.error = wrapError(options.error, model, options);
-		  		var xhr = (this.sync || this.store.sync || stores.default.sync).call(this, 'delete', this, options);
+		  		var xhr = (this.sync || this.store.sync || stores.def.sync).call(this, 'delete', this, options);
 		  		if (!options.wait) triggerDestroy();
       			return xhr;
 			},

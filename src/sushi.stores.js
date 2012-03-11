@@ -30,7 +30,7 @@
         		this.push({id: store.name, store: store});
         	},
         	
-        	default: new Store()
+        	def: new Store()
         });
         
         Sushi.stores = stores;

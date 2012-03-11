@@ -35,6 +35,7 @@ cp $TMP/bonzo/bonzo.js $DIR/../src/vendors/bonzo.js
 
 # Morpheus
 echo 'Converting Morpheus...'
+node r.js -convert $TMP/morpheus/ $TMP/morpheus
 cp $TMP/morpheus/morpheus.js $DIR/../src/vendors/morpheus.js
 
 # Reqwest
@@ -56,6 +57,7 @@ cp $TMP/handlebars/handlebars.js $DIR/../src/vendors/handlebars.js
 
 # jQuery
 echo 'Converting jQuery...'
+node r.js -convert $TMP/jquery/ $TMP/jquery
 cp $TMP/jquery/jquery.js $DIR/../src/vendors/jquery.js
 
 # Require

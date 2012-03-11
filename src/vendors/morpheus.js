@@ -1,3 +1,4 @@
+define(["require", "exports", "module"], function(require, exports, module) {
 /*!
   * Morpheus - A Brilliant Animator
   * https://github.com/ded/morpheus - (c) Dustin Diaz 2011
@@ -304,3 +305,4 @@
   context['morpheus'] = morpheus;
 
 }(this, document, window);
+});

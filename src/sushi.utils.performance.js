@@ -90,7 +90,7 @@ define('sushi.utils.performance',
 				
 				//determine if there are more tasks
 				if (tasks.length) {
-					setTimeout(arguments.callee, 25);
+					setTimeout(arguments.callee, time);
 				} else {
 					if (typeof callback == 'function') callback();
 				}

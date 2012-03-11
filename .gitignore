@@ -21,6 +21,3 @@ lint_results.log
 docs
 docs/*
 
-# Build folder #
-######################
-build

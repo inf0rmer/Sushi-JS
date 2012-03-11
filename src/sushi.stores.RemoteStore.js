@@ -101,7 +101,7 @@
         Sushi.extend(SushiStores, {RemoteStore: RemoteStore});
         
         // Automatically set a RemoteStore as the default Sushi Store
-        SushiStores.default = new RemoteStore();
+        SushiStores.def = new RemoteStore();
                 
         return RemoteStore;
  	}

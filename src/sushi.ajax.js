@@ -21,6 +21,10 @@
         Sushi.namespace('ajax', Sushi);
         
         var ajax = function(options) {
+        	// Convert to jquery-like API
+        	options.method = options.type
+        	options.type = options.dataType
+        	
         	return reqwest(options);
         };
         
@@ -32,22 +36,22 @@
         	
         	serializeArray: reqwest.serializeArray,
         	
-        	get: function(url, data, callback, type) {
+        	get: function(url, data, callback, dataType) {
         		if (!url) throw new SushiError('url is required');
         		
         		// Shift arguments if data is not present
         		if (utils.isFunction(data)) {
-        			type = type || callback;
+        			dataType = dataType || callback;
         			callback = data;
         			data = undefined;
         		}
         		
         		return Sushi.ajax({
         			url: url,
-        			type: type,
+        			dataType: dataType,
         			data: data,
         			success: callback,
-        			method: 'get'
+        			type: 'get'
         		});
         	},
         	
@@ -62,10 +66,10 @@
         		
         		return Sushi.ajax({
         			url: url,
-        			type: 'json',
+        			dataType: 'json',
         			data: data,
         			success: callback,
-        			method: 'get'
+        			type: 'get'
         		});
         	},
         	
@@ -83,26 +87,26 @@
         			type: 'js',
         			data: data,
         			success: callback,
-        			method: 'get'
+        			type: 'get'
         		});
         	},
         	
-        	post: function(url, data, callback, type) {
+        	post: function(url, data, callback, dataType) {
         		if (!url) throw new SushiError('url is required');
         		
         		// Shift arguments if data is not present
         		if (utils.isFunction(data)) {
-        			type = type || callback;
+        			dataType = dataType || callback;
         			callback = data;
         			data = undefined;
         		}
         		
         		return Sushi.ajax({
         			url: url,
-        			type: type,
+        			dataType: dataType,
         			data: data,
         			success: callback,
-        			method: 'post'
+        			type: 'post'
         		});
         	}
         });
