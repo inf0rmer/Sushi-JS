@@ -7,7 +7,6 @@
  	[
  		'sushi.utils',
  		'sushi.event',
- 		'sushi.$',
  		'sushi.error'
     ],
 
@@ -17,7 +16,7 @@
  	 * @namespace Sushi
  	 * @class history
  	 */
- 	function(utils, event, $, SushiError) {
+ 	function(utils, event, SushiError) {
  		Sushi.namespace('History');
  		
  		var routeStripper = /^[#\/]/,
@@ -57,6 +56,7 @@
 			start : function(options) {
 				if (historyStarted) throw new SushiError("Sushi.history has already been started");
 				this.options          = Sushi.extend({root: '/'}, Sushi.extend(this.options, options), true);
+				this._wantsHashChange = this.options.hashChange !== false;
 				this._wantsPushState  = !!this.options.pushState;
 				this._hasPushState    = !!(this.options.pushState && window.history && window.history.pushState);
 				var fragment          = this.getFragment();
@@ -69,10 +69,10 @@
 				
 				if (this._hasPushState) {
 					$(window).bind('popstate', this.checkUrl);
-				} else if ('onhashchange' in window && !oldIE) {
+				} else if (this._wantsHashChange && ('onhashchange' in window) && !oldIE) {
 					$(window).bind('hashchange', this.checkUrl);
-				} else {
-					setInterval(this.checkUrl, this.interval);
+				} else if (this._wantsHashChange) {
+					this._checkUrlInterval = setInterval(this.checkUrl, this.interval);
 				}
 				
 				this.fragment = fragment;
