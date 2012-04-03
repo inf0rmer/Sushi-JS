@@ -20,6 +20,7 @@ define('sushi.utils',
 		    _FuncProto = Function.prototype,
 		    _nativeIsArray = _ArrayProto.isArray,
 		    _nativeBind = _FuncProto.bind,
+		    hasOwnProperty = Object.prototype.hasOwnProperty,
 		    ctor = function(){},
 		    _idCounter = 0;
 
