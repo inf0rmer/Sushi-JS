@@ -10,8 +10,7 @@
  		'sushi.Store',
  		'sushi.stores',
  		'sushi.utils.json',
- 		'sushi.error',
- 		'sushi.ajax'
+ 		'sushi.error'
  	],
 
  	/**
@@ -60,7 +59,7 @@
         		params = Sushi.extend(options, {
 					type: type,
 					dataType: 'json'
-				});
+				}, false);
 				
 				// Ensure there's a URL
 				if (!params.url) {
