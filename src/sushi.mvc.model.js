@@ -187,7 +187,7 @@ define('sushi.mvc.model',
 
 					options.unset ? delete now[attr] : now[attr] = val;
 		
-					if (this._changing && !_.isEqual(this._changed[attr], val)) {
+					if (this._changing && !utils.isEqual(this._changed[attr], val)) {
 						this.trigger('change:' + attr, this, val, options);
 						this._moreChanges = true;
 					}
