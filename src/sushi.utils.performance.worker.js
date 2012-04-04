@@ -9,11 +9,10 @@ define('sushi.utils.performance.worker',
 	 */
 	function(core, utils) {
 		var global = window,
-		Worker,
 		index = 0;
 		
 		if (!("Worker" in global)) {
-			Worker = function(src){
+			global.Worker = function(src){
 				var publicAPI,
 					worker,
 					worker_idx = index++,
