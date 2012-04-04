@@ -171,7 +171,7 @@
 			  	};
 			  	
 			  	options.error = wrapError(options.error, coll, options);
-			  	return (this.sync || this.store.sync || stores.default.sync).call(this, 'read', this, options);
+			  	return (this.sync || this.store.sync || stores.def.sync).call(this, 'read', this, options);
 			},
 			
 			create: function(model, options) {
