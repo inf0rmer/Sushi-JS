@@ -158,6 +158,10 @@ define(["require", "exports", "module"], function(require, exports, module) {
 
 (function () {
     "use strict";
+    
+    if (typeof JSON === 'undefined') {
+    	JSON = {}
+    }
 
     function f(n) {
         // Format integers to have at least two digits.
