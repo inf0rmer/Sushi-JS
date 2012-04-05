@@ -53,7 +53,7 @@ define('sushi.utils.collection',
             
             var keys = [];                
             for (var key in obj) {
-                if (hasOwnProperty.call(obj, key)) {
+                if (utils.utils.hasOwnProperty.call(obj, key)) {
                     keys[keys.length] = key;
                 }
             }                
@@ -116,7 +116,7 @@ define('sushi.utils.collection',
                 }
             } else {
                 for (var key in obj) {
-                    if (hasOwnProperty.call(obj, key)) {
+                    if (utils.hasOwnProperty.call(obj, key)) {
                         if (iterator.call(context, obj[key], key, obj) === _breaker) { return; }
                     }
                 }
