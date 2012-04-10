@@ -1,8 +1,8 @@
 ({
     baseUrl: "../src/",
     name: "almond.js",
-    include: "sushi.base",
+    include: "sushi.base.prod",
     out: "./sushi.js",
-    optimize: 'none',
+    optimize: 'uglify',
     wrap: true
 })

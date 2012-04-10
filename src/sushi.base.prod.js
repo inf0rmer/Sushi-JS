@@ -11,7 +11,6 @@ require([
 	'sushi.core', 
 	'sushi.utils', 
 	'sushi.utils.collection', 
-	'sushi.utils.debug', 
 	'sushi.utils.json',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
@@ -22,10 +21,10 @@ require([
 	'sushi.event',
 	'sushi.error',
 	'sushi.enumerable',
-	'sushi.stores.LocalStore',
 	'sushi.stores.RemoteStore',
 	'sushi.ajax',
-	'sushi.utils.performance'
+	'sushi.utils.performance',
+  'sushi.utils.performance.worker'
 	], 
 	function(){
 });
