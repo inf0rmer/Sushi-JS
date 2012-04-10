@@ -6,6 +6,7 @@
 /*global Sushi:true, define:true*/
 define('sushi.date',
     [
+    	'sushi.core'
     ],
     
 	/**
@@ -14,7 +15,7 @@ define('sushi.date',
 	 * @namespace Sushi
 	 * @class date
 	 */
-    function() {
+    function(Sushi) {
     	Sushi.namespace('date');
     	
     	var ext = {},
@@ -173,7 +174,103 @@ define('sushi.date',
 		ext.aggregates.Z = ext.formats.Z(new Date());
 		ext.unsupported = {};
 		
+		
+		var toRelativeTime = (function() {
+		
+			var _ = function(date, options) {
+				var opts = processOptions(options),
+					now = opts.now || new Date(),
+					delta = now - date,
+					future = (delta <= 0),
+					units = null;
+				
+				delta = Math.abs(delta);
+				
+				// special cases controlled by options
+				if (delta <= opts.nowThreshold) {
+					return future ? {time: 'Right now'} : {time: 'Just now'};
+				}
+				if (opts.smartDays && delta <= 6 * MS_IN_DAY) {
+					return toSmartDays(this, now);
+				}
+				
+				for (var key in CONVERSIONS) {
+					if (delta < CONVERSIONS[key])
+						break;
+					units = key; // keeps track of the selected key over the iteration
+					delta = delta / CONVERSIONS[key];
+				}
+				
+				// pluralize a unit when the difference is greater than 1.
+				delta = Math.floor(delta);
+				var plural = (delta !== 1);
+				return {
+					delta: delta,
+					units: units,
+					future: future,
+					plural: plural
+				}
+			};
+		
+			var processOptions = function(arg) {
+				if (!arg) arg = 0;
+				if (typeof arg === 'string') {
+			  		arg = parseInt(arg, 10);
+				}
+				if (typeof arg === 'number') {
+			  		if (isNaN(arg)) arg = 0;
+			  		return {nowThreshold: arg};
+				}
+				return arg;
+		  	};
+		
+		  	var toSmartDays = function(date, now) {
+				var day;
+				var weekday = date.getDay(),
+				dayDiff = weekday - now.getDay();
+				if (dayDiff == 0)       day = 'Today';
+				else if (dayDiff == -1) day = 'Yesterday';
+				else if (dayDiff == 1)  day = 'Tomorrow';
+				else                    day = WEEKDAYS[weekday];
+				//return day + " at " + date.toLocaleTimeString();
+				return {
+					day: day,
+					date: date.toLocaleTimeString()
+				}
+		  	};
+		
+		 	var CONVERSIONS = {
+				millisecond: 1, // ms    -> ms
+				second: 1000,   // ms    -> sec
+				minute: 60,     // sec   -> min
+				hour:   60,     // min   -> hour
+				day:    24,     // hour  -> day
+				month:  30,     // day   -> month (roughly)
+				year:   12      // month -> year
+		  	};
+		  	var MS_IN_DAY = (CONVERSIONS.millisecond * CONVERSIONS.second * CONVERSIONS.minute * CONVERSIONS.hour * CONVERSIONS.day);
+		
+		  	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		
+		  	return _;
+		
+		})();
+		
+		
+		
+		/*
+		 * Wraps up a common pattern used with this plugin whereby you take a String
+		 * representation of a Date, and want back a date object.
+		 */
+		var fromString = function(str) {
+			return new Date(Date.parse(str));
+		};
+		
 		Sushi.extend(Sushi.date, {
+			fromString: fromString,
+			
+			toRelativeTime: toRelativeTime,
+			
 			strftime: function (d, fmt) {
 				if (!(locale in ext.locales)) {
 					if (locale.replace(/-[a-zA-Z]+$/, "") in ext.locales) {
