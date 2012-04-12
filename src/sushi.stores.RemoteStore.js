@@ -10,7 +10,8 @@
  		'sushi.Store',
  		'sushi.stores',
  		'sushi.utils.json',
- 		'sushi.error'
+ 		'sushi.error',
+ 		'sushi.ajax'
  	],
 
  	/**
