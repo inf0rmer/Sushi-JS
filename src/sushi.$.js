@@ -199,7 +199,8 @@ define('sushi.$',
 				  	return morpheus(this, options)
 				},
 			  	
-			  	fadeIn: function (d, fn) {			  		
+			  	fadeIn: function (d, fn) {
+			  		$(this).show().css({opacity: 0})
 				  	return morpheus(this, {
 					  	duration: _parseAnimationDuration(d),
 						opacity: 1,
@@ -208,10 +209,13 @@ define('sushi.$',
 				},
 				
 				fadeOut: function (d, fn) {
+					var $self = $(this);
 				  	return morpheus(this, {
 					  	duration: _parseAnimationDuration(d),
 						opacity: 0,
-						complete: fn
+						complete: function() {
+							$self.hide()
+						}
 				  	})
 				}
     		});
