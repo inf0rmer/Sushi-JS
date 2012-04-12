@@ -24,7 +24,8 @@ require([
 	'sushi.stores.RemoteStore',
 	'sushi.ajax',
 	'sushi.utils.performance',
-  'sushi.utils.performance.worker'
+	'sushi.utils.performance.worker',
+	'sushi.date'
 	], 
 	function(){
 });

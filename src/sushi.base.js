@@ -25,7 +25,9 @@ require([
 	'sushi.stores.LocalStore',
 	'sushi.stores.RemoteStore',
 	'sushi.ajax',
-	'sushi.utils.performance'
+	'sushi.utils.performance',
+	'sushi.utils.performance.Worker',
+	'sushi.date'
 	], 
 	function(){
 });
