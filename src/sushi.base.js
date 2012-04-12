@@ -13,6 +13,7 @@ require([
 	'sushi.utils.collection', 
 	'sushi.utils.debug', 
 	'sushi.utils.json',
+	'sushi.utils.url',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
 	'sushi.mvc.collection',
