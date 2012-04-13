@@ -90,7 +90,7 @@ define('sushi.utils',
 			 * @return {Object} Intercepted obj
 			 *
 			 */
-			tap = function(obj, interceptor) {
+			tap: function(obj, interceptor) {
 				interceptor(obj);
 				return obj;
 			},
