@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+	<title>Sushi JS Aspectify Test Suite</title>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: '../../src'
+		});
+		
+		require(['vendors/domReady!'], function(doc) {	
+			window.Hunter = Hunter = new Sushi.Class({
+				constructor: function() {
+					
+				},
+				
+				draw: function(bow) {
+					// The hunter draws a bow...
+					console.log('Hunter drew a bow!');
+				},
+				
+				setName: function(name) {
+					// Set hunter's name...
+				},
+				
+				setAge: function(age) {
+					// Set hunter's age...
+				}
+				
+			});
+			
+			$.aspectify(Hunter)
+			
+			.before('draw', function() {
+				console.log('about to draw a bow');
+			})
+			
+			.after('draw', function() {
+				console.log('bow was drawn!');
+			})
+			
+			.around(/set(.*)/, function(pointcut, match, value){
+				console.log('one of the set methods was called, it was ' + match);
+			})
+			
+			.guard('draw', function() {
+				return this.hasBow;
+			})
+		});
+		
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi JS Aspectify Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+</body>
+</html>
