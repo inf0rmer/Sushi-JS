@@ -79,6 +79,23 @@ define('sushi.utils',
 			},
 			
 			/**
+			 * Invokes an interceptor function with the object and then returns the object.
+			 * Use this to "tap into" a method chain, in order to perform operations on
+			 * intermediate results within the chain.
+			 *
+			 * @method tap
+			 * @param {Function} interceptor
+			 * @param {Object} obj
+			 *
+			 * @return {Object} Intercepted obj
+			 *
+			 */
+			tap = function(obj, interceptor) {
+				interceptor(obj);
+				return obj;
+			},
+			
+			/**
 			* Alias for hasOwnProperty
 			*
 			*/
