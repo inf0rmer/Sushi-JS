@@ -1444,6 +1444,109 @@ define('sushi.utils.json',
 		return _publicAPI;		
 	}
 );
+define('sushi.utils.url',
+	['sushi.core', 'sushi.utils'],
+
+	/**
+	 * Language handling functions
+	 */
+	function() {
+		/**
+		 * Converts every accented letter in a string with its non-accented equivalent.
+		 * Currently WIP, trying to squeeze this function as much as possible. 
+		 * (≈3ms per string, with 2 calls ≈ 1.5ms per call)
+		 *
+		 * @param {String} string with accented characters
+		 * @return {String} string without accented characters in lower case
+		 */
+		var querystring = function (name) {
+		   var tmp = ( location.search.substring(1) ),
+		   i = tmp.toUpperCase().indexOf(name.toUpperCase()+"=");
+		
+		   if ( i >= 0 ) {
+			  tmp = tmp.substring( name.length+i+1 );
+			  i = tmp.indexOf("&");
+			  return unescape( tmp = tmp.substring( 0, (i>=0) ? i : tmp.length ));
+		   }
+		   return("");
+		},
+		
+		setQuerystringOption = function (replaceParam, newVal) {
+			var oldURL = window.location.href,
+				iStart,
+				iEnd,
+				sEnd,
+				sStart,
+				newURL;
+			
+			iStart = oldURL.indexOf(replaceParam  + '='),
+			iEnd = oldURL.substring(iStart + 1).indexOf('&'),
+			sEnd = oldURL.substring(iStart + iEnd + 1),
+			sStart = oldURL.substring(0, iStart),
+			newURL = sStart + replaceParam + '=' + newVal;
+			
+			if (iEnd > 0) {
+			    newURL += sEnd;
+			}
+			
+			return (oldURL.indexOf('?') == -1) ? oldURL + '?' + newURL : newURL;
+		},
+		
+		_publicAPI = {
+			querystring: querystring,
+			setQuerystringOption: setQuerystringOption
+		};
+
+		Sushi.extend(Sushi.utils, _publicAPI);
+		
+		return _publicAPI;
+	}
+);
+define('sushi.utils.lang',
+	['sushi.core', 'sushi.utils'],
+
+	/**
+	 * Language handling functions
+	 */
+	function() {
+		/**
+		 * Converts every accented letter in a string with its non-accented equivalent.
+		 * Currently WIP, trying to squeeze this function as much as possible. 
+		 * (≈3ms per string, with 2 calls ≈ 1.5ms per call)
+		 *
+		 * @param {String} string with accented characters
+		 * @return {String} string without accented characters in lower case
+		 */
+		var replaceAccents = (function() {
+            var charList = /[àáâãçèéêìíîòóôõùúû]/gi,
+            lookupTable = {
+			    "à": "a", "á": "a",	"â": "a", "ã": "a",
+    			"ç": "c", "è": "e",	"é": "e", "ê": "e",
+    			"í": "i", "ì": "i",	"î": "i", "ó": "o",
+    			"ò": "o", "ô": "o",	"õ": "o", "ù": "u",
+    			"ú": "u", "û": "u",	"À": "A", "Á": "A",
+    			"Â": "A", "Ã": "A",	"Ç": "C", "È": "E",
+    			"É": "E", "Ê": "E",	"Í": "I", "Ì": "I",
+    			"Î": "I", "Ó": "O",	"Ò": "O", "Ô": "O",
+    			"Õ": "O", "Ù": "U",	"Ú": "U", "Û": "U" 
+            };
+		
+            return function(s) {
+                return s.replace(charList, function(match) { 
+                    return lookupTable[match]; 
+                });
+		    };
+		})(),
+		
+		_publicAPI = {
+			replaceAccents: replaceAccents
+		};			
+
+		Sushi.extend(Sushi.utils, _publicAPI);
+		
+		return _publicAPI;
+	}
+);
 /*
  * Sushi.Store
  *
@@ -5221,7 +5324,8 @@ define('sushi.$',
 				  	return morpheus(this, options)
 				},
 			  	
-			  	fadeIn: function (d, fn) {			  		
+			  	fadeIn: function (d, fn) {
+			  		$(this).show().css({opacity: 0})
 				  	return morpheus(this, {
 					  	duration: _parseAnimationDuration(d),
 						opacity: 1,
@@ -5230,10 +5334,13 @@ define('sushi.$',
 				},
 				
 				fadeOut: function (d, fn) {
+					var $self = $(this);
 				  	return morpheus(this, {
 					  	duration: _parseAnimationDuration(d),
 						opacity: 0,
-						complete: fn
+						complete: function() {
+							$self.hide()
+						}
 				  	})
 				}
     		});
@@ -7856,114 +7963,6 @@ if (typeof window.sessionStorage == 'undefined') window.sessionStorage = new Sto
  	}
  );
 
-/*
- * Sushi.stores.RemoteStore
- *
- */
- define('sushi.stores.RemoteStore',
- 	// Module dependencies
- 	[
- 		'sushi.core',
- 		'sushi.utils',
- 		'sushi.Store',
- 		'sushi.stores',
- 		'sushi.utils.json',
- 		'sushi.error'
- 	],
-
- 	/**
- 	 * Sushi stores.RemoteStore
- 	 *
- 	 * @namespace Sushi
- 	 * @class stores.RemoteStore
- 	 */
- 	function(Sushi, utils, Store, SushiStores, JSON, SushiError, AJAX) {        
-        var RemoteStore
-        , 	methodMap
-        ,	getUrl = function(object) {
-				if (!(object && object.url)) return null;
-				return utils.isFunction(object.url) ? object.url() : object.url;
-			}
-		,	urlError = function() {
-				throw new SushiError('A "url" property or function must be specified');
-			}
-        
-        methodMap = {
-			'create': 'POST',
-			'update': 'PUT',
-			'delete': 'DELETE',
-			'read'  : 'GET'
-		};
-        
-        RemoteStore = new Sushi.Class(Store, {
-        	constructor: function(name) {
-        		RemoteStore.Super.call(this, name || 'RemoteStore');
-        	},
-        	
-        	emulateJSON: false,
-        	
-        	emulateHTTP: false
-        });
-        
-        Sushi.extendClass(RemoteStore, {
-        	sync: function(method, model, options) {
-        		var type
-        		,	params
-        		;
-        		
-        		type = methodMap[method]
-        		
-        		// Default request options
-        		params = Sushi.extend(options, {
-					type: type,
-					dataType: 'json'
-				}, false);
-				
-				// Ensure there's a URL
-				if (!params.url) {
-					params.url = getUrl(model) || urlError();
-				}
-				
-				// Ensure that we have the appropriate request data.
-				if (!params.data && model && (method == 'create' || method == 'update')) {
-				  	params.contentType = 'application/json';
-				  	params.data = JSON.stringify(model.toJSON());
-				}
-				
-				// For older servers, emulate JSON by encoding the request into an HTML-form.
-				if (this.emulateJSON) {
-				  	params.contentType = 'application/x-www-form-urlencoded';
-				  	params.data        = params.data ? {model : params.data} : {};
-				}
-				
-				if (this.emulateHTTP) {
-				  	if (type === 'PUT' || type === 'DELETE') {
-						if (this.emulateJSON) params.data._method = type;
-							params.type = 'POST';
-							params.beforeSend = function(xhr) {
-							xhr.setRequestHeader('X-HTTP-Method-Override', type);
-						};
-				  	}
-				}
-				
-				// Don't process data on a non-GET request.
-				if (params.type !== 'GET' && ! this.emulateJSON) {
-					params.processData = false;
-				}
-				
-				AJAX(params);
-			}
-        });
-        
-        Sushi.extend(SushiStores, {RemoteStore: RemoteStore});
-        
-        // Automatically set a RemoteStore as the default Sushi Store
-        SushiStores.def = new RemoteStore();
-                
-        return RemoteStore;
- 	}
- );
-
 define('vendors/reqwest',["require", "exports", "module"], function(require, exports, module) {
 /*!
   * Reqwest! A general purpose XHR connection manager
@@ -8465,6 +8464,115 @@ define('vendors/reqwest',["require", "exports", "module"], function(require, exp
  	}
  );
 
+/*
+ * Sushi.stores.RemoteStore
+ *
+ */
+ define('sushi.stores.RemoteStore',
+ 	// Module dependencies
+ 	[
+ 		'sushi.core',
+ 		'sushi.utils',
+ 		'sushi.Store',
+ 		'sushi.stores',
+ 		'sushi.utils.json',
+ 		'sushi.error',
+ 		'sushi.ajax'
+ 	],
+
+ 	/**
+ 	 * Sushi stores.RemoteStore
+ 	 *
+ 	 * @namespace Sushi
+ 	 * @class stores.RemoteStore
+ 	 */
+ 	function(Sushi, utils, Store, SushiStores, JSON, SushiError, AJAX) {        
+        var RemoteStore
+        , 	methodMap
+        ,	getUrl = function(object) {
+				if (!(object && object.url)) return null;
+				return utils.isFunction(object.url) ? object.url() : object.url;
+			}
+		,	urlError = function() {
+				throw new SushiError('A "url" property or function must be specified');
+			}
+        
+        methodMap = {
+			'create': 'POST',
+			'update': 'PUT',
+			'delete': 'DELETE',
+			'read'  : 'GET'
+		};
+        
+        RemoteStore = new Sushi.Class(Store, {
+        	constructor: function(name) {
+        		RemoteStore.Super.call(this, name || 'RemoteStore');
+        	},
+        	
+        	emulateJSON: false,
+        	
+        	emulateHTTP: false
+        });
+        
+        Sushi.extendClass(RemoteStore, {
+        	sync: function(method, model, options) {
+        		var type
+        		,	params
+        		;
+        		
+        		type = methodMap[method]
+        		
+        		// Default request options
+        		params = Sushi.extend(options, {
+					type: type,
+					dataType: 'json'
+				}, false);
+				
+				// Ensure there's a URL
+				if (!params.url) {
+					params.url = getUrl(model) || urlError();
+				}
+				
+				// Ensure that we have the appropriate request data.
+				if (!params.data && model && (method == 'create' || method == 'update')) {
+				  	params.contentType = 'application/json';
+				  	params.data = JSON.stringify(model.toJSON());
+				}
+				
+				// For older servers, emulate JSON by encoding the request into an HTML-form.
+				if (this.emulateJSON) {
+				  	params.contentType = 'application/x-www-form-urlencoded';
+				  	params.data        = params.data ? {model : params.data} : {};
+				}
+				
+				if (this.emulateHTTP) {
+				  	if (type === 'PUT' || type === 'DELETE') {
+						if (this.emulateJSON) params.data._method = type;
+							params.type = 'POST';
+							params.beforeSend = function(xhr) {
+							xhr.setRequestHeader('X-HTTP-Method-Override', type);
+						};
+				  	}
+				}
+				
+				// Don't process data on a non-GET request.
+				if (params.type !== 'GET' && ! this.emulateJSON) {
+					params.processData = false;
+				}
+				
+				AJAX(params);
+			}
+        });
+        
+        Sushi.extend(SushiStores, {RemoteStore: RemoteStore});
+        
+        // Automatically set a RemoteStore as the default Sushi Store
+        SushiStores.def = new RemoteStore();
+                
+        return RemoteStore;
+ 	}
+ );
+
 define('sushi.utils.performance',
 	['sushi.core', 'sushi.utils'],
 	
@@ -8575,6 +8683,395 @@ define('sushi.utils.performance',
 		return _publicAPI;
 	}
 );
+define('sushi.utils.performance.worker',
+	['sushi.core', 'sushi.utils'],
+	
+	/**
+	 * Web Worker shim
+	 *
+	 * @namespace Sushi
+	 * @class utils
+	 */
+	function(core, utils) {
+		var global = window,
+		index = 0;
+		
+		if (!("Worker" in global)) {
+			global.Worker = function(src){
+				var publicAPI,
+					worker,
+					worker_idx = index++,
+					queue = []
+				;
+	
+				// set up the fake worker environment instance
+				Worker["__"+worker_idx] = worker = {
+					postMessage: function(msg) {
+						var fn = function(){ publicAPI.onmessage(msg); };
+						if (queue===false) setTimeout(fn,0);
+						else queue.push(fn);
+					},
+					onmessage: function(){}
+				};
+	
+				var xhr = (XMLHttpRequest ? new XMLHttpRequest() : global.ActiveXObject("Microsoft.XMLHTTP"));
+				xhr.onreadystatechange = function() {
+					if (xhr.readyState == 4) {
+						var script_src = "(function(self,importScripts){\n" + xhr.responseText + "\n})(Worker['__"+worker_idx+"'],function(){});",
+							script = document.createElement("script"), fn
+						;
+						script.text = script_src;
+						(document.body || document.getElementsByTagName("body")[0]).appendChild(script);
+	
+						while (fn = queue.shift()) fn();
+						queue = true;
+					}
+				};
+				xhr.open("GET",src);
+				xhr.send("");
+	
+				publicAPI = {
+					postMessage: function(msg) {
+						var fn = function(){ worker.onmessage(msg); };
+						if (queue !== true) queue.push(fn);
+						else setTimeout(fn,0);
+					},
+					onmessage: function(){},
+					terminate: function(){}
+				};
+	
+				return publicAPI;
+			};
+		}
+		else {
+			Worker = global.Worker;
+		}
+		
+		Sushi.extend(utils, {
+			Worker: Worker
+		});
+		
+		return utils.Worker;		
+	}
+);
+define("sushi.utils.performance.Worker", function(){});
+
+/**
+ * Sushi Date
+ *
+ * @module Sushi
+ */
+/*global Sushi:true, define:true*/
+define('sushi.date',
+    [
+    	'sushi.core'
+    ],
+    
+	/**
+	 * Sushi Date - Date Handling functions
+	 *
+	 * @namespace Sushi
+	 * @class date
+	 */
+    function(Sushi) {
+    	Sushi.namespace('date');
+    	
+    	var ext = {},
+    		locale = "en-GB";
+    	
+		ext.util = {};
+		ext.util.xPad = function (x, pad, r) {
+			if (typeof (r) == "undefined") {
+				r = 10
+			}
+			for (; parseInt(x, 10) < r && r > 1; r /= 10) {
+				x = pad.toString() + x
+			}
+			return x.toString()
+		};
+		
+		if (document.getElementsByTagName("html") && document.getElementsByTagName("html")[0].lang) {
+			locale = document.getElementsByTagName("html")[0].lang
+		}
+		
+		ext.locales = {};
+		ext.locales.en = {
+			a: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			A: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+			b: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			B: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			c: "%a %d %b %Y %T %Z",
+			p: ["AM", "PM"],
+			P: ["am", "pm"],
+			x: "%d/%m/%y",
+			X: "%T"
+		};
+		ext.locales["en-US"] = ext.locales.en;
+		ext.locales["en-US"].c = "%a %d %b %Y %r %Z";
+		ext.locales["en-US"].x = "%D";
+		ext.locales["en-US"].X = "%r";
+		ext.locales["en-GB"] = ext.locales.en;
+		ext.locales["en-AU"] = ext.locales["en-GB"];
+		ext.formats = {
+			a: function (d) {
+				return ext.locales[d.locale].a[d.getDay()]
+			},
+			A: function (d) {
+				return ext.locales[d.locale].A[d.getDay()]
+			},
+			b: function (d) {
+				return ext.locales[d.locale].b[d.getMonth()]
+			},
+			B: function (d) {
+				return ext.locales[d.locale].B[d.getMonth()]
+			},
+			c: "toLocaleString",
+			C: function (d) {
+				return ext.util.xPad(parseInt(d.getFullYear() / 100, 10), 0)
+			},
+			d: ["getDate", "0"],
+			e: ["getDate", " "],
+			g: function (d) {
+				return ext.util.xPad(parseInt(ext.util.G(d) / 100, 10), 0)
+			},
+			G: function (d) {
+				var y = d.getFullYear();
+				var V = parseInt(ext.formats.V(d), 10);
+				var W = parseInt(ext.formats.W(d), 10);
+				if (W > V) {
+					y++
+				} else {
+					if (W === 0 && V >= 52) {
+						y--
+					}
+				}
+				return y
+			},
+			H: ["getHours", "0"],
+			I: function (d) {
+				var I = d.getHours() % 12;
+				return ext.util.xPad(I === 0 ? 12 : I, 0)
+			},
+			j: function (d) {
+				var ms = d - new Date("" + d.getFullYear() + "/1/1 GMT");
+				ms += d.getTimezoneOffset() * 60000;
+				var doy = parseInt(ms / 60000 / 60 / 24, 10) + 1;
+				return ext.util.xPad(doy, 0, 100)
+			},
+			m: function (d) {
+				return ext.util.xPad(d.getMonth() + 1, 0)
+			},
+			M: ["getMinutes", "0"],
+			p: function (d) {
+				return ext.locales[d.locale].p[d.getHours() >= 12 ? 1 : 0]
+			},
+			P: function (d) {
+				return ext.locales[d.locale].P[d.getHours() >= 12 ? 1 : 0]
+			},
+			S: ["getSeconds", "0"],
+			u: function (d) {
+				var dow = d.getDay();
+				return dow === 0 ? 7 : dow
+			},
+			U: function (d) {
+				var doy = parseInt(ext.formats.j(d), 10);
+				var rdow = 6 - d.getDay();
+				var woy = parseInt((doy + rdow) / 7, 10);
+				return ext.util.xPad(woy, 0)
+			},
+			V: function (d) {
+				var woy = parseInt(ext.formats.W(d), 10);
+				var dow1_1 = (new Date("" + d.getFullYear() + "/1/1")).getDay();
+				var idow = woy + (dow1_1 > 4 || dow1_1 <= 1 ? 0 : 1);
+				if (idow == 53 && (new Date("" + d.getFullYear() + "/12/31")).getDay() < 4) {
+					idow = 1
+				} else {
+					if (idow === 0) {
+						idow = ext.formats.V(new Date("" + (d.getFullYear() - 1) + "/12/31"))
+					}
+				}
+				return ext.util.xPad(idow, 0)
+			},
+			w: "getDay",
+			W: function (d) {
+				var doy = parseInt(ext.formats.j(d), 10);
+				var rdow = 7 - ext.formats.u(d);
+				var woy = parseInt((doy + rdow) / 7, 10);
+				return ext.util.xPad(woy, 0, 10)
+			},
+			y: function (d) {
+				return ext.util.xPad(d.getFullYear() % 100, 0)
+			},
+			Y: "getFullYear",
+			z: function (d) {
+				var o = d.getTimezoneOffset();
+				var H = ext.util.xPad(parseInt(Math.abs(o / 60), 10), 0);
+				var M = ext.util.xPad(o % 60, 0);
+				return (o > 0 ? "-" : "+") + H + M
+			},
+			Z: function (d) {
+				return d.toString().replace(/^.*\(([^)]+)\)$/, "$1")
+			},
+			"%": function (d) {
+				return "%"
+			}
+		};
+		ext.aggregates = {
+			c: "locale",
+			D: "%m/%d/%y",
+			h: "%b",
+			n: "\n",
+			r: "%I:%M:%S %p",
+			R: "%H:%M",
+			t: "\t",
+			T: "%H:%M:%S",
+			x: "locale",
+			X: "locale"
+		};
+		ext.aggregates.z = ext.formats.z(new Date());
+		ext.aggregates.Z = ext.formats.Z(new Date());
+		ext.unsupported = {};
+		
+		
+		var toRelativeTime = (function() {
+		
+			var _ = function(date, options) {
+				var opts = processOptions(options),
+					now = opts.now || new Date(),
+					delta = now - date,
+					future = (delta <= 0),
+					units = null;
+				
+				delta = Math.abs(delta);
+				
+				// special cases controlled by options
+				if (delta <= opts.nowThreshold) {
+					return future ? {time: 'Right now'} : {time: 'Just now'};
+				}
+				if (opts.smartDays && delta <= 6 * MS_IN_DAY) {
+					return toSmartDays(this, now);
+				}
+				
+				for (var key in CONVERSIONS) {
+					if (delta < CONVERSIONS[key])
+						break;
+					units = key; // keeps track of the selected key over the iteration
+					delta = delta / CONVERSIONS[key];
+				}
+				
+				// pluralize a unit when the difference is greater than 1.
+				delta = Math.floor(delta);
+				var plural = (delta !== 1);
+				return {
+					delta: delta,
+					units: units,
+					future: future,
+					plural: plural
+				}
+			};
+		
+			var processOptions = function(arg) {
+				if (!arg) arg = 0;
+				if (typeof arg === 'string') {
+			  		arg = parseInt(arg, 10);
+				}
+				if (typeof arg === 'number') {
+			  		if (isNaN(arg)) arg = 0;
+			  		return {nowThreshold: arg};
+				}
+				return arg;
+		  	};
+		
+		  	var toSmartDays = function(date, now) {
+				var day;
+				var weekday = date.getDay(),
+				dayDiff = weekday - now.getDay();
+				if (dayDiff == 0)       day = 'Today';
+				else if (dayDiff == -1) day = 'Yesterday';
+				else if (dayDiff == 1)  day = 'Tomorrow';
+				else                    day = WEEKDAYS[weekday];
+				//return day + " at " + date.toLocaleTimeString();
+				return {
+					day: day,
+					date: date.toLocaleTimeString()
+				}
+		  	};
+		
+		 	var CONVERSIONS = {
+				millisecond: 1, // ms    -> ms
+				second: 1000,   // ms    -> sec
+				minute: 60,     // sec   -> min
+				hour:   60,     // min   -> hour
+				day:    24,     // hour  -> day
+				month:  30,     // day   -> month (roughly)
+				year:   12      // month -> year
+		  	};
+		  	var MS_IN_DAY = (CONVERSIONS.millisecond * CONVERSIONS.second * CONVERSIONS.minute * CONVERSIONS.hour * CONVERSIONS.day);
+		
+		  	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		
+		  	return _;
+		
+		})();
+		
+		
+		
+		/*
+		 * Wraps up a common pattern used with this plugin whereby you take a String
+		 * representation of a Date, and want back a date object.
+		 */
+		var fromString = function(str) {
+			return new Date(Date.parse(str));
+		};
+		
+		Sushi.extend(Sushi.date, {
+			fromString: fromString,
+			
+			toRelativeTime: toRelativeTime,
+			
+			strftime: function (d, fmt) {
+				if (!(locale in ext.locales)) {
+					if (locale.replace(/-[a-zA-Z]+$/, "") in ext.locales) {
+						locale = locale.replace(/-[a-zA-Z]+$/, "")
+					} else {
+						locale = "en-GB"
+					}
+				}
+				while (fmt.match(/%[cDhnrRtTxXzZ]/)) {
+					fmt = fmt.replace(/%([cDhnrRtTxXzZ])/g, function (m0, m1) {
+						var f = ext.aggregates[m1];
+						return (f == "locale" ? ext.locales[d.locale][m1] : f)
+					})
+				}
+				var str = fmt.replace(/%([aAbBCdegGHIjmMpPSuUVwWyY%])/g, function (m0, m1) {
+					var f = ext.formats[m1];
+					if (typeof (f) == "string") {
+						return d[f]()
+					} else {
+						if (typeof (f) == "function") {
+							return f.call(d, d)
+						} else {
+							if (typeof (f) == "object" && typeof (f[0]) == "string") {
+								return ext.util.xPad(d[f[0]](), f[1])
+							} else {
+								return m1
+							}
+						}
+					}
+				});
+				d = null;
+				return str
+			},
+			
+			setLocale: function(newLocale) {
+				if (newLocale in ext.locales) locale = newLocale;
+			}
+		});
+		
+		return Sushi.date;
+    }
+);
+
 /**
  * Sushi JS
  * Copyright (C) 2011 Bruno Abrantes
@@ -8590,6 +9087,8 @@ require([
 	'sushi.utils.collection', 
 	'sushi.utils.debug', 
 	'sushi.utils.json',
+	'sushi.utils.url',
+	'sushi.utils.lang',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
 	'sushi.mvc.collection',
@@ -8602,7 +9101,9 @@ require([
 	'sushi.stores.LocalStore',
 	'sushi.stores.RemoteStore',
 	'sushi.ajax',
-	'sushi.utils.performance'
+	'sushi.utils.performance',
+	'sushi.utils.performance.Worker',
+	'sushi.date'
 	], 
 	function(){
 });

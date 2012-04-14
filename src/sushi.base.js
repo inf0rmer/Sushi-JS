@@ -13,6 +13,8 @@ require([
 	'sushi.utils.collection', 
 	'sushi.utils.debug', 
 	'sushi.utils.json',
+	'sushi.utils.url',
+	'sushi.utils.lang',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
 	'sushi.mvc.collection',
@@ -25,7 +27,9 @@ require([
 	'sushi.stores.LocalStore',
 	'sushi.stores.RemoteStore',
 	'sushi.ajax',
-	'sushi.utils.performance'
+	'sushi.utils.performance',
+	'sushi.utils.performance.Worker',
+	'sushi.date'
 	], 
 	function(){
 });

@@ -12,6 +12,8 @@ require([
 	'sushi.utils', 
 	'sushi.utils.collection', 
 	'sushi.utils.json',
+	'sushi.utils.url',
+	'sushi.utils.lang',
 	'sushi.mvc.model',
 	'sushi.mvc.view',
 	'sushi.mvc.collection',
@@ -24,7 +26,8 @@ require([
 	'sushi.stores.RemoteStore',
 	'sushi.ajax',
 	'sushi.utils.performance',
-  'sushi.utils.performance.worker'
+	'sushi.utils.performance.worker',
+	'sushi.date'
 	], 
 	function(){
 });
