@@ -229,7 +229,6 @@ define('sushi.utils.collection',
 			obj = (obj === null) ? [] : obj;
 			
 		    if (_nativeReduce && obj.reduce === _nativeReduce) {
-		    	//if (context) { iterator = _.bind(iterator, context); }		
 		    	return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
 		    }
 		
@@ -266,7 +265,6 @@ define('sushi.utils.collection',
 		    if (obj === null) { obj = []; }
 		    
             if (_nativeReduceRight && obj.reduceRight === _nativeReduceRight) {
-                //if (context) iterator = _.bind(iterator, context);
                 return memo !== undefined ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
             }
             
@@ -515,8 +513,8 @@ define('sushi.utils.collection',
 		 *
 		 */
 		min = function(obj, iterator, context) {
-			if (!iterator && _.isArray(obj)) return Math.min.apply(Math, obj);
-			if (!iterator && _.isEmpty(obj)) return Infinity;
+			if (!iterator && utils.isArray(obj)) return Math.min.apply(Math, obj);
+			if (!iterator && utils.isEmpty(obj)) return Infinity;
 			var result = {computed : Infinity};
 			each(obj, function(value, index, list) {
 			  var computed = iterator ? iterator.call(context, value, index, list) : value;
@@ -562,7 +560,7 @@ define('sushi.utils.collection',
 		 *
 		 */
 		sortedIndex = function(array, obj, iterator) {
-			iterator || (iterator = _.identity);
+			iterator || (iterator = utils.identity);
 			var low = 0, high = array.length;
 			while (low < high) {
 			  var mid = (low + high) >> 1;

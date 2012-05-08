@@ -176,7 +176,7 @@
 			
 			create: function(model, options) {
 			  	var coll = this;
-				options = options ? _.clone(options) : {};
+				options = options ? utils.clone(options) : {};
 				model = this._prepareModel(model, options);
 				if (!model) return false;
 				if (!options.wait) coll.add(model, options);
