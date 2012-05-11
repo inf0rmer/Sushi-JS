@@ -53,7 +53,7 @@ define('sushi.utils.collection',
             
             var keys = [];                
             for (var key in obj) {
-                if (utils.utils.hasOwnProperty.call(obj, key)) {
+                if (utils.hasOwnProperty.call(obj, key)) {
                     keys[keys.length] = key;
                 }
             }                
