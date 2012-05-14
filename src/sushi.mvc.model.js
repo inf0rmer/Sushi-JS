@@ -98,15 +98,22 @@ define('sushi.mvc.model',
 			},
 			
 			/**
-			 * Get the value of an attribute.
+			 * Get the value of an attribute. You can use dot notation to access deep attributes.
 			 *
 			 * @method get
-			 * @param {String} attr Name of the attribute.
+			 * @param {String} key Name of the attribute.
 			 *
 			 * @return {mixed} Value of the attribute.
 			 */
-			get: function(attr) {
-				return this.attributes[attr];
+			get: function(key) {
+				// Patched from this: https://github.com/amccloud/backbone-dotattr
+				// to allow deep getting()
+				return collection.reduce(key.split('.'), function(attr, key) {
+					if (attr instanceof Sushi.Model)
+						return attr.attributes[key];
+	
+					return attr[key];
+				}, this.attributes);
 			},
 			
 			/**

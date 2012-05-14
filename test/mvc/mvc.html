@@ -24,7 +24,10 @@
 				
 				defaults: function() {
 					return {
-						content	: 'Custom content'
+						content	: 'Custom content',
+						deep: {
+							content: 'This is deep content, almost metaphysical.'
+						}
 					}
 				}
 			});
@@ -34,6 +37,11 @@
 			test('Model get()', function() {
 				var model = new MyModel();
 				equals(model.get('content'), 'Custom content', 'Model.get() works');
+			});
+			
+			test('Model deep get()', function() {
+				var model = new MyModel();
+				equals(model.get('deep.content'), 'This is deep content, almost metaphysical.', 'Model.get() with deep objects works');
 			});
 			
 			test('Model.escape()', function() {
