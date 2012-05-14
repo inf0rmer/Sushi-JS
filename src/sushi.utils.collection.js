@@ -224,28 +224,28 @@ define('sushi.utils.collection',
 		 *
 		 * @return {Array} Reduced Array
 		 */		
-		reduce = function(obj, iterator, memo) {
-			var initial = memo !== undefined;
-			obj = (obj === null) ? [] : obj;
+		reduce = function(obj, iterator, memo, context) {
+			var initial = arguments.length > 2;
 			
-		    if (_nativeReduce && obj.reduce === _nativeReduce) {
-		    	return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
-		    }
-		
-		    each(obj, function(value, index, list) {
-		    	if (!initial && index === 0) {
-		        	memo = value;
-		        	initial = true;
-		      	} else {
-		        	memo = iterator.call(context, memo, value, index, list);
-		      	}
-		    });
-		
-		    if (!initial) {
-		        throw new SushiError("Reduce of empty array with no initial value");
-		    }
-		
-		    return memo;
+			if (obj == null) obj = [];
+			
+			if (_nativeReduce && obj.reduce === _nativeReduce) {
+				if (context) iterator = utils.bind(iterator, context);
+				return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
+			}
+			
+			each(obj, function(value, index, list) {
+			 	if (!initial) {
+					memo = value;
+					initial = true;
+			  	} else {
+					memo = iterator.call(context, memo, value, index, list);
+			  	}
+			});
+			
+			if (!initial) throw new SushiError('Reduce of empty array with no initial value');
+			
+			return memo;
 		},
 		
 		/**
