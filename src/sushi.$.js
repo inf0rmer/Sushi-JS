@@ -81,6 +81,7 @@ define('sushi.$',
 				delegate: bean.add,
 			
 				unbind: bean.remove,
+				off: bean.remove,
 				unlisten: bean.remove,
 				removeListener: bean.remove,
 				undelegate: bean.remove,
