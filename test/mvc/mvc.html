@@ -218,6 +218,74 @@
 				view.dealloc();
 			});
 			
+			test('Cocoa-like View bindings', function() {
+				var categoryClassTransformer = function(value) {
+					return (value) ? value.toLowerCase().replace(/ /g, '') : '';
+				};
+				
+				var triedClassTransformer = function(value) {
+					return (value == true) ? 'tried' : 'todo';
+				};
+				
+				var Meal = new Sushi.Class(Sushi.Model, {
+						constructor: function(attributes) {
+							Meal.Super.call(this, attributes);
+						}
+					}),
+					MealLogView = new Sushi.Class(Sushi.View, {
+						constructor: function(options) {
+							MealLogView.Super.call(this, options);
+							this._configure(options || {});
+						},
+						
+						tagName: 'form',
+						className: 'meal-log',
+						template: $.template.compile($('#meal-log').html()),
+						
+						bindings: {
+							'class': ['category', categoryClassTransformer],
+							'class': ['tried', triedClassTransformer],
+							'text h1.name': 'name',
+							'value input[name="name"]': 'name',
+							'value textarea[name="notes"]': 'notes',
+							'checked input[name="tried"]': 'tried'
+						},
+						
+						events: {
+							'submit': 'save'
+						},
+				
+						save: function(event) {
+							alert("Save: " + $.utils.json.stringify(this.model.toJSON()));
+							event.preventDefault();
+							return false;
+						},
+						render: function() {
+							this.$el.html(this.template());
+							return this.bindModel();
+						}
+					});
+					
+				var meal = new Meal({
+					category: "fastfood",
+					name: "Coney",
+					notes: "Delish!",
+					tried: true
+				});
+				
+				var logView = new MealLogView({
+					model: meal
+				});
+				
+				$('body').append(logView.render().el);
+
+				meal.set({name: 'Burguer'});
+				
+				equals(logView.$el.find('h1').text(), 'Burguer', 'Title changed when model was changed');
+				
+				logView.dealloc();
+			});
+			
 			
 			module('Collections');
 			//Set up
@@ -335,5 +403,13 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
+	
+	<script id="meal-log" type="text/template">
+		<h1 class="name"></h1>
+		<p><label>Meal Name:</label> <input type="text" name="name"></p>
+		<p><label>I have tried:</label> <input type="checkbox" name="tried"></p>
+		<p><label>Notes:</label><textarea name="notes"></textarea></p>
+		<input type="submit" value="Save">
+	</script>
 </body>
 </html>

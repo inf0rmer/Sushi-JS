@@ -91,7 +91,7 @@ define('sushi.mvc.view',
 			
 			dealloc: function() {
 				if (!this.el) return false;
-				this.$el.unbind('.delegateEvents' + this.cid);
+				this.undelegateEvents();
 				this.$el.remove();
 			},
 			

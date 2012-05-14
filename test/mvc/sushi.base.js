@@ -10,9 +10,11 @@
 require([
 	'sushi.mvc.model',
 	'sushi.mvc.view',
+	'sushi.mvc.view.bindings',
 	'sushi.mvc.collection',
 	'sushi.mvc.router',
-	'sushi.template'
+	'sushi.template',
+	'sushi.utils.json'
 	], 
 	function(){
 });
