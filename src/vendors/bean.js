@@ -366,6 +366,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
       }
 
     , remove = function (element, typeSpec, fn) {
+    	console.log(element, typeSpec);
         var k, m, type, namespaces, i
           , rm = removeListener
           , isString = typeSpec && typeof typeSpec === 'string'
