@@ -8,7 +8,8 @@
  */
 // require Sushi modules in requirejs format
 require([
-	'sushi.ui.tooltip'
+	'sushi.ui.tooltip',
+	'sushi.ui.modal'
 	], 
 	runTests
 );
