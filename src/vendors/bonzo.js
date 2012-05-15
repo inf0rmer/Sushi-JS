@@ -1,37 +1,39 @@
 define(["require", "exports", "module"], function(require, exports, module) {
 /*!
-  * Bonzo: DOM Utility (c) Dustin Diaz 2011
+  * Bonzo: DOM Utility (c) Dustin Diaz 2012
   * https://github.com/ded/bonzo
   * License MIT
   */
-!function (name, definition) {
-  if (typeof module != 'undefined') module.exports = definition()
-  else if (typeof define == 'function' && define.amd) define(name, definition)
-  else this[name] = definition()
-}('bonzo', function() {
+(function (name, definition, context) {
+  if (typeof module != 'undefined' && module.exports) module.exports = definition()
+  else if (typeof context['define'] != 'undefined' && context['define'] == 'function' && context['define']['amd']) define(name, definition)
+  else context[name] = definition()
+})('bonzo', function() {
   var context = this
-    , old = context.bonzo
     , win = window
     , doc = win.document
     , html = doc.documentElement
     , parentNode = 'parentNode'
     , query = null
-    , specialAttributes = /^checked|value|selected$/
-    , specialTags = /select|fieldset|table|tbody|tfoot|td|tr|colgroup/i
-    , table = [ '<table>', '</table>', 1 ]
-    , td = [ '<table><tbody><tr>', '</tr></tbody></table>', 3 ]
-    , option = [ '<select>', '</select>', 1 ]
-    , tagMap = {
-        thead: table, tbody: table, tfoot: table, colgroup: table, caption: table
-        , tr: [ '<table><tbody>', '</tbody></table>', 2 ]
+    , specialAttributes = /^(checked|value|selected)$/i
+    , specialTags = /^(select|fieldset|table|tbody|tfoot|td|tr|colgroup)$/i // tags that we have trouble inserting *into*
+    , table = ['<table>', '</table>', 1]
+    , td = ['<table><tbody><tr>', '</tr></tbody></table>', 3]
+    , option = ['<select>', '</select>', 1]
+    , noscope = ['_', '', 0, 1]
+    , tagMap = { // tags that we have trouble *inserting*
+          thead: table, tbody: table, tfoot: table, colgroup: table, caption: table
+        , tr: ['<table><tbody>', '</tbody></table>', 2]
         , th: td , td: td
-        , col: [ '<table><colgroup>', '</colgroup></table>', 2 ]
-        , fieldset: [ '<form>', '</form>', 1 ]
-        , legend: [ '<form><fieldset>', '</fieldset></form>', 2 ]
-        , option: option
-        , optgroup: option }
-    , stateAttributes = /^checked|selected$/
+        , col: ['<table><colgroup>', '</colgroup></table>', 2]
+        , fieldset: ['<form>', '</form>', 1]
+        , legend: ['<form><fieldset>', '</fieldset></form>', 2]
+        , option: option, optgroup: option
+        , script: noscope, style: noscope, link: noscope, param: noscope, base: noscope
+      }
+    , stateAttributes = /^(checked|selected)$/
     , ie = /msie/i.test(navigator.userAgent)
+    , hasClass, addClass, removeClass
     , uidMap = {}
     , uuids = 0
     , digit = /^-?[\d\.]+$/
@@ -45,19 +47,22 @@ define(["require", "exports", "module"], function(require, exports, module) {
         e.innerHTML = '<a href="#x">x</a><table style="float:left;"></table>'
         return {
           hrefExtended: e[byTag]('a')[0][getAttribute]('href') != '#x' // IE < 8
-          , autoTbody: e[byTag]('tbody').length !== 0 // IE < 8
-          , computedStyle: doc.defaultView && doc.defaultView.getComputedStyle
-          , cssFloat: e[byTag]('table')[0].style.styleFloat ? 'styleFloat' : 'cssFloat'
-          , transform: function () {
-              var props = ['webkitTransform', 'MozTransform', 'OTransform', 'msTransform', 'Transform'], i
-              for (i = 0; i < props.length; i++) {
-                if (props[i] in e.style) return props[i]
-              }
-            }()
+        , autoTbody: e[byTag]('tbody').length !== 0 // IE < 8
+        , computedStyle: doc.defaultView && doc.defaultView.getComputedStyle
+        , cssFloat: e[byTag]('table')[0].style.styleFloat ? 'styleFloat' : 'cssFloat'
+        , transform: function () {
+            var props = ['webkitTransform', 'MozTransform', 'OTransform', 'msTransform', 'Transform'], i
+            for (i = 0; i < props.length; i++) {
+              if (props[i] in e.style) return props[i]
+            }
+          }()
+        , classList: 'classList' in e
         }
       }()
     , trimReplace = /(^\s*|\s*$)/g
-    , unitless = { lineHeight: 1, zoom: 1, zIndex: 1, opacity: 1 }
+    , whitespaceRegex = /\s+/
+    , toString = String.prototype.toString
+    , unitless = { lineHeight: 1, zoom: 1, zIndex: 1, opacity: 1, boxFlex: 1, WebkitBoxFlex: 1, MozBoxFlex: 1 }
     , trim = String.prototype.trim ?
         function (s) {
           return s.trim()
@@ -78,11 +83,11 @@ define(["require", "exports", "module"], function(require, exports, module) {
   function deepEach(ar, fn, scope) {
     for (var i = 0, l = ar.length; i < l; i++) {
       if (isNode(ar[i])) {
-        deepEach(ar[i].childNodes, fn, scope);
-        fn.call(scope || ar[i], ar[i], i, ar);
+        deepEach(ar[i].childNodes, fn, scope)
+        fn.call(scope || ar[i], ar[i], i, ar)
       }
     }
-    return ar;
+    return ar
   }
 
   function camelize(s) {
@@ -97,18 +102,22 @@ define(["require", "exports", "module"], function(require, exports, module) {
 
   function data(el) {
     el[getAttribute]('data-node-uid') || el[setAttribute]('data-node-uid', ++uuids)
-    uid = el[getAttribute]('data-node-uid')
+    var uid = el[getAttribute]('data-node-uid')
     return uidMap[uid] || (uidMap[uid] = {})
   }
 
   function clearData(el) {
-    uid = el[getAttribute]('data-node-uid')
-    uid && (delete uidMap[uid])
+    var uid = el[getAttribute]('data-node-uid')
+    if (uid) delete uidMap[uid]
   }
 
-  function dataValue(d) {
+  function dataValue(d, f) {
     try {
-      return d === 'true' ? true : d === 'false' ? false : d === 'null' ? null : !isNaN(d) ? parseFloat(d) : d;
+      return (d === null || d === undefined) ? undefined :
+        d === 'true' ? true :
+          d === 'false' ? false :
+            d === 'null' ? null :
+              (f = parseFloat(d)) == d ? f : d;
     } catch(e) {}
     return undefined
   }
@@ -117,7 +126,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
     return node && node.nodeName && node.nodeType == 1
   }
 
-  function some(ar, fn, scope, i) {
+  function some(ar, fn, scope, i, j) {
     for (i = 0, j = ar.length; i < j; ++i) if (fn.call(scope, ar[i], i, ar)) return true
     return false
   }
@@ -171,10 +180,22 @@ define(["require", "exports", "module"], function(require, exports, module) {
         var n = !el[parentNode] || (el[parentNode] && !el[parentNode][parentNode]) ?
           function () {
             var c = el.cloneNode(true)
+              , cloneElems
+              , elElems
+
             // check for existence of an event cloner
             // preferably https://github.com/fat/bean
             // otherwise Bonzo won't do this for you
-            self.$ && self.cloneEvents && self.$(c).cloneEvents(el)
+            if (self.$ && self.cloneEvents) {
+              self.$(c).cloneEvents(el)
+
+              // clone events from every child node
+              cloneElems = self.$(c).find('*')
+              elElems = self.$(el).find('*')
+
+              for (var i = 0; i < elElems.length; i++)
+                self.$(cloneElems[i]).cloneEvents(elElems[i])
+            }
             return c
           }() : el
         fn(t, n)
@@ -210,23 +231,38 @@ define(["require", "exports", "module"], function(require, exports, module) {
 
   }
 
-  function hasClass(el, c) {
-    return classReg(c).test(el.className)
+  // classList support for class management
+  // altho to be fair, the api sucks because it won't accept multiple classes at once
+  // so we iterate down below
+  if (features.classList) {
+    hasClass = function (el, c) {
+      return el.classList.contains(c)
+    }
+    addClass = function (el, c) {
+      el.classList.add(c)
+    }
+    removeClass = function (el, c) {
+      el.classList.remove(c)
+    }
   }
-  function addClass(el, c) {
-    el.className = trim(el.className + ' ' + c)
+  else {
+    hasClass = function (el, c) {
+      return classReg(c).test(el.className)
+    }
+    addClass = function (el, c) {
+      el.className = trim(el.className + ' ' + c)
+    }
+    removeClass = function (el, c) {
+      el.className = trim(el.className.replace(classReg(c), ' '))
+    }
   }
-  function removeClass(el, c) {
-    el.className = trim(el.className.replace(classReg(c), ' '))
-  }
+
 
   // this allows method calling for setting values
   // example:
-
   // bonzo(elements).css('color', function (el) {
   //   return el.getAttribute('data-original-color')
   // })
-
   function setter(el, v) {
     return typeof v == 'function' ? v(el) : v
   }
@@ -240,18 +276,18 @@ define(["require", "exports", "module"], function(require, exports, module) {
           elements :
           [elements]
       this.length = elements.length
-      for (var i = 0; i < elements.length; i++) {
-        this[i] = elements[i]
-      }
+      for (var i = 0; i < elements.length; i++) this[i] = elements[i]
     }
   }
 
   Bonzo.prototype = {
 
+      // indexr method, because jQueriers want this method. Jerks
       get: function (index) {
-        return this[index]
+        return this[index] || null
       }
 
+      // itetators
     , each: function (fn, scope) {
         return each(this, fn, scope)
       }
@@ -269,20 +305,13 @@ define(["require", "exports", "module"], function(require, exports, module) {
         return m
       }
 
-    , first: function () {
-        return bonzo(this.length ? this[0] : [])
-      }
-
-    , last: function () {
-        return bonzo(this.length ? this[this.length - 1] : [])
-      }
-
+    // text and html inserters!
     , html: function (h, text) {
         var method = text ?
           html.textContent === undefined ?
             'innerText' :
             'textContent' :
-          'innerHTML', m;
+          'innerHTML';
         function append(el) {
           each(normalize(h), function (node) {
             el.appendChild(node)
@@ -290,9 +319,12 @@ define(["require", "exports", "module"], function(require, exports, module) {
         }
         return typeof h !== 'undefined' ?
             this.empty().each(function (el) {
-              !text && (m = el.tagName.match(specialTags)) ?
-                append(el, m[0]) :
-                (el[method] = h)
+              !text && specialTags.test(el.tagName) ?
+                append(el) :
+                (function () {
+                  try { (el[method] = h) }
+                  catch(e) { append(el) }
+                }())
             }) :
           this[0] ? this[0][method] : ''
       }
@@ -301,44 +333,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
         return this.html(text, 1)
       }
 
-    , addClass: function (c) {
-        return this.each(function (el) {
-          hasClass(el, setter(el, c)) || addClass(el, setter(el, c))
-        })
-      }
-
-    , removeClass: function (c) {
-        return this.each(function (el) {
-          hasClass(el, setter(el, c)) && removeClass(el, setter(el, c))
-        })
-      }
-
-    , hasClass: function (c) {
-        return some(this, function (el) {
-          return hasClass(el, c)
-        })
-      }
-
-    , toggleClass: function (c, condition) {
-        return this.each(function (el) {
-          typeof condition !== 'undefined' ?
-            condition ? addClass(el, c) : removeClass(el, c) :
-            hasClass(el, c) ? removeClass(el, c) : addClass(el, c)
-        })
-      }
-
-    , show: function (type) {
-        return this.each(function (el) {
-          el.style.display = type || ''
-        })
-      }
-
-    , hide: function () {
-        return this.each(function (el) {
-          el.style.display = 'none'
-        })
-      }
-
+      // more related insertion methods
     , append: function (node) {
         return this.each(function (el) {
           each(normalize(node), function (i) {
@@ -366,29 +361,6 @@ define(["require", "exports", "module"], function(require, exports, module) {
         return insert.call(this, target, host, function (t, el) {
           t.insertBefore(el, t.firstChild)
         })
-      }
-
-    , next: function () {
-        return this.related('nextSibling')
-      }
-
-    , previous: function () {
-        return this.related('previousSibling')
-      }
-
-    , related: function (method) {
-        return this.map(
-          function (el) {
-            el = el[method]
-            while (el && el.nodeType !== 1) {
-              el = el[method]
-            }
-            return el || 0
-          },
-          function (el) {
-            return el
-          }
-        )
       }
 
     , before: function (node) {
@@ -433,10 +405,111 @@ define(["require", "exports", "module"], function(require, exports, module) {
         })
       }
 
-    , focus: function () {
+      // class management
+    , addClass: function (c) {
+        c = toString.call(c).split(whitespaceRegex)
         return this.each(function (el) {
-          el.focus()
+          // we `each` here so you can do $el.addClass('foo bar')
+          each(c, function (c) {
+            if (c && !hasClass(el, setter(el, c)))
+              addClass(el, setter(el, c))
+          })
         })
+      }
+
+    , removeClass: function (c) {
+        c = toString.call(c).split(whitespaceRegex)
+        return this.each(function (el) {
+          each(c, function (c) {
+            if (c && hasClass(el, setter(el, c)))
+              removeClass(el, setter(el, c))
+          })
+        })
+      }
+
+    , hasClass: function (c) {
+        c = toString.call(c).split(whitespaceRegex)
+        return some(this, function (el) {
+          return some(c, function (c) {
+            return c && hasClass(el, c)
+          })
+        })
+      }
+
+    , toggleClass: function (c, condition) {
+        c = toString.call(c).split(whitespaceRegex)
+        return this.each(function (el) {
+          each(c, function (c) {
+            if (c) {
+              typeof condition !== 'undefined' ?
+                condition ? addClass(el, c) : removeClass(el, c) :
+                hasClass(el, c) ? removeClass(el, c) : addClass(el, c)
+            }
+          })
+        })
+      }
+
+      // display togglers
+    , show: function (type) {
+        return this.each(function (el) {
+          el.style.display = type || ''
+        })
+      }
+
+    , hide: function () {
+        return this.each(function (el) {
+          el.style.display = 'none'
+        })
+      }
+
+    , toggle: function (callback, type) {
+        this.each(function (el) {
+          el.style.display = (el.offsetWidth || el.offsetHeight) ? 'none' : type || ''
+        })
+        callback && callback()
+        return this
+      }
+
+      // DOM Walkers & getters
+    , first: function () {
+        return bonzo(this.length ? this[0] : [])
+      }
+
+    , last: function () {
+        return bonzo(this.length ? this[this.length - 1] : [])
+      }
+
+    , next: function () {
+        return this.related('nextSibling')
+      }
+
+    , previous: function () {
+        return this.related('previousSibling')
+      }
+
+    , parent: function() {
+        return this.related(parentNode)
+      }
+
+    , related: function (method) {
+        return this.map(
+          function (el) {
+            el = el[method]
+            while (el && el.nodeType !== 1) {
+              el = el[method]
+            }
+            return el || 0
+          },
+          function (el) {
+            return el
+          }
+        )
+      }
+
+      // meh. use with care. the ones in Bean are better
+    , focus: function () {
+        this.length && this[0].focus()
+        return this
       }
 
     , blur: function () {
@@ -445,6 +518,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
         })
       }
 
+      // style getter setter & related methods
     , css: function (o, v, p) {
         // is this a request for just getting a style?
         if (v === undefined && typeof o == 'string') {
@@ -506,6 +580,11 @@ define(["require", "exports", "module"], function(require, exports, module) {
         while (el = el.offsetParent) {
           top = top + el.offsetTop
           left = left + el.offsetLeft
+
+          if (el != document.body) {
+            top -= el.scrollTop
+            left -= el.scrollLeft
+          }
         }
 
         return {
@@ -517,6 +596,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
       }
 
     , dim: function () {
+        if (!this.length) return { height: 0, width: 0 }
         var el = this[0]
           , orig = !el.offsetWidth && !el.offsetHeight ?
              // el isn't visible, can't be measured properly, so fix that
@@ -543,6 +623,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
         }
       }
 
+      // attributes are hard. go shopping
     , attr: function (k, v) {
         var el = this[0]
         if (typeof k != 'string' && !(k instanceof String)) {
@@ -552,7 +633,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
           return this
         }
         return typeof v == 'undefined' ?
-          specialAttributes.test(k) ?
+          !el ? null : specialAttributes.test(k) ?
             stateAttributes.test(k) && typeof el[k] == 'string' ?
               true : el[k] : (k == 'href' || k =='src') && features.hrefExtended ?
                 el[getAttribute](k, 2) : el[getAttribute](k) :
@@ -561,34 +642,41 @@ define(["require", "exports", "module"], function(require, exports, module) {
           })
       }
 
-    , val: function (s) {
-        return (typeof s == 'string') ? this.attr('value', s) : this[0].value
-      }
-
     , removeAttr: function (k) {
         return this.each(function (el) {
           stateAttributes.test(k) ? (el[k] = false) : el.removeAttribute(k)
         })
       }
 
+    , val: function (s) {
+        return (typeof s == 'string') ?
+          this.attr('value', s) :
+          this.length ? this[0].value : null
+      }
+
+      // use with care and knowledge. this data() method uses data attributes on the DOM nodes
+      // to do this differently costs a lot more code. c'est la vie
     , data: function (k, v) {
         var el = this[0], uid, o, m
         if (typeof v === 'undefined') {
+          if (!el) return null
           o = data(el)
           if (typeof k === 'undefined') {
             each(el.attributes, function(a) {
-              (m = (''+a.name).match(dattr)) && (o[camelize(m[1])] = dataValue(a.value))
+              (m = ('' + a.name).match(dattr)) && (o[camelize(m[1])] = dataValue(a.value))
             })
             return o
           } else {
-            return typeof o[k] === 'undefined' ?
-              (o[k] = dataValue(this.attr('data-' + decamelize(k)))) : o[k]
+            if (typeof o[k] === 'undefined')
+              o[k] = dataValue(this.attr('data-' + decamelize(k)))
+            return o[k]
           }
         } else {
           return this.each(function (el) { data(el)[k] = v })
         }
       }
 
+      // DOM detachment & related
     , remove: function () {
         this.deepEach(clearData)
 
@@ -608,11 +696,12 @@ define(["require", "exports", "module"], function(require, exports, module) {
       }
 
     , detach: function () {
-        return this.map(function (el) {
-          return el[parentNode].removeChild(el)
+        return this.each(function (el) {
+          el[parentNode].removeChild(el)
         })
       }
 
+      // who uses a mouse anyway? oh right.
     , scrollTop: function (y) {
         return scroll.call(this, null, y, 'y')
       }
@@ -621,13 +710,6 @@ define(["require", "exports", "module"], function(require, exports, module) {
         return scroll.call(this, x, null, 'x')
       }
 
-    , toggle: function (callback, type) {
-        this.each(function (el) {
-          el.style.display = (el.offsetWidth || el.offsetHeight) ? 'none' : type || ''
-        })
-        callback && callback()
-        return this
-      }
   }
 
   function normalize(node) {
@@ -636,6 +718,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
 
   function scroll(x, y, type) {
     var el = this[0]
+    if (!el) return this
     if (x == null && y == null) {
       return (isBody(el) ? getWindowScroll() : { x: el.scrollLeft, y: el.scrollTop })[type]
     }
@@ -666,12 +749,14 @@ define(["require", "exports", "module"], function(require, exports, module) {
   }
 
   bonzo.aug = function (o, target) {
+    // for those standalone bonzo users. this love is for you.
     for (var k in o) {
       o.hasOwnProperty(k) && ((target || Bonzo.prototype)[k] = o[k])
     }
   }
 
   bonzo.create = function (node) {
+    // hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
     return typeof node == 'string' && node !== '' ?
       function () {
         var tag = /^\s*<([^\s>]+)/.exec(node)
@@ -679,11 +764,14 @@ define(["require", "exports", "module"], function(require, exports, module) {
           , els = []
           , p = tag ? tagMap[tag[1].toLowerCase()] : null
           , dep = p ? p[2] + 1 : 1
+          , ns = p && p[3]
           , pn = parentNode
           , tb = features.autoTbody && p && p[0] == '<table>' && !(/<tbody/i).test(node)
 
         el.innerHTML = p ? (p[0] + node + p[1]) : node
         while (dep--) el = el.firstChild
+        // for IE NoScope, we may insert cruft at the begining just to get it to work
+        if (ns && el && el.nodeType !== 1) el = el.nextSibling
         do {
           // tbody special case for IE<8, creates tbody on any empty table
           // we don't want it if we're just after a <thead>, <caption>, etc.
@@ -737,12 +825,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
       return false
     }
 
-  bonzo.noConflict = function () {
-    context.bonzo = old
-    return this
-  }
-
   return bonzo
-})
+}, this); // the only line we care about using a semi-colon. placed here for concatenation tools
 
 });
