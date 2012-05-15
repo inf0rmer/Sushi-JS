@@ -10,7 +10,8 @@ define('sushi.$',
     	'vendors/qwery',
     	'vendors/bonzo',
     	'vendors/bean',
-    	'vendors/morpheus'
+    	'vendors/morpheus',
+    	'sushi.ajax'
     ],
     
 	/**
@@ -19,7 +20,7 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, qwery, bonzo, bean, morpheus) {    	
+    function(Sushi, qwery, bonzo, bean, morpheus, ajax) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
