@@ -60,7 +60,7 @@ define('sushi.$',
     		}
     		
     		// If the selector is a tag-like string, create it instead of qwerying it.
-    		if (/^<(\w+)\s*\/?>(?:<\/\1>)?$/.test(selector)) {
+    		if (/^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/.test(selector)) {
     			element = bonzo.create(selector);
     		} else {
     			element = bonzo(qwery(selector, context))
@@ -86,6 +86,7 @@ define('sushi.$',
 				bind: bean.add,
 				listen: bean.add,
 				delegate: bean.add,
+				one: bean.one,
 			
 				unbind: bean.remove,
 				off: bean.remove,
