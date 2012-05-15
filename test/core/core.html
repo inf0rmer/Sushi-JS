@@ -10,134 +10,136 @@
 			baseUrl: '../../src'
 		});
 		
-		require(['vendors/domReady!'], function(doc) {	
-			var Artist, Dreamer;
-			
-			module('Sushi.* namespace');
-			test('Sushi is global and accessible', function() {
-				ok(Sushi, 'window.Sushi is defined');
-				ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
-			});
-			
-			module('Sushi.Class');
-			test('Class creation', function() {
-				Artist = Sushi.Class({
-					//use the "STATIC" field to define static fields
-					STATIC: {
-						ARTWORKS_LIMIT: 500
-					},
-					
-					//use the "constructor" field to define the class constructor
-					constructor: function(name, art) {
-						this.name = name;
-						this.art = art;
-					}
+		function runTests() {
+			$.ready(function() {
+				var Artist, Dreamer;
+				
+				module('Sushi.* namespace');
+				test('Sushi is global and accessible', function() {
+					ok(Sushi, 'window.Sushi is defined');
+					ok(Sushi.VERSION, 'Sushi is currently v' + Sushi.VERSION);
 				});
 				
-				var elvis = new Artist('Elvis', "Rock 'n Roll");
-				
-				//Assertions
-				equals(elvis.name, 'Elvis');
-				equals(elvis.art, "Rock 'n Roll");
-			});
-			
-			test('Class inheritance', function() {
-				Dreamer = Sushi.Class(Artist, {
-					constructor: function(name, dream) {
-						//Explicit call to Dreamer.Super === Artist
-						Dreamer.Super.call(this, name);
-						this.dream = dream;
-					},
-				
-					learnToPlay: function() {
-						this.art = 'Rocking your socks off';
-					}
-			  	});
-			  	
-			  	var halen = new Dreamer('Van Halen', 'learn to rock');
-			  	
-			  	ok(halen.name, 'Dreamer has a name');
-			  	ok(!halen.art, 'Dreamer has no art');
-			  	halen.learnToPlay();
-			  	equals(halen.art, 'Rocking your socks off');
-			});
-			
-			test('Private methods and fields', function() {
-				var User;
-				(function() {
-					User = Sushi.Class({
-						constructor: function(username, imagesServerUrl) {
-							this.username = username;
-							//call private method
-							_fetchUserImages(this, imagesServerUrl);
-							//update private static field
-							USER_COUNT++;
-							//call private static method
-							UPDATE_IMAGES_SERVERS_USER_COUNT(imagesServerUrl);
+				module('Sushi.Class');
+				test('Class creation', function() {
+					Artist = Sushi.Class({
+						//use the "STATIC" field to define static fields
+						STATIC: {
+							ARTWORKS_LIMIT: 500
 						},
 						
-						//expose private static field via getter
-						getUserCount: function() {
-							return USER_COUNT;
+						//use the "constructor" field to define the class constructor
+						constructor: function(name, art) {
+							this.name = name;
+							this.art = art;
 						}
 					});
 					
-					//Private methods can be defined like Python methods
-					//with 1st arg "self" referencing the thisObject.
+					var elvis = new Artist('Elvis', "Rock 'n Roll");
 					
-					//private method 2
-					var _fetchUserImages = function(self, imagesServerUrl) {
-					  	self.images = ['image1', 'image2', 'image3'];
-					};
-					
-					//private static field
-					var USER_COUNT = 0;
-					
-					//private static method
-					var UPDATE_IMAGES_SERVERS_USER_COUNT = function(imagesServerUrl) {
-						//do stuff
-					}
-				})();
-				
-				var user = new User('borg', 'http://images.com');
-				ok(!user.USER_COUNT, 'Static field USER_COUNT is inaccessible');
-				ok(!user.UPDATE_IMAGES_SERVERS_USER_COUNT, 'Static method UPDATE_IMAGES_SERVERS_USER_COUNT is inaccessible');
-				ok(!user._fetchUserImages, 'Private method _fetchUserImages is inaccessible');
-				ok(user.getUserCount, 'Public getter method getUserCount is available');
-			});
-			
-			test('Protected methods', function() {
-				var Person = Sushi.Class({
-					constructor: function(name) { this.name = name; }
+					//Assertions
+					equals(elvis.name, 'Elvis');
+					equals(elvis.art, "Rock 'n Roll");
 				});
 				
-				var Mal = Sushi.Class(Person, {
-					constructor: function(name) {
-						Mal.Super.call(this, name);
-					},
-					//this method can only be called by instances of class Person
-					//or instances of class descending from Person
-					getDreams: function() {
-						if (!(this instanceof Mal))
-					  		throw new Error('Access restricted, you are in a protected area!');
+				test('Class inheritance', function() {
+					Dreamer = Sushi.Class(Artist, {
+						constructor: function(name, dream) {
+							//Explicit call to Dreamer.Super === Artist
+							Dreamer.Super.call(this, name);
+							this.dream = dream;
+						},
+					
+						learnToPlay: function() {
+							this.art = 'Rocking your socks off';
+						}
+					});
+					
+					var halen = new Dreamer('Van Halen', 'learn to rock');
+					
+					ok(halen.name, 'Dreamer has a name');
+					ok(!halen.art, 'Dreamer has no art');
+					halen.learnToPlay();
+					equals(halen.art, 'Rocking your socks off');
+				});
+				
+				test('Private methods and fields', function() {
+					var User;
+					(function() {
+						User = Sushi.Class({
+							constructor: function(username, imagesServerUrl) {
+								this.username = username;
+								//call private method
+								_fetchUserImages(this, imagesServerUrl);
+								//update private static field
+								USER_COUNT++;
+								//call private static method
+								UPDATE_IMAGES_SERVERS_USER_COUNT(imagesServerUrl);
+							},
+							
+							//expose private static field via getter
+							getUserCount: function() {
+								return USER_COUNT;
+							}
+						});
 						
-						return 'dreams';
-					}	
+						//Private methods can be defined like Python methods
+						//with 1st arg "self" referencing the thisObject.
+						
+						//private method 2
+						var _fetchUserImages = function(self, imagesServerUrl) {
+							self.images = ['image1', 'image2', 'image3'];
+						};
+						
+						//private static field
+						var USER_COUNT = 0;
+						
+						//private static method
+						var UPDATE_IMAGES_SERVERS_USER_COUNT = function(imagesServerUrl) {
+							//do stuff
+						}
+					})();
+					
+					var user = new User('borg', 'http://images.com');
+					ok(!user.USER_COUNT, 'Static field USER_COUNT is inaccessible');
+					ok(!user.UPDATE_IMAGES_SERVERS_USER_COUNT, 'Static method UPDATE_IMAGES_SERVERS_USER_COUNT is inaccessible');
+					ok(!user._fetchUserImages, 'Private method _fetchUserImages is inaccessible');
+					ok(user.getUserCount, 'Public getter method getUserCount is available');
 				});
 				
-				var ConMan = Sushi.Class(Person, Mal, {
-					constructor: function(name) {
-						ConMan.Super.call(this, name);
-					}
+				test('Protected methods', function() {
+					var Person = Sushi.Class({
+						constructor: function(name) { this.name = name; }
+					});
+					
+					var Mal = Sushi.Class(Person, {
+						constructor: function(name) {
+							Mal.Super.call(this, name);
+						},
+						//this method can only be called by instances of class Person
+						//or instances of class descending from Person
+						getDreams: function() {
+							if (!(this instanceof Mal))
+								throw new Error('Access restricted, you are in a protected area!');
+							
+							return 'dreams';
+						}	
+					});
+					
+					var ConMan = Sushi.Class(Person, Mal, {
+						constructor: function(name) {
+							ConMan.Super.call(this, name);
+						}
+					});
+					
+					var person = new Mal('Mal'),
+						conman = new ConMan('Dom Cobb');
+					
+					equals(person.getDreams(), 'dreams', person.name + ' has access to her own dreams');
+					raises(conman.getDreams, conman.name + ' cannot access her dreams');
 				});
-				
-				var person = new Mal('Mal'),
-					conman = new ConMan('Dom Cobb');
-				
-				equals(person.getDreams(), 'dreams', person.name + ' has access to her own dreams');
-				raises(conman.getDreams, conman.name + ' cannot access her dreams');
 			});
-		});
+		}
 	</script>
 </head>
 <body>

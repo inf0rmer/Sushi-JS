@@ -5,7 +5,9 @@
  */
 /*global Sushi:true, define:true*/
 define('sushi.core',
-    [],
+    [
+    	'sushi.domready'
+    ],
     
 	/**
 	 * Sushi Core
@@ -13,7 +15,7 @@ define('sushi.core',
 	 * @namespace Sushi
 	 * @class core
 	 */
-    function() {
+    function(ready) {
     	var root = this,
     	previousSushi = root.Sushi,
     	Sushi = root.Sushi = root.$ = function( selector, context ) {
@@ -160,7 +162,8 @@ define('sushi.core',
     		namespace: namespace,
     		extend: extend,
     		Class: Class,
-    		extendClass: extendClass
+    		extendClass: extendClass,
+    		ready: ready    		
     	});
     	
     	return this.Sushi;

@@ -10,5 +10,5 @@
 require([
 	'sushi.core'
 	], 
-	function(){
-});
+	runTests
+);
