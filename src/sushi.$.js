@@ -7,6 +7,7 @@
 define('sushi.$',
     [
     	'sushi.core',
+    	'sushi.utils',
     	'vendors/qwery',
     	'vendors/bonzo',
     	'vendors/bean',
@@ -20,7 +21,7 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, qwery, bonzo, bean, morpheus, ajax) {    	
+    function(Sushi, utils, qwery, bonzo, bean, morpheus, ajax) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
@@ -52,6 +53,11 @@ define('sushi.$',
     	$ = function(selector, context) {
     		var q,
     		element;
+    		
+    		// If selector is a function, handle it as being domReady - support $(function(){})
+    		if (utils.isFunction(selector)) {
+    			return Sushi.ready( selector );
+    		}
     		
     		// If the selector is a tag-like string, create it instead of qwerying it.
     		if (/^<(\w+)\s*\/?>(?:<\/\1>)?$/.test(selector)) {
@@ -94,8 +100,13 @@ define('sushi.$',
 			for (var method in methods) {
 				methods[method] = _bind(methods[method], element);
 			}
-    		
-    		var bonzoed = Sushi.extend(bonzo(element), methods);
+			
+			var bonzoed = Sushi.extend(bonzo(element), methods);
+			
+			// extend plugins
+			for (var plugin in Sushi.fn) {
+				bonzoed[plugin] = Sushi.fn[plugin];
+			}
     		
     		return Sushi.extend(bonzoed, {
     			
