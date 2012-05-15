@@ -40,11 +40,6 @@
 		 * ========================================================== */
 		
 		
-		!function ($) {
-		
-		  "use strict"; // jshint ;_;
-		
-		
 		 /* TOOLTIP PUBLIC CLASS DEFINITION
 		  * =============================== */
 		
@@ -73,12 +68,12 @@
 			  }
 		
 			  this.options.selector ?
-				(this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+				(this._options = Sushi.extend({}, this.options, { trigger: 'manual', selector: '' })) :
 				this.fixTitle()
 			}
 		
 		  , getOptions: function (options) {
-			  options = $.extend({}, $.fn[this.type].defaults, options, this.$element.data())
+			  options = Sushi.extend({}, Sushi.fn[this.type].defaults, options, this.$element.data())
 		
 			  if (options.delay && typeof options.delay == 'number') {
 				options.delay = {
@@ -221,7 +216,7 @@
 			}
 		
 		  , getPosition: function (inside) {
-			  return $.extend({}, (inside ? {top: 0, left: 0} : this.$element.offset()), {
+			  return Sushi.extend({}, (inside ? {top: 0, left: 0} : this.$element.offset()), {
 				width: this.$element[0].offsetWidth
 			  , height: this.$element[0].offsetHeight
 			  })
@@ -269,32 +264,32 @@
 		  }
 		
 		
-		 /* TOOLTIP PLUGIN DEFINITION
-		  * ========================= */
+		/* TOOLTIP PLUGIN DEFINITION
+		 * ========================= */
 		
-		  $.fn.tooltip = function ( option ) {
+		Sushi.fn.tooltip = function ( option ) {
 			return this.each(function () {
-			  var $this = $(this)
-				, data = $this.data('tooltip')
-				, options = typeof option == 'object' && option;
-			  
-			  if (!data) $this.data('tooltip', (data = new Tooltip(this, options)))
-			  if (typeof option == 'string') data[option]()
-			})
-		  }
+		  		var $this = $(this)
+					, data = $this.data('tooltip')
+					, options = typeof option == 'object' && option;
+		  
+		  		if (!data) $this.data('tooltip', (data = new Tooltip(this, options)))
+				if (typeof option == 'string') data[option]()
+			});
+		}
 		
-		  $.fn.tooltip.Constructor = Tooltip
+		Sushi.fn.tooltip.Constructor = Tooltip
 		
-		  $.fn.tooltip.defaults = {
-			animation: true
-		  , placement: 'top'
-		  , selector: false
-		  , template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-		  , trigger: 'hover'
-		  , title: ''
-		  , delay: 0
-		  }
+		Sushi.fn.tooltip.defaults = {
+			  animation: true
+			, placement: 'top'
+			, selector: false
+			, template: '<div class="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+			, trigger: 'hover'
+			, title: ''
+			, delay: 0
+		}
 		
-		}(Sushi);
+		return Tooltip;
  	}
  );
