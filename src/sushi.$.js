@@ -52,6 +52,8 @@ define('sushi.$',
     	
     	$ = function(selector, context) {
     		var q,
+    		match,
+    		quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
     		element;
     		
     		// If selector is a function, handle it as being domReady - support $(function(){})
@@ -59,9 +61,12 @@ define('sushi.$',
     			return Sushi.ready( selector );
     		}
     		
+				
     		// If the selector is a tag-like string, create it instead of qwerying it.
-    		if (/^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/.test(selector)) {
-    			element = bonzo.create(selector);
+    		match = quickExpr.exec(selector);
+    		
+    		if (match && match[1]) {
+	   			element = bonzo.create(selector);
     		} else {
     			element = bonzo(qwery(selector, context))
     		}
@@ -274,6 +279,6 @@ define('sushi.$',
     	Sushi.qwery = qwery;
     	Sushi.bean = bean;
     	
-    	return $;
+    	return Sushi;
     } 
 );
