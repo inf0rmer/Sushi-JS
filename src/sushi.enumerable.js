@@ -24,6 +24,10 @@
         	return value;
         };
         
+        Enumerable.prototype = {
+        	constructor: Enumerable
+        }
+        
         var	methods = ['each', 'map', 'reduce', 'reduceRight', 'find', 'detect', 'remove',
 			'filter', 'select', 'reject', 'every', 'all', 'some', 'any', 'include',
 			'contains', 'invoke', 'max', 'min', 'sortBy', 'sortedIndex', 'toArray', 'size',
