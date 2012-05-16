@@ -21,7 +21,8 @@
 			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures.json',
-			  	type: 'json',
+			  	type: 'GET',
+			  	dataType: 'json',
 			  	success: function (resp) {
 					ok(resp.boosh == 'boosh', 'evaluated response as JSON');
 					start();
@@ -35,7 +36,7 @@
 			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures_jsonp.js?callback=?',
-			  	type: 'jsonp',
+			  	dataType: 'jsonp',
 			  	success: function (resp) {
 					equals(resp.boosh, "boosh", "evaluated response as JSONP");
 			  	}
@@ -43,7 +44,7 @@
 				
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures_jsonp2.js?foo=bar',
-			  	type: 'jsonp',
+			  	dataType: 'jsonp',
 			  	jsonpCallback: 'foo',
 			  	success: function (resp) {
 					equals(resp.boosh, "boosh", "evaluated response as JSONP with custom callback");
@@ -52,7 +53,7 @@
 
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures_jsonp3.js?foo=?',
-			  	type: 'jsonp',
+			  	dataType: 'jsonp',
 			  	jsonpCallback: 'foo',
 			  	success: function (resp) {
 					equals(resp.boosh, "boosh", "evaluated response as JSONP with custom wildcard callback");
@@ -68,7 +69,7 @@
 			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures.js',
-			  	type: 'js',
+			  	dataType: 'js',
 			  	success: function (resp) {
 					equals(boosh, 'boosh', 'evaluated response as JavaScript');
 					start();
@@ -80,7 +81,7 @@
 			stop(1);
 			Sushi.ajax({
 			  	url: 'fixtures/fixtures.html',
-			  	type: 'html',
+			  	dataType: 'html',
 			  	success: function (resp) {
 					equals(resp, '<p>boosh</p>', 'evaluated response as HTML');
 					start();
@@ -119,7 +120,7 @@
     		Sushi.ajax({
 			  	url: 'fixtures/fixtures.html',
 			  	data: 'foo=bar&baz=thunk',
-			  	method: 'post',
+			  	type: 'POST',
 			  	headers: {
 					'Accept': 'application/x-foo'
 			  	},
@@ -134,8 +135,8 @@
 	  		stop(1);
 			var connection = Sushi.ajax({
 		  		url: 'fixtures/fixtures.js',
-		  		method: 'post',
-		  		type: 'js',
+		  		type: 'POST',
+		  		dataType: 'js',
 		  		before: function (http) {
 					equals(http.readyState, 1, 'received http connection object');
 		  		},
@@ -179,7 +180,7 @@
     		stop(1);
 		  	Sushi.ajax({
 				url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
-				type: 'jsonp',
+				dataType: 'jsonp',
 				success: function (resp) {
 			  		equals(resp.a, "a", "evaluated response as JSONP");
 				}
@@ -187,7 +188,7 @@
 		  
 		  	Sushi.ajax({
 				url: 'fixtures/fixtures_jsonp_multi_b.js?callback=reqwest_0',
-				type: 'jsonp',
+				dataType: 'jsonp',
 				success: function (resp) {
 				  	equals(resp.b, "b", "evaluated response as JSONP");
 				}
@@ -195,7 +196,7 @@
 		  
 		  	Sushi.ajax({
 				url: 'fixtures/fixtures_jsonp_multi_c.js?callback=reqwest_0',
-				type: 'jsonp',
+				dataType: 'jsonp',
 				success: function (resp) {
 				  	equals(resp.c, "c", "evaluated response as JSONP");
 				}
@@ -203,7 +204,7 @@
 		  	
 		  	Sushi.ajax({
 				url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
-				type: 'jsonp',
+				dataType: 'jsonp',
 				success: function (resp) {
 			  		equals(resp.a, "a", "evaluated response as JSONP");
 				}
