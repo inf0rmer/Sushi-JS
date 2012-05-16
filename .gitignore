@@ -21,3 +21,5 @@ lint_results.log
 docs
 docs/*
 
+
+.DS_Store
