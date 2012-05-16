@@ -63,7 +63,7 @@
 				animals.create({name: 'Old Yeller'});
 				
 				animals.fetch({
-					success: function(animals) {
+					success: function() {
 						var anAnimal = animals.at(0);
 						anAnimal.destroy();
 						animals.fetch();
