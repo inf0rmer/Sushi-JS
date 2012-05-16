@@ -5,7 +5,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
   * License MIT
   */
 !function (name, definition) {
-  if (typeof define == 'function') define(definition)
+  if (typeof define == 'function') define(name, definition)
   else if (typeof module != 'undefined') module.exports = definition()
   else this[name] = definition()
 }('morpheus', function () {
