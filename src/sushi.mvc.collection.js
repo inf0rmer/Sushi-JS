@@ -237,7 +237,7 @@
 			_onModelEvent : function(ev, model, collection, options) {
 			  	if ((ev == 'add' || ev == 'remove') && collection != this) return;
 			  	if (ev == 'destroy') {
-					this._remove(model, options);
+					this.remove(model, options);
 			  	}
 			  	if (model && ev === 'change:' + model.idAttribute) {
 					delete this._byId[model.previous(model.idAttribute)];
