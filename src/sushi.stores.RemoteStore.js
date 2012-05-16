@@ -50,9 +50,15 @@
         
         Sushi.extendClass(RemoteStore, {
         	sync: function(method, model, options) {
-        		var type
-        		,	params
-        		;
+        		var type,
+					params,
+					lastXHR = model._lastXHR && model._lastXHR[method];
+					
+				if ((lastXHR && lastXHR.state() === 'pending') && (options && options.safe !== false))
+					lastXHR.abort();
+		
+				if (!model._lastXHR)
+					model._lastXHR = {};
         		
         		type = methodMap[method]
         		
@@ -94,7 +100,7 @@
 					params.processData = false;
 				}
 				
-				AJAX(params);
+				return model._lastXHR[method] = AJAX(params);
 			}
         });
         
