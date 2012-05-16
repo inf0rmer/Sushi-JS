@@ -310,11 +310,10 @@ define('sushi.mvc.model',
 			  	success = options.success
 			  	, 	
 			  	triggerDestroy = function() {
-						model.trigger('destroy', model, model.collection, options);
+					model.trigger('destroy', model, model.collection, options);
 			  	};
 			  	
 		  		if (this.isNew()) return triggerDestroy();
-		  		
 		  		model.trigger('destroy', model, model.collection, options);
 		  		
 		  		options.success = function(resp) {
