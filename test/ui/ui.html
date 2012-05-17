@@ -14,6 +14,7 @@
 			$.ready(function() {
 				$('[rel="tooltip"]').tooltip();
 				$('[rel="popover"]').popover();
+				
 			});
 		}
 	</script>
@@ -73,7 +74,7 @@
 				<ul class="nav nav-pills">
 					<li class="active"><a href="#">Regular link</a></li>
 					<li class="dropdown" id="menu1">
-						<a class="dropdown-toggle" data-toggle="dropdown" data-tager="menu1">
+						<a class="dropdown-toggle" data-toggle="dropdown" data-target="menu1">
 							Dropdown
 							<b class="caret"></b>
 						</a>
@@ -89,6 +90,34 @@
 			</div>
 		</div>
 		
+		<div class="row">
+			<div class="span2">
+				<h2>Tabs</h2>
+			</div>
+			
+			<div class="span8">
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+					<li><a href="#profile" data-toggle="tab">Profile</a></li>
+					<li><a href="#messages" data-toggle="tab">Messages</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li class=""><a href="#dropdown1" data-toggle="tab">Options</a></li>
+							<li class=""><a href="#dropdown2" data-toggle="tab">Trade History</a></li>
+						</ul>
+					</li>
+				</ul>
+				
+				<div class="tab-content">
+					<div class="tab-pane active" id="home">Home</div>
+					<div class="tab-pane" id="profile">Profile</div>
+					<div class="tab-pane" id="messages">Messages</div>
+					<div class="tab-pane" id="dropdown1">Options</div>
+					<div class="tab-pane" id="dropdown2">Trade History</div>
+				</div>
+			</div>
+		</div>
 		
 	</div>
 </body>

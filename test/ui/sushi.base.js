@@ -11,7 +11,8 @@ require([
 	'sushi.ui.tooltip',
 	'sushi.ui.modal',
 	'sushi.ui.dropdown',
-	'sushi.ui.popover'
+	'sushi.ui.popover',
+	'sushi.ui.tab'
 	], 
 	runTests
 );
