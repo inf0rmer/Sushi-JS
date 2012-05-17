@@ -6,7 +6,6 @@
  	// Module dependencies
  	[
  		'sushi.core',
- 		'sushi.event',
  		'sushi.$',
  		'sushi.support.transition'
  	],
@@ -17,7 +16,7 @@
  	 * @namespace Sushi
  	 * @class ui.tab
  	 */
- 	function(Sushi, event, $, support) {
+ 	function(Sushi, $, support) {
 		/* ========================================================
 		 * bootstrap-tab.js v2.0.3
 		 * http://twitter.github.com/bootstrap/javascript.html#tabs
@@ -84,9 +83,9 @@
 		
 			activate: function ( element, container, callback) {
 				var $active = container.find('> .active'),
-					transition = callback
-						&& $.support.transition
-						&& $active.hasClass('fade')
+					transition = callback 
+						&& support.transition 
+						&& $active.hasClass('fade');
 				
 				function next() {
 					$active
@@ -95,7 +94,7 @@
 						.removeClass('active')
 					
 					element.addClass('active')
-					
+
 					if (transition) {
 						element[0].offsetWidth // reflow for transition
 						element.addClass('in')
@@ -111,7 +110,7 @@
 				}
 				
 				transition ?
-					$active.one($.support.transition.end, next) :
+					$active.one(support.transition.end, next):
 					next()
 				
 				$active.removeClass('in')
