@@ -15,7 +15,8 @@ require([
 	'sushi.ui.tab',
 	'sushi.ui.alert',
 	'sushi.ui.button',
-	'sushi.ui.collapse'
+	'sushi.ui.collapse',
+	'sushi.ui.carousel'
 	], 
 	runTests
 );
