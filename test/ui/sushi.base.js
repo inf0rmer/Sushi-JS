@@ -9,7 +9,9 @@
 // require Sushi modules in requirejs format
 require([
 	'sushi.ui.tooltip',
-	'sushi.ui.modal'
+	'sushi.ui.modal',
+	'sushi.ui.dropdown',
+	'sushi.ui.popover'
 	], 
 	runTests
 );

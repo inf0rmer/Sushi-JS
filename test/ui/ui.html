@@ -13,6 +13,7 @@
 		function runTests() {
 			$.ready(function() {
 				$('[rel="tooltip"]').tooltip();
+				$('[rel="popover"]').popover();
 			});
 		}
 	</script>
@@ -20,22 +21,75 @@
 <body>
 	
 	<div id="setup" style="margin: 200px 50px 50px">
-	<a href="#" class="btn" rel="tooltip" title="first tooltip">Hover over me</a>
-	
-	<a class="btn" data-toggle="modal" href="#myModal" >Launch Modal</a>
-	<div class="modal fade" id="myModal">
-		  <div class="modal-header">
-			<button class="close" data-dismiss="modal">×</button>
-			<h3>Modal header</h3>
-		  </div>
-		  <div class="modal-body">
-			<p>One fine body…</p>
-		  </div>
-		  <div class="modal-footer">
-			<a href="#" class="btn">Close</a>
-			<a href="#" class="btn btn-primary">Save changes</a>
-		  </div>
-	</div>
+		<div class="row">
+			<div class="span2">
+				<h2>Tooltips</h2>
+			</div>
+			
+			<div class="span8">
+				<a href="#" class="btn" rel="tooltip" title="first tooltip">Hover over me</a>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span2">
+				<h2>Popovers</h2>
+			</div>
+			
+			<div class="span8">
+				<a href="#" class="btn" rel="popover" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">hover for popover</a>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span2">
+				<h2>Modals</h2>
+			</div>
+			
+			<div class="span8">
+				<a class="btn" data-toggle="modal" href="#myModal" >Launch Modal</a>
+				<div class="modal fade" id="myModal">
+					  <div class="modal-header">
+						<button class="close" data-dismiss="modal">×</button>
+						<h3>Modal header</h3>
+					  </div>
+					  <div class="modal-body">
+						<p>One fine body…</p>
+					  </div>
+					  <div class="modal-footer">
+						<a href="#" class="btn">Close</a>
+						<a href="#" class="btn btn-primary">Save changes</a>
+					  </div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span2">
+				<h2>Dropdowns</h2>
+			</div>
+			
+			<div class="span8">
+				<ul class="nav nav-pills">
+					<li class="active"><a href="#">Regular link</a></li>
+					<li class="dropdown" id="menu1">
+						<a class="dropdown-toggle" data-toggle="dropdown" data-tager="menu1">
+							Dropdown
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else here</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		
 	</div>
 </body>
 </html>
