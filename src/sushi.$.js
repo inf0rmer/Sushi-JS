@@ -8,6 +8,7 @@ define('sushi.$',
     [
     	'sushi.core',
     	'sushi.utils',
+    	'sushi.utils.collection',
     	'vendors/qwery',
     	'vendors/bonzo',
     	'vendors/bean',
@@ -21,7 +22,7 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, utils, qwery, bonzo, bean, morpheus, ajax) {    	
+    function(Sushi, utils, collection, qwery, bonzo, bean, morpheus, ajax) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
@@ -55,6 +56,7 @@ define('sushi.$',
     		var q,
     		match,
     		quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
+    		rroot = /^(?:body|html)$/i,
     		element;
     		
     		// If selector is a function, handle it as being domReady - support $(function(){})
@@ -160,6 +162,10 @@ define('sushi.$',
 			  	next: function () {
 					return $(bonzo(this).next())
 				},
+				
+				offset: function () {
+					return bonzo(this).offset()
+				},
 			
 			  	previous: function () {
 					return $(bonzo(this).previous())
@@ -220,6 +226,45 @@ define('sushi.$',
 					}
 					return $(qwery.uniq(r));
 			  	},
+			  	
+			  	position: function() {
+					if ( !this[0] ) {
+						return null;
+					}
+			
+					var elem = this[0],
+						// Get *real* offsetParent
+						offsetParent = this.offsetParent()[0],
+						// Get correct offsets
+						offset       = this.offset(),
+						parentOffset = rroot.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
+					
+					// Subtract element margins
+					// note: when an element has margin: auto the offsetLeft and marginLeft
+					// are the same in Safari causing offset.left to incorrectly be 0
+					offset.top  -= parseFloat( $(elem).css("marginTop") ) || 0;
+					offset.left -= parseFloat( $(elem).css("marginLeft") ) || 0;
+			
+					// Add offsetParent borders
+					parentOffset.top  += parseFloat( $(offsetParent[0]).css("borderTopWidth") ) || 0;
+					parentOffset.left += parseFloat( $(offsetParent[0]).css("borderLeftWidth") ) || 0;
+			
+					// Subtract the two offsets
+					return {
+						top:  offset.top  - parentOffset.top,
+						left: offset.left - parentOffset.left
+					};
+				},
+			
+				offsetParent: function() {
+					return collection.map(this, function(elem) {
+						var offsetParent = elem.offsetParent || document.body;
+						while ( offsetParent && (!rroot.test(offsetParent.nodeName) && $(offsetParent).css("position") === "static") ) {
+							offsetParent = offsetParent.offsetParent;
+						}
+						return $(offsetParent);
+					});
+				},
 			  	
     			animate: function (options) {
     				if (options && options.duration) {
