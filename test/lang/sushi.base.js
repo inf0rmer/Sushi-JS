@@ -7,6 +7,10 @@
  * @class base
  */
 // require Sushi modules in requirejs format
+require.config({
+	baseUrl: '../../src'
+});
+		
 require([ 
 	'sushi.utils.lang'
 	], 
