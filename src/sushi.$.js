@@ -82,7 +82,7 @@ define('sushi.$',
 						fn.apply(context, args);
 					});
 					
-					return bonzo(context);
+					return $(context);
 				}
     		},
     		methods = {
