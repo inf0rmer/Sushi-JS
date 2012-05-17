@@ -25,6 +25,7 @@ define('sushi.$',
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
+    	bean.setSelectorEngine(qwery);
     	
     	function _parseAnimationDuration(d) {
     		if (typeof d === 'string') {
