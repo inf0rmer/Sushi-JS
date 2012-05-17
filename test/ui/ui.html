@@ -15,6 +15,19 @@
 				$('[rel="tooltip"]').tooltip();
 				$('[rel="popover"]').popover();
 				
+				$('.alert').on('closed', function () {
+					// "this" is the current DOMElement
+				})
+				
+				$('#fat-btn')
+				  .on('click', function () {
+						var btn = $(this)
+						btn.button('loading')
+						setTimeout(function () {
+							btn.button('reset')
+						}, 3000)
+				  })
+				
 			});
 		}
 	</script>
@@ -109,16 +122,83 @@
 					</li>
 				</ul>
 				
-				<div class="tab-content">
-					<div class="tab-pane active" id="home">Home</div>
-					<div class="tab-pane" id="profile">Profile</div>
-					<div class="tab-pane" id="messages">Messages</div>
-					<div class="tab-pane" id="dropdown1">Options</div>
-					<div class="tab-pane" id="dropdown2">Trade History</div>
+				<div class="tab-content ">
+					<div class="tab-pane active fade in" id="home">Home</div>
+					<div class="tab-pane fade" id="profile">Profile</div>
+					<div class="tab-pane fade" id="messages">Messages</div>
+					<div class="tab-pane fade" id="dropdown1">Options</div>
+					<div class="tab-pane fade" id="dropdown2">Trade History</div>
 				</div>
 			</div>
 		</div>
 		
+		<div class="row">
+			<div class="span2">
+				<h2>Alerts</h2>
+			</div>
+			
+			<div class="span8">
+				<div class="alert fade in">
+					<button class="close" data-dismiss="alert">×</button>
+					<strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
+				</div>
+				<div class="alert alert-block alert-error fade in">
+					<button class="close" data-dismiss="alert">×</button>
+					<h4 class="alert-heading">Oh snap! You got an error!</h4>
+					<p>Change this and that and try again. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum.</p>
+					<p>
+						<a class="btn btn-danger" href="#">Take this action</a> <a class="btn" href="#">Or do this</a>
+					</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span2">
+				<h2>Alerts</h2>
+			</div>
+			
+			<div class="span8">
+				<table class="table table-bordered table-striped">
+					<tbody>
+					 <tr>
+					   <td>Stateful</td>
+					   <td>
+						  <button id="fat-btn" data-loading-text="loading..." class="btn btn-primary">
+							Loading State
+						  </button>
+						</td>
+					 </tr>
+					 <tr>
+					   <td>Single toggle</td>
+					   <td>
+						  <button class="btn btn-primary" data-toggle="button">Single Toggle</button>
+						</td>
+					 </tr>
+					 <tr>
+					   <td>Checkbox</td>
+					   <td>
+						  <div class="btn-group" data-toggle="buttons-checkbox">
+							<button class="btn btn-primary">Left</button>
+							<button class="btn btn-primary">Middle</button>
+							<button class="btn btn-primary">Right</button>
+						  </div>
+					   </td>
+					 </tr>
+					 <tr>
+					   <td>Radio</td>
+					   <td>
+						  <div class="btn-group" data-toggle="buttons-radio">
+							<button class="btn btn-primary">Left</button>
+							<button class="btn btn-primary">Middle</button>
+							<button class="btn btn-primary">Right</button>
+						  </div>
+					   </td>
+					 </tr>
+					</tbody>
+				  </table>
+			</div>
+		</div>
 	</div>
 </body>
 </html>

@@ -12,7 +12,9 @@ require([
 	'sushi.ui.modal',
 	'sushi.ui.dropdown',
 	'sushi.ui.popover',
-	'sushi.ui.tab'
+	'sushi.ui.tab',
+	'sushi.ui.alert',
+	'sushi.ui.button'
 	], 
 	runTests
 );
