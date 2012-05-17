@@ -25,7 +25,7 @@
         };
         
         Enumerable.prototype = {
-        	constructor: Enumerable
+        	Constructor: Enumerable
         }
         
         var	methods = ['each', 'map', 'reduce', 'reduceRight', 'find', 'detect', 'remove',
