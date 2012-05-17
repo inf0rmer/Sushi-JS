@@ -10,7 +10,7 @@
 			baseUrl: '../../src'
 		});
 		
-		function runTests() {
+		window.runTests = function() {
 			$.ready(function() {
 				$('[rel="tooltip"]').tooltip();
 				$('[rel="popover"]').popover();
@@ -270,6 +270,16 @@
 				  <a class="carousel-control left" href="#myCarousel" data-slide="previous">&lsaquo;</a>
 				  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
 				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span2">
+				<h2>Typeahead</h2>
+			</div>
+			
+			<div class="span8">
+				<input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>
 			</div>
 		</div>
 	</div>

@@ -7,6 +7,10 @@
  * @class base
  */
 // require Sushi modules in requirejs format
+require.config({
+	baseUrl: '../../src'
+});
+		
 require([
 	'sushi.ui.tooltip',
 	'sushi.ui.modal',
@@ -16,7 +20,10 @@ require([
 	'sushi.ui.alert',
 	'sushi.ui.button',
 	'sushi.ui.collapse',
-	'sushi.ui.carousel'
-	], 
-	runTests
+	'sushi.ui.carousel',
+	'sushi.ui.typeahead'
+	],
+	function() {
+		console.log(arguments);
+	}
 );
