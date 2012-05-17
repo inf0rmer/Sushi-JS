@@ -21,9 +21,8 @@ require([
 	'sushi.ui.button',
 	'sushi.ui.collapse',
 	'sushi.ui.carousel',
-	'sushi.ui.typeahead'
+	'sushi.ui.typeahead',
+	'sushi.ui.scrollspy'
 	],
-	function() {
-		console.log(arguments);
-	}
+	runTests
 );
