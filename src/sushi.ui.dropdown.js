@@ -78,6 +78,8 @@
 					
 					if (!isActive) $parent.toggleClass('open')
 					
+					e.preventDefault();
+					
 					return false
 				}
 			
@@ -110,8 +112,8 @@
 			Sushi.ready(function () {
 				$('html').on('click.dropdown.data-api', clearMenus)
 				$('html')
-				  .on('.dropdown form', 'click.dropdown', function (e) { e.stopPropagation() }, $)
-				  .on(toggle, 'click.dropdown.data-api', Dropdown.prototype.toggle, $)
+				  .on('.dropdown form', 'click.dropdown', function (e) { e.stopPropagation() })
+				  .on(toggle, 'click.dropdown.data-api', Dropdown.prototype.toggle)
 			});
  	}
  );
