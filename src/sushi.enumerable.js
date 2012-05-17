@@ -2,7 +2,7 @@
  * Sushi.Enumerable
  *
  */
- define('sushi.Enumerable',
+ define('sushi.enumerable',
  	// Module dependencies
  	[
  		'sushi.core',
@@ -19,7 +19,7 @@
  	function(Sushi, utils, collection) {
         Sushi.namespace('Enumerable', Sushi);
         
-        var Enumerable = function(value) {
+        function Enumerable(value) {
         	Sushi.extend(value, Enumerable.prototype);
         	return value;
         };
@@ -35,11 +35,11 @@
 			
 		collection.each(methods, function(method) {
 			Enumerable.prototype[method] = function() {
-				return collection[method].apply(Sushi, [this].concat(collection.toArray(arguments)));
+				return new Enumerable(collection[method].apply(Sushi, [this].concat(collection.toArray(arguments))));
 			};
 	  	});
 	  	
-	  	Sushi.Enumerable = Enumerable;  
+	  	Sushi.Enumerable = Enumerable;
         return Enumerable;
  	}
  );
