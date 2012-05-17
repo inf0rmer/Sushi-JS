@@ -116,6 +116,16 @@ define('sushi.$',
 			}
     		
     		return Sushi.extend(bonzoed, {
+    		
+    			is: function(s, r) {
+					var i, l
+					for (i = 0, l = this.length; i < l; i++) {
+						if (qwery.is(this[i], s, r)) {
+							return true
+						}
+					}
+					return false
+				},
     			
     			parents: function (selector, closest) {
 					var collection = $(selector), j, k, p, r = []
