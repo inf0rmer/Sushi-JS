@@ -14,7 +14,8 @@ require([
 	'sushi.ui.popover',
 	'sushi.ui.tab',
 	'sushi.ui.alert',
-	'sushi.ui.button'
+	'sushi.ui.button',
+	'sushi.ui.collapse'
 	], 
 	runTests
 );
