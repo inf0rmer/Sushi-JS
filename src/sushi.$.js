@@ -9,6 +9,7 @@ define('sushi.$',
     	'sushi.core',
     	'sushi.utils',
     	'sushi.utils.collection',
+    	'sushi.support',
     	'vendors/qwery',
     	'vendors/bonzo',
     	'vendors/bean',
@@ -22,7 +23,7 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, utils, collection, qwery, bonzo, bean, morpheus, ajax) {    	
+    function(Sushi, utils, collection, support, qwery, bonzo, bean, morpheus, ajax) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
@@ -64,6 +65,7 @@ define('sushi.$',
     			return Sushi.ready( selector );
     		}
     		
+    		if (selector === '#' || selector === '.') selector = '';
 				
     		// If the selector is a tag-like string, create it instead of qwerying it.
     		match = quickExpr.exec(selector);
@@ -84,7 +86,6 @@ define('sushi.$',
 						args.unshift(bonzo(this).get(0));
 						fn.apply(context, args);
 					});
-					
 					return $(context);
 				}
     		},
@@ -111,6 +112,15 @@ define('sushi.$',
 			}
 			
 			var bonzoed = Sushi.extend(bonzo(element), methods);
+			
+			Sushi.extend(bonzoed, {
+				isVisible: function() {
+					var elem = this.get(0),
+						width = elem.offsetWidth,
+						height = elem.offsetHeight;	
+					return !( width === 0 && height === 0 ) || (!support.reliableHiddenOffsets && ((elem.style && elem.style.display) || $(this).css( "display" )) === "none");
+				}
+			});
 			
 			// extend plugins
 			for (var plugin in Sushi.fn) {
@@ -298,9 +308,11 @@ define('sushi.$',
     	
     	// Helpers
     	function dimension(type, v) {
+    		var elem = this;
+    		if (this.get(0) === document || this.get(0) === window) elem = $(document.body)
 			return typeof v == 'undefined'
-			  ? bonzo(this).dim()[type]
-			  : this.css(type, v)
+			  ? bonzo(elem).dim()[type]
+			  : elem.css(type, v)
 		}
 		
 		function indexOf(ar, val) {

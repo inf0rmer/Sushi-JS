@@ -54,7 +54,7 @@
 		
 		Sushi.extend(Popover.prototype, {
 		
-			constructor: Popover
+			Constructor: Popover
 		
 		  , setContent: function () {
 				var $tip = this.tip()

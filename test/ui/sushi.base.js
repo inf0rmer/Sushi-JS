@@ -12,6 +12,7 @@ require.config({
 });
 		
 require([
+	'sushi.core',
 	'sushi.ui.tooltip',
 	'sushi.ui.modal',
 	'sushi.ui.dropdown',
@@ -24,5 +25,7 @@ require([
 	'sushi.ui.typeahead',
 	'sushi.ui.scrollspy'
 	],
-	runTests
+	function(Sushi) {
+		window.runTests(Sushi);
+	}
 );

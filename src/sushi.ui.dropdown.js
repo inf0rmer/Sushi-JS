@@ -57,8 +57,7 @@
 						, selector
 						, isActive
 					
-
-					if ($this.hasClass('.disabled') || $this.attr('disabled') === true) return
+					if ($this.is('.disabled') === true || $this.attr('disabled') != null) return
 
 					selector = $this.attr('data-target')
 					

@@ -50,7 +50,13 @@
 			this.options = {}
 			this.options = Sushi.extend(this.options, Sushi.fn.scrollspy.defaults);
 			this.options = Sushi.extend(this.options, options)
-			this.$scrollElement = $element.on('scroll.scroll.data-api', process)
+			this.$scrollElement = $element
+			if (this.$scrollElement.get(0) === window) {
+				$(document).on('scroll.scroll.data-api', process)
+			} else {
+				this.$scrollElement.on('scroll.scroll.data-api', process)
+			}
+			
 			this.selector = (this.options.target
 			|| ((href = $(element).attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
 			|| '') + ' .nav li > a'

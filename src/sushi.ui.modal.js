@@ -40,7 +40,6 @@
 			, show: function (e) {
 				var that = this;
 				
-				
 				this.$element.trigger('show')
 		
 				if (this.isShown) return
@@ -58,17 +57,15 @@
 		
 				  that.$element
 					.show()
-		
+					
 				  if (transition) {
 					that.$element[0].offsetWidth // force reflow
 				  }
 		
 				  that.$element.addClass('in')
-		
 				  transition ?
-					$(that.$element).one($.support.transition.end, function () { that.$element.trigger('shown') }) :
-					$(that.$element).trigger('shown')
-		
+					that.$element.one($.support.transition.end, function () { that.$element.trigger('shown') }) :
+					that.$element.trigger('shown')
 				})
 			  }
 		
@@ -117,7 +114,6 @@
 			this.$element
 			  .hide()
 			  .trigger('hidden')
-		
 			backdrop.call(this)
 		  }
 		
@@ -203,7 +199,13 @@
 			
 			  var $this = $(this), href
 				, $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) //strip for ie7
-				, option = $target.data('modal') ? 'toggle' : $.extend({}, $target.data(), $this.data())
+				, option
+				, data = {};
+				
+				Sushi.extend(data, $target.data());
+				Sushi.extend(data, $this.data());
+				
+				$target.data('modal') ? 'toggle' : data
 
 			  e.preventDefault()
 			  $target.modal(option)

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sushi JS UI Test Suite</title>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
+	<script>		
+			runTests = function(Sushi) {
+				Sushi.ready(function() {				
+					  test("should insert into dom when show method is called", function () {
+						stop()
+						$.support.transition = false
+						$("<div id='modal-test'></div>")
+						  .bind("shown", function () {
+							ok($('#modal-test').length, 'modal insterted into dom')
+							$(this).remove()
+							start()
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should fire show event", function () {
+						stop()
+						$.support.transition = false
+						$("<div id='modal-test'></div>")
+						  .bind("show", function () {
+							ok(true, "show was called")
+						  })
+						  .bind("shown", function () {
+							$(this).remove()
+							start()
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should not fire shown when default prevented", function () {
+						stop()
+						$.support.transition = false
+						$("<div id='modal-test'></div>")
+						  .bind("show", function (e) {
+							e.preventDefault()
+							ok(true, "show was called")
+							start()
+						  })
+						  .bind("shown", function () {
+							ok(false, "shown was called")
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should hide modal when hide is called", function () {
+						stop()
+						$.support.transition = false
+				
+						$("<div id='modal-test'></div>")
+						  .bind("shown", function () {
+						  	console.log($('#modal-test').width());
+							ok($('#modal-test').isVisible(), 'modal visible')
+							ok($('#modal-test').length, 'modal insterted into dom')
+							start()
+							//$(this).modal("hide")
+						  })
+						  .bind("hidden", function() {
+							ok(!$('#modal-test').isVisible(), 'modal hidden')
+							$('#modal-test').remove()
+							start()
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should toggle when toggle is called", function () {
+						stop()
+						$.support.transition = false
+						var div = $("<div id='modal-test'></div>")
+						div
+						  .bind("shown", function () {
+							ok($('#modal-test').is(":visible"), 'modal visible')
+							ok($('#modal-test').length, 'modal insterted into dom')
+							div.modal("toggle")
+						  })
+						  .bind("hidden", function() {
+							ok(!$('#modal-test').is(":visible"), 'modal hidden')
+							div.remove()
+							start()
+						  })
+						  .modal("toggle")
+					  })
+				
+					  test("should remove from dom when click [data-dismiss=modal]", function () {
+						stop()
+						$.support.transition = false
+						var div = $("<div id='modal-test'><span class='close' data-dismiss='modal'></span></div>")
+						div
+						  .bind("shown", function () {
+							ok($('#modal-test').is(":visible"), 'modal visible')
+							ok($('#modal-test').length, 'modal insterted into dom')
+							div.find('.close').trigger('click')
+						  })
+						  .bind("hidden", function() {
+							ok(!$('#modal-test').is(":visible"), 'modal hidden')
+							div.remove()
+							start()
+						  })
+						  .modal("toggle")
+					  })
+				});
+			}
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">Sushi.UI Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture"></div>
+</body>
+</html>

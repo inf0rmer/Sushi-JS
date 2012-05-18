@@ -68,12 +68,16 @@
 			  }
 		
 			  this.options.selector ?
-				(this._options = Sushi.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+				(this._options = Sushi.extend(this.options, { trigger: 'manual', selector: '' })) :
 				this.fixTitle()
 			}
 		
-		  , getOptions: function (options) {
-			  options = Sushi.extend({}, Sushi.fn[this.type].defaults, options, this.$element.data())
+		  , getOptions: function (options) {			  
+			  var opts = {}
+			  Sushi.extend(opts, Sushi.fn[this.type].defaults);
+			  Sushi.extend(opts, options);
+			  Sushi.extend(opts, this.$element.data());
+			  options = opts;
 		
 			  if (options.delay && typeof options.delay == 'number') {
 				options.delay = {

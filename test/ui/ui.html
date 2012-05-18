@@ -2,348 +2,544 @@
 <html>
 <head>
 	<title>Sushi JS UI Test Suite</title>
-	<link rel="stylesheet/less" href="../../src/less/sushi.less" type="text/css" media="screen">
-	<script src="../../utils/less-1.3.0.min.js"></script>
+	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
+	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
-	<script>
-		require.config({
-			baseUrl: '../../src'
-		});
+	<script>		
+			runTests = function(Sushi) {
+				Sushi.ready(function() {
+					module("Alerts")
 		
-		window.runTests = function() {
-			$.ready(function() {
-				$('[rel="tooltip"]').tooltip();
-				$('[rel="popover"]').popover();
+					test("should be defined on Sushi object", function () {
+						ok($(document.body).alert, 'alert method is defined')
+					})
 				
-				$('.alert').on('closed', function () {
-					// "this" is the current DOMElement
-				})
+					test("should return element", function () {
+						ok($(document.body).alert()[0] == document.body, 'document.body returned')
+					})
 				
-				$('#fat-btn')
-				  .on('click', function () {
-						var btn = $(this)
-						btn.button('loading')
-						setTimeout(function () {
-							btn.button('reset')
-						}, 3000)
-				  })
+					test("should fade element out on clicking .close", function () {
+						var alertHTML = '<div class="alert-message warning fade in">'
+						  + '<a class="close" href="#" data-dismiss="alert">×</a>'
+						  + '<p><strong>Holy guacamole!</strong> Best check yo self, you\'re not looking too good.</p>'
+						  + '</div>'
+						  , alert = $(alertHTML).appendTo('#qunit-fixture').alert()
 				
-			});
-		}
-	</script>
+						alert.find('.close').trigger('click')
+				
+						ok(!alert.hasClass('in'), 'remove .in class on .close click')
+						
+						alert.remove();
+					})
+				
+					test("should remove element when clicking .close", function () {
+						$.support.transition = false
+				
+						var alertHTML = '<div class="alert-message warning fade in">'
+						  + '<a class="close" href="#" data-dismiss="alert">×</a>'
+						  + '<p><strong>Holy guacamole!</strong> Best check yo self, you\'re not looking too good.</p>'
+						  + '</div>'
+						  , alert = $(alertHTML).appendTo('#qunit-fixture').alert()
+				
+						ok($('#qunit-fixture').find('.alert-message').length, 'element added to dom')
+				
+						alert.find('.close').trigger('click')
+				
+						ok(!$('#qunit-fixture').find('.alert-message').length, 'element removed from dom')
+					})
+				
+					test("should not fire closed when close is prevented", function () {
+						$.support.transition = false
+						stop();
+						$('<div class="alert"/>')
+						  .bind('close', function (e) {
+							e.preventDefault();
+							ok(true);
+							start();
+						  })
+						  .bind('closed', function () {
+							ok(false);
+						  })
+						  .alert('close')
+					})
+					
+					
+					module("Buttons")
 	
-	<style>
-		.scrollspy-example {
-			height: 200px;
-			overflow: auto;
-			position: relative;
-		}
-	</style>
+					  test("should be defined on jquery object", function () {
+						ok($(document.body).button, 'button method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).button()[0] == document.body, 'document.body returned')
+					  })
+				
+					  test("should return set state to loading", function () {
+						var btn = $('<button class="btn" data-loading-text="fat">mdo</button>')
+						equals(btn.html(), 'mdo', 'btn text equals mdo')
+						btn.button('loading')
+						equals(btn.html(), 'fat', 'btn text equals fat')
+						stop()
+						setTimeout(function () {
+						  ok(btn.attr('disabled'), 'btn is disabled')
+						  ok(btn.hasClass('disabled'), 'btn has disabled class')
+						  start()
+						}, 0)
+					  })
+				
+					  test("should return reset state", function () {
+						var btn = $('<button class="btn" data-loading-text="fat">mdo</button>')
+						equals(btn.html(), 'mdo', 'btn text equals mdo')
+						btn.button('loading')
+						equals(btn.html(), 'fat', 'btn text equals fat')
+						stop()
+						setTimeout(function () {
+						  ok(btn.attr('disabled'), 'btn is disabled')
+						  ok(btn.hasClass('disabled'), 'btn has disabled class')
+						  start()
+						  stop()
+						}, 0)
+						btn.button('reset')
+						equals(btn.html(), 'mdo', 'btn text equals mdo')
+						setTimeout(function () {
+						  ok(!btn.attr('disabled'), 'btn is not disabled')
+						  ok(!btn.hasClass('disabled'), 'btn does not have disabled class')
+						  start()
+						}, 0)
+					  })
+				
+					  test("should toggle active", function () {
+						var btn = $('<button class="btn">mdo</button>')
+						ok(!btn.hasClass('active'), 'btn does not have active class')
+						btn.button('toggle')
+						ok(btn.hasClass('active'), 'btn has class active')
+					  })
+				
+					  test("should toggle active when btn children are clicked", function () {
+						var btn = $('<button class="btn" data-toggle="button">mdo</button>')
+						  , inner = $('<i></i>')
+						btn
+						  .append(inner)
+						  .appendTo($('#qunit-fixture'))
+						ok(!btn.hasClass('active'), 'btn does not have active class')
+						$(btn.find('i')).trigger('click')
+						ok(btn.hasClass('active'), 'btn has class active')
+					  })
+				
+					 test("should toggle active when btn children are clicked within btn-group", function () {
+						var btngroup = $('<div class="btn-group" data-toggle="buttons-checkbox"></div>')
+						  , btn = $('<button class="btn">fat</button>')
+						  , inner = $('<i></i>')
+						btngroup
+						  .append(btn.append(inner))
+						  .appendTo($('#qunit-fixture'))
+						ok(!btn.hasClass('active'), 'btn does not have active class')
+						$(btngroup.find('.btn i')).trigger('click')
+						ok($(btngroup.find('.btn')).hasClass('active'), 'btn has class active')
+					  })
+					  
+					  module("Sushi carousel")
+	
+					  test("should be defined on Sushi object", function () {
+						ok($(document.body).carousel, 'carousel method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).carousel()[0] == document.body, 'document.body returned')
+					  })
+				
+					  test("should not fire sliden when slide is prevented", function () {
+						$.support.transition = false
+						stop();
+						$('<div class="carousel"/>')
+						  .bind('slide', function (e) {
+							e.preventDefault();
+							ok(true);
+							start();
+						  })
+						  .bind('slid', function () {
+							ok(false);
+						  })
+						  .carousel('next')
+					  })
+					  
+					  module("Sushi collapse")
+	
+					  test("should be defined on Sushi object", function () {
+						ok($(document.body).collapse, 'collapse method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).collapse()[0] == document.body, 'document.body returned')
+					  })
+				
+					  test("should show a collapsed element", function () {
+						var el = $('<div class="collapse"></div>').collapse('show')
+						ok(el.hasClass('in'), 'has class in')
+						ok(/height/.test(el.attr('style')), 'has height set')
+					  })
+				
+					  test("should hide a collapsed element", function () {
+						var el = $('<div class="collapse"></div>').collapse('hide')
+						ok(!el.hasClass('in'), 'does not have class in')
+						ok(/height/.test(el.attr('style')), 'has height set')
+					  })
+				
+					  test("should not fire shown when show is prevented", function () {
+						$.support.transition = false
+						stop();
+						$('<div class="collapse"/>')
+						  .bind('show', function (e) {
+							e.preventDefault();
+							ok(true);
+							start();
+						  })
+						  .bind('shown', function () {
+							ok(false);
+						  })
+						  .collapse('show')
+					  })
+				
+					  test("should reset style to auto after finishing opening collapse", function () {
+						$.support.transition = false
+						stop();
+						$('<div class="collapse" style="height: 0px"/>')
+						  .bind('show', function () {
+							ok(this.style.height == '0px')
+						  })
+						  .bind('shown', function () {
+							ok(this.style.height == 'auto')
+							start()
+						  })
+						  .collapse('show')
+					  })
+					  
+					  module("Sushi dropdowns")
+	
+					  test("should be defined on jquery object", function () {
+						ok($(document.body).dropdown, 'dropdown method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).dropdown()[0] == document.body, 'document.body returned')
+					  })
+				
+					  test("should not open dropdown if target is disabled", function () {
+						var dropdownHTML = '<ul class="tabs">'
+						  + '<li class="dropdown">'
+						  + '<button disabled href="#" class="btn dropdown-toggle" data-toggle="dropdown">Dropdown</button>'
+						  + '<ul class="dropdown-menu">'
+						  + '<li><a href="#">Secondary link</a></li>'
+						  + '<li><a href="#">Something else here</a></li>'
+						  + '<li class="divider"></li>'
+						  + '<li><a href="#">Another link</a></li>'
+						  + '</ul>'
+						  + '</li>'
+						  + '</ul>'
+						  , dropdown = $(dropdownHTML).find('[data-toggle="dropdown"]').dropdown().trigger('click')
+				
+						ok(!dropdown.parent('.dropdown').hasClass('open'), 'open class added on click')
+					  })
+				
+					  test("should not open dropdown if target is disabled", function () {
+						var dropdownHTML = '<ul class="tabs">'
+						  + '<li class="dropdown">'
+						  + '<button href="#" class="btn dropdown-toggle disabled" data-toggle="dropdown">Dropdown</button>'
+						  + '<ul class="dropdown-menu">'
+						  + '<li><a href="#">Secondary link</a></li>'
+						  + '<li><a href="#">Something else here</a></li>'
+						  + '<li class="divider"></li>'
+						  + '<li><a href="#">Another link</a></li>'
+						  + '</ul>'
+						  + '</li>'
+						  + '</ul>'
+						  , dropdown = $(dropdownHTML).find('[data-toggle="dropdown"]').dropdown().trigger('click')
+	
+						ok(!dropdown.parent('.dropdown').hasClass('open'), 'open class added on click')
+					  })
+				
+					  test("should add class open to menu if clicked", function () {
+						var dropdownHTML = '<ul class="tabs">'
+						  + '<li class="dropdown">'
+						  + '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>'
+						  + '<ul class="dropdown-menu">'
+						  + '<li><a href="#">Secondary link</a></li>'
+						  + '<li><a href="#">Something else here</a></li>'
+						  + '<li class="divider"></li>'
+						  + '<li><a href="#">Another link</a></li>'
+						  + '</ul>'
+						  + '</li>'
+						  + '</ul>'
+						  , dropdown = $(dropdownHTML).find('[data-toggle="dropdown"]').dropdown().trigger('click')
+						ok($(dropdown.parent('.dropdown')).hasClass('open'), 'open class added on click')
+					  })
+				
+					  test("should remove open class if body clicked", function () {
+						var dropdownHTML = '<ul class="tabs">'
+						  + '<li class="dropdown">'
+						  + '<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>'
+						  + '<ul class="dropdown-menu">'
+						  + '<li><a href="#">Secondary link</a></li>'
+						  + '<li><a href="#">Something else here</a></li>'
+						  + '<li class="divider"></li>'
+						  + '<li><a href="#">Another link</a></li>'
+						  + '</ul>'
+						  + '</li>'
+						  + '</ul>'
+						  , dropdown = $(dropdownHTML)
+							.appendTo('#qunit-fixture')
+							.find('[data-toggle="dropdown"]')
+							.trigger('click')
+						ok(dropdown.parent('.dropdown').hasClass('open'), 'open class added on click')
+						$('body').trigger('click')
+						ok(!dropdown.parent('.dropdown').hasClass('open'), 'open class removed')
+						dropdown.remove()
+					  })
+					  
+					  module("Sushi modal")
+	
+					  test("should be defined on Sushi object", function () {
+						var div = $("<div id='modal-test'></div>")
+						ok(div.modal, 'modal method is defined')
+					  })
+				
+					  test("should return element", function () {
+						var div = $("<div id='modal-test'></div>")
+						ok(div.modal() == div, 'document.body returned')
+						$('#modal-test').remove()
+					  })
+				
+					  test("should expose defaults var for settings", function () {
+						ok($.fn.modal.defaults, 'default object exposed')
+					  })
+				
+					  test("should insert into dom when show method is called", function () {
+						stop()
+						$.support.transition = false
+						$("<div id='modal-test'></div>")
+						  .bind("shown", function () {
+							ok($('#modal-test').length, 'modal insterted into dom')
+							$(this).remove()
+							start()
+							$('#modal-test').remove();
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should fire show event", function () {
+						stop()
+						$.support.transition = false
+						$("<div id='modal-test'></div>")
+						  .bind("show", function () {
+							ok(true, "show was called")
+						  })
+						  .bind("shown", function () {
+							$(this).remove()
+							start()
+							$('#modal-test').remove();
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should not fire shown when default prevented", function () {
+						stop()
+						$.support.transition = false
+						$("<div id='modal-test'></div>")
+						  .bind("show", function (e) {
+							e.preventDefault()
+							ok(true, "show was called")
+							start()
+						  })
+						  .bind("shown", function () {
+							ok(false, "shown was called")
+							$('#modal-test').remove();
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should hide modal when hide is called", function () {
+						stop()
+						$.support.transition = false
+				
+						$("<div id='modal-test'></div>")
+						  .bind("shown", function () {
+							ok($('#modal-test').isVisible(), 'modal visible')
+							ok($('#modal-test').length, 'modal insterted into dom')
+							$(this).modal("hide")
+						  })
+						  .bind("hidden", function() {
+							ok(!$('#modal-test').isVisible(), 'modal hidden')
+							$('#modal-test').remove()
+							start()
+						  })
+						  .modal("show")
+					  })
+				
+					  test("should toggle when toggle is called", function () {
+						stop()
+						$.support.transition = false
+						var div = $("<div id='modal-test'></div>")
+						div
+						  .bind("shown", function () {
+							ok($('#modal-test').isVisible(), 'modal visible')
+							ok($('#modal-test').length, 'modal insterted into dom')
+							div.modal("toggle")
+						  })
+						  .bind("hidden", function() {
+							ok(!$('#modal-test').isVisible(), 'modal hidden')
+							$('#modal-test').remove()
+							start()
+						  })
+						  .modal("toggle")
+					  })
+				
+					  test("should remove from dom when click [data-dismiss=modal]", function () {
+						stop()
+						$.support.transition = false
+						var div = $("<div id='modal-test'><span class='close' data-dismiss='modal'></span></div>")
+						div.appendTo('body');
+						$('#modal-test')
+						  .bind("shown", function () {
+							ok($('#modal-test').isVisible(), 'modal visible')
+							ok($('#modal-test').length, 'modal insterted into dom')
+							$('#modal-test').find('.close').trigger('click')
+						  })
+						  .bind("hidden", function() {
+							ok(!$('#modal-test').isVisible(), 'modal hidden')
+							$('#modal-test').remove()
+							start()
+						  })
+						  .modal("toggle")
+					  })
+					  
+					  module("Sushi Popover")
+
+					  test("should be defined on Sushi object", function () {
+						var div = $('<div></div>')
+						ok(div.popover, 'popover method is defined')
+					  })
+				
+					  test("should return element", function () {
+						var div = $('<div></div>')
+						ok(div.popover() == div, 'document.body returned')
+					  })
+				
+					  test("should render popover element", function () {
+						$.support.transition = false
+						var popover = $('<a href="#" title="mdo" data-content="http://twitter.com/mdo">@mdo</a>')
+						  .appendTo('#qunit-fixture')
+						  .popover('show')
+				
+						ok($('.popover').length, 'popover was inserted')
+						popover.popover('hide')
+						ok(!$(".popover").length, 'popover removed')
+					  })
+				
+					  test("should store popover instance in popover data object", function () {
+						$.support.transition = false
+						var popover = $('<a href="#" title="mdo" data-content="http://twitter.com/mdo">@mdo</a>')
+						  .popover()
+				
+						ok(!!popover.data('popover'), 'popover instance exists')
+					  })
+				
+					  test("should get title and content from options", function () {
+						$.support.transition = false
+						var popover = $('<a href="#">@fat</a>')
+						  .appendTo('#qunit-fixture')
+						  .popover({
+							title: function () {
+							  return '@fat'
+							}
+						  , content: function () {
+							  return 'loves writing tests （╯°□°）╯︵ ┻━┻'
+							}
+						  })
+				
+						popover.popover('show')
+				
+						ok($('.popover').length, 'popover was inserted')
+						equals($('.popover .popover-title').text(), '@fat', 'title correctly inserted')
+						equals($('.popover .popover-content').text(), 'loves writing tests （╯°□°）╯︵ ┻━┻', 'content correctly inserted')
+				
+						popover.popover('hide')
+						ok(!$('.popover').length, 'popover was removed')
+						$('#qunit-fixture').empty()
+					  })
+				
+					  test("should get title and content from attributes", function () {
+						$.support.transition = false
+						var popover = $('<a href="#" title="@mdo" data-content="loves data attributes (づ｡◕‿‿◕｡)づ ︵ ┻━┻" >@mdo</a>')
+						  .appendTo('#qunit-fixture')
+						  .popover()
+						  .popover('show')
+				
+						ok($('.popover').length, 'popover was inserted')
+						equals($('.popover .popover-title').text(), '@mdo', 'title correctly inserted')
+						equals($('.popover .popover-content').text(), "loves data attributes (づ｡◕‿‿◕｡)づ ︵ ┻━┻", 'content correctly inserted')
+				
+						popover.popover('hide')
+						ok(!$('.popover').length, 'popover was removed')
+						$('#qunit-fixture').empty()
+					  })
+					
+					  test("should respect custom classes", function() {
+						$.support.transition = false
+						var popover = $('<a href="#">@fat</a>')
+						  .appendTo('#qunit-fixture')
+						  .popover({
+							title: 'Test'
+						  , content: 'Test'
+						  , template: '<div class="popover foobar"><div class="arrow"></div><div class="inner"><h3 class="title"></h3><div class="content"><p></p></div></div></div>'
+						  })
+						
+						popover.popover('show')
+				
+						ok($('.popover').length, 'popover was inserted')
+						ok($('.popover').hasClass('foobar'), 'custom class is present')
+				
+						popover.popover('hide')
+						ok(!$('.popover').length, 'popover was removed')
+						$('#qunit-fixture').empty()
+					  })
+					  
+					   module("Sushi scrollspy")
+
+					  test("should be defined on Sushi object", function () {
+						ok($(document.body).scrollspy, 'scrollspy method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).scrollspy()[0] == document.body, 'document.body returned')
+					  })
+				
+					  test("should switch active class on scroll", function () {
+						var sectionHTML = '<div id="masthead"></div>'
+						  , $section = $(sectionHTML).append('#qunit-fixture')
+						  , topbarHTML ='<div class="topbar">'
+						  + '<div class="topbar-inner">'
+						  + '<div class="container">'
+						  + '<h3><a href="#">Bootstrap</a></h3>'
+						  + '<ul class="nav">'
+						  + '<li><a href="#masthead">Overview</a></li>'
+						  + '</ul>'
+						  + '</div>'
+						  + '</div>'
+						  + '</div>'
+						  , $topbar = $(topbarHTML).scrollspy()
+				
+						ok($topbar.find('.active', true))
+					  })
+				});
+			}
+	</script>
 </head>
 <body>
-	
-	<div id="setup" style="margin: 200px 50px 50px">
-		<div class="row">
-			<div class="span2">
-				<h2>Tooltips</h2>
-			</div>
-			
-			<div class="span8">
-				<a href="#" class="btn" rel="tooltip" title="first tooltip">Hover over me</a>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Popovers</h2>
-			</div>
-			
-			<div class="span8">
-				<a href="#" class="btn" rel="popover" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">hover for popover</a>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Modals</h2>
-			</div>
-			
-			<div class="span8">
-				<a class="btn" data-toggle="modal" href="#myModal" >Launch Modal</a>
-				<div class="modal fade" id="myModal">
-					  <div class="modal-header">
-						<button class="close" data-dismiss="modal">×</button>
-						<h3>Modal header</h3>
-					  </div>
-					  <div class="modal-body">
-						<p>One fine body…</p>
-					  </div>
-					  <div class="modal-footer">
-						<a href="#" class="btn">Close</a>
-						<a href="#" class="btn btn-primary">Save changes</a>
-					  </div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Dropdowns</h2>
-			</div>
-			
-			<div class="span8">
-				<ul class="nav nav-pills">
-					<li class="active"><a href="#">Regular link</a></li>
-					<li class="dropdown" id="menu1">
-						<a class="dropdown-toggle" data-toggle="dropdown" data-target="menu1">
-							Dropdown
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
-							<li class="divider"></li>
-							<li><a href="#">Separated link</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Tabs</h2>
-			</div>
-			
-			<div class="span8">
-				<ul class="nav nav-tabs">
-					<li class="active"><a href="#home" data-toggle="tab">Home</a></li>
-					<li><a href="#profile" data-toggle="tab">Profile</a></li>
-					<li><a href="#messages" data-toggle="tab">Messages</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li class=""><a href="#dropdown1" data-toggle="tab">Options</a></li>
-							<li class=""><a href="#dropdown2" data-toggle="tab">Trade History</a></li>
-						</ul>
-					</li>
-				</ul>
-				
-				<div class="tab-content ">
-					<div class="tab-pane active fade in" id="home">Home</div>
-					<div class="tab-pane fade" id="profile">Profile</div>
-					<div class="tab-pane fade" id="messages">Messages</div>
-					<div class="tab-pane fade" id="dropdown1">Options</div>
-					<div class="tab-pane fade" id="dropdown2">Trade History</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Alerts</h2>
-			</div>
-			
-			<div class="span8">
-				<div class="alert fade in">
-					<button class="close" data-dismiss="alert">×</button>
-					<strong>Holy guacamole!</strong> Best check yo self, you're not looking too good.
-				</div>
-				<div class="alert alert-block alert-error fade in">
-					<button class="close" data-dismiss="alert">×</button>
-					<h4 class="alert-heading">Oh snap! You got an error!</h4>
-					<p>Change this and that and try again. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum.</p>
-					<p>
-						<a class="btn btn-danger" href="#">Take this action</a> <a class="btn" href="#">Or do this</a>
-					</p>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Alerts</h2>
-			</div>
-			
-			<div class="span8">
-				<table class="table table-bordered table-striped">
-					<tbody>
-					 <tr>
-					   <td>Stateful</td>
-					   <td>
-						  <button id="fat-btn" data-loading-text="loading..." class="btn btn-primary">
-							Loading State
-						  </button>
-						</td>
-					 </tr>
-					 <tr>
-					   <td>Single toggle</td>
-					   <td>
-						  <button class="btn btn-primary" data-toggle="button">Single Toggle</button>
-						</td>
-					 </tr>
-					 <tr>
-					   <td>Checkbox</td>
-					   <td>
-						  <div class="btn-group" data-toggle="buttons-checkbox">
-							<button class="btn btn-primary">Left</button>
-							<button class="btn btn-primary">Middle</button>
-							<button class="btn btn-primary">Right</button>
-						  </div>
-					   </td>
-					 </tr>
-					 <tr>
-					   <td>Radio</td>
-					   <td>
-						  <div class="btn-group" data-toggle="buttons-radio">
-							<button class="btn btn-primary">Left</button>
-							<button class="btn btn-primary">Middle</button>
-							<button class="btn btn-primary">Right</button>
-						  </div>
-					   </td>
-					 </tr>
-					</tbody>
-				  </table>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Collapse</h2>
-			</div>
-			
-			<div class="span8">
-				<div class="accordion" id="accordion">
-					<div class="accordion-group">
-					  <div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-						  Collapsible Group Item #1
-						</a>
-					  </div>
-					  <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">
-						<div class="accordion-inner">
-						  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-						</div>
-					  </div>
-					</div>
-					<div class="accordion-group">
-					  <div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-						  Collapsible Group Item #2
-						</a>
-					  </div>
-					  <div id="collapseTwo" class="accordion-body collapse" style="height: 0px; ">
-						<div class="accordion-inner">
-						  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-						</div>
-					  </div>
-					</div>
-					<div class="accordion-group">
-					  <div class="accordion-heading">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-						  Collapsible Group Item #3
-						</a>
-					  </div>
-					  <div id="collapseThree" class="accordion-body in collapse" style="height: auto; ">
-						<div class="accordion-inner">
-						  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-						</div>
-					  </div>
-					</div>
-				  </div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Carousel</h2>
-			</div>
-			
-			<div class="span8">
-				<div id="myCarousel" class="carousel slide">
-				  <!-- Carousel items -->
-				  <div class="carousel-inner">
-					<div class="active item">
-						<img src="./img/carousel-01.jpeg" />
-					</div>
-					<div class="item">
-						<img src="./img/carousel-02.jpeg" />
-					</div>
-					<div class="item">
-						<img src="./img/carousel-03.jpeg" />
-					</div>
-				  </div>
-				  <!-- Carousel nav -->
-				  <a class="carousel-control left" href="#myCarousel" data-slide="previous">&lsaquo;</a>
-				  <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Typeahead</h2>
-			</div>
-			
-			<div class="span8">
-				<input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
-				<h2>Scrollspy</h2>
-			</div>
-			
-			<div class="span8">
-				<div id="navbarExample" class="navbar navbar-static">
-					<div class="navbar-inner">
-					  <div class="container" style="width: auto;">
-						<a class="brand" href="#">Project Name</a>
-						<ul class="nav">
-						  <li class="active"><a href="#fat">@fat</a></li>
-						  <li class=""><a href="#mdo">@mdo</a></li>
-						  <li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-							<ul class="dropdown-menu">
-							  <li><a href="#one">one</a></li>
-							  <li><a href="#two">two</a></li>
-							  <li class="divider"></li>
-							  <li><a href="#three">three</a></li>
-							</ul>
-						  </li>
-						</ul>
-					  </div>
-					</div>
-				  </div>
-				  
-				  <div data-spy="scroll" data-target="#navbarExample" data-offset="0" class="scrollspy-example">
-					<h4 id="fat">@fat</h4>
-					<p>
-					Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3 wolf moon irure. Cosby sweater lomo jean shorts, williamsburg hoodie minim qui you probably haven't heard of them et cardigan trust fund culpa biodiesel wes anderson aesthetic. Nihil tattooed accusamus, cred irony biodiesel keffiyeh artisan ullamco consequat.
-					</p>
-					<h4 id="mdo">@mdo</h4>
-					<p>
-					Veniam marfa mustache skateboard, adipisicing fugiat velit pitchfork beard. Freegan beard aliqua cupidatat mcsweeney's vero. Cupidatat four loko nisi, ea helvetica nulla carles. Tattooed cosby sweater food truck, mcsweeney's quis non freegan vinyl. Lo-fi wes anderson +1 sartorial. Carles non aesthetic exercitation quis gentrify. Brooklyn adipisicing craft beer vice keytar deserunt.
-					</p>
-					<h4 id="one">one</h4>
-					<p>
-					Occaecat commodo aliqua delectus. Fap craft beer deserunt skateboard ea. Lomo bicycle rights adipisicing banh mi, velit ea sunt next level locavore single-origin coffee in magna veniam. High life id vinyl, echo park consequat quis aliquip banh mi pitchfork. Vero VHS est adipisicing. Consectetur nisi DIY minim messenger bag. Cred ex in, sustainable delectus consectetur fanny pack iphone.
-					</p>
-					<h4 id="two">two</h4>
-					<p>
-					In incididunt echo park, officia deserunt mcsweeney's proident master cleanse thundercats sapiente veniam. Excepteur VHS elit, proident shoreditch +1 biodiesel laborum craft beer. Single-origin coffee wayfarers irure four loko, cupidatat terry richardson master cleanse. Assumenda you probably haven't heard of them art party fanny pack, tattooed nulla cardigan tempor ad. Proident wolf nesciunt sartorial keffiyeh eu banh mi sustainable. Elit wolf voluptate, lo-fi ea portland before they sold out four loko. Locavore enim nostrud mlkshk brooklyn nesciunt.
-					</p>
-					<h4 id="three">three</h4>
-					<p>
-					Ad leggings keytar, brunch id art party dolor labore. Pitchfork yr enim lo-fi before they sold out qui. Tumblr farm-to-table bicycle rights whatever. Anim keffiyeh carles cardigan. Velit seitan mcsweeney's photo booth 3 wolf moon irure. Cosby sweater lomo jean shorts, williamsburg hoodie minim qui you probably haven't heard of them et cardigan trust fund culpa biodiesel wes anderson aesthetic. Nihil tattooed accusamus, cred irony biodiesel keffiyeh artisan ullamco consequat.
-					</p>
-					<p>Keytar twee blog, culpa messenger bag marfa whatever delectus food truck. Sapiente synth id assumenda. Locavore sed helvetica cliche irony, thundercats you probably haven't heard of them consequat hoodie gluten-free lo-fi fap aliquip. Labore elit placeat before they sold out, terry richardson proident brunch nesciunt quis cosby sweater pariatur keffiyeh ut helvetica artisan. Cardigan craft beer seitan readymade velit. VHS chambray laboris tempor veniam. Anim mollit minim commodo ullamco thundercats.
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+	<h1 id="qunit-header">Sushi.UI Test Suite</h1>
+	<h2 id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture"></div>
 </body>
 </html>
