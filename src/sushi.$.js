@@ -79,13 +79,14 @@ define('sushi.$',
     		var _slice = Array.prototype.slice,
     		_bind = function(fn, context) {
     			return function() {
-    				var theArgs = arguments;
+    				var theArgs = arguments,
+    					args = _slice.call(theArgs, 0);
     				
     				bonzo(context).each(function() {
-						args = _slice.call(theArgs, 0);
 						args.unshift(bonzo(this).get(0));
 						fn.apply(context, args);
 					});
+					
 					return $(context);
 				}
     		},
@@ -170,7 +171,7 @@ define('sushi.$',
 				},
 			
 			  	next: function () {
-					return $(bonzo(this).next())
+					return $(bonzo(this).next().get(0))
 				},
 				
 				offset: function () {
@@ -178,23 +179,23 @@ define('sushi.$',
 				},
 			
 			  	previous: function () {
-					return $(bonzo(this).previous())
+					return $(bonzo(this).previous().get(0))
 				},
 			
 			  	appendTo: function (t) {
-					return bonzo(this.selector).appendTo(t, this)
+					return $(bonzo(this.selector).appendTo(t, this).get(0))
 				},
 			
 			  	prependTo: function (t) {
-					return bonzo(this.selector).prependTo(t, this)
+					return $(bonzo(this.selector).prependTo(t, this).get(0))
 				},
 			
 			  	insertAfter: function (t) {
-					return bonzo(this.selector).insertAfter(t, this)
+					return $(bonzo(this.selector).insertAfter(t, this).get(0))
 				},
 			
 			  	insertBefore: function (t) {
-				  	return bonzo(this.selector).insertBefore(t, this)
+				  	return $(bonzo(this.selector).insertBefore(t, this).get(0))
 				},
 			
 				siblings: function () {
