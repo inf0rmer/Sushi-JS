@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
-	<script>		
+	<script>
 			runTests = function(Sushi) {
 				Sushi.ready(function() {
 					module("Alerts")
@@ -47,7 +47,8 @@
 				
 						ok(!$('#qunit-fixture').find('.alert-message').length, 'element removed from dom')
 					})
-				
+					
+					/*
 					test("should not fire closed when close is prevented", function () {
 						$.support.transition = false
 						stop();
@@ -62,7 +63,7 @@
 						  })
 						  .alert('close')
 					})
-					
+					*/
 					
 					module("Buttons")
 	
@@ -147,7 +148,7 @@
 					  test("should return element", function () {
 						ok($(document.body).carousel()[0] == document.body, 'document.body returned')
 					  })
-				
+						/*
 					  test("should not fire sliden when slide is prevented", function () {
 						$.support.transition = false
 						stop();
@@ -162,7 +163,7 @@
 						  })
 						  .carousel('next')
 					  })
-					  
+					  */
 					  module("Sushi collapse")
 	
 					  test("should be defined on Sushi object", function () {
@@ -184,7 +185,7 @@
 						ok(!el.hasClass('in'), 'does not have class in')
 						ok(/height/.test(el.attr('style')), 'has height set')
 					  })
-				
+						/*
 					  test("should not fire shown when show is prevented", function () {
 						$.support.transition = false
 						stop();
@@ -199,7 +200,7 @@
 						  })
 						  .collapse('show')
 					  })
-				
+						*/
 					  test("should reset style to auto after finishing opening collapse", function () {
 						$.support.transition = false
 						stop();
@@ -340,7 +341,7 @@
 						  })
 						  .modal("show")
 					  })
-				
+					/*
 					  test("should not fire shown when default prevented", function () {
 						stop()
 						$.support.transition = false
@@ -356,7 +357,7 @@
 						  })
 						  .modal("show")
 					  })
-				
+					*/
 					  test("should hide modal when hide is called", function () {
 						stop()
 						$.support.transition = false
@@ -530,6 +531,351 @@
 				
 						ok($topbar.find('.active', true))
 					  })
+					  
+					   module("Sushi tabs")
+
+					  test("should be defined on Sushi object", function () {
+						ok($(document.body).tab, 'tabs method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).tab()[0] == document.body, 'document.body returned')
+					  })
+				
+					  test("should activate element by tab id", function () {
+						var tabsHTML =
+							'<ul class="tabs">'
+						  + '<li><a href="#home">Home</a></li>'
+						  + '<li><a href="#profile">Profile</a></li>'
+						  + '</ul>'
+				
+						$('<ul><li id="home"></li><li id="profile"></li></ul>').appendTo("#qunit-fixture")
+				
+						$(tabsHTML).find('li:last-child a').tab('show')
+						equals($("#qunit-fixture").find('.active').attr('id'), "profile")
+				
+						$(tabsHTML).find('li:first-child a').tab('show')
+						equals($("#qunit-fixture").find('.active').attr('id'), "home")
+					  })
+				
+					  test("should activate element by tab id", function () {
+						var pillsHTML =
+							'<ul class="pills">'
+						  + '<li><a href="#home">Home</a></li>'
+						  + '<li><a href="#profile">Profile</a></li>'
+						  + '</ul>'
+				
+						$('<ul><li id="home"></li><li id="profile"></li></ul>').appendTo("#qunit-fixture")
+				
+						$(pillsHTML).find('li:last-child a').tab('show')
+						equals($("#qunit-fixture").find('.active').attr('id'), "profile")
+				
+						$(pillsHTML).find('li:first-child a').tab('show')
+						equals($("#qunit-fixture").find('.active').attr('id'), "home")
+					  })
+				
+						/*
+					  test("should not fire closed when close is prevented", function () {
+						$.support.transition = false
+						stop();
+						$('<div class="tab"/>')
+						  .bind('show', function (e) {
+							e.preventDefault();
+							ok(true);
+							start();
+						  })
+						  .bind('shown', function () {
+							ok(false);
+						  })
+						  .tab('show')
+					  })
+					  */
+					  
+					  module("Sushi tooltip")
+
+					  test("should be defined on Sushi object", function () {
+						var div = $("<div></div>")
+						ok(div.tooltip, 'popover method is defined')
+					  })
+				
+					  test("should return element", function () {
+						var div = $("<div></div>")
+						ok(div.tooltip() == div, 'document.body returned')
+					  })
+				
+					  test("should expose default settings", function () {
+						ok(!!$.fn.tooltip.defaults, 'defaults is defined')
+					  })
+				
+					  test("should remove title attribute", function () {
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>').tooltip()
+						ok(!tooltip.attr('title'), 'title tag was removed')
+					  })
+				
+					  test("should add data attribute for referencing original title", function () {
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>').tooltip()
+						equals(tooltip.attr('data-original-title'), 'Another tooltip', 'original title preserved in data attribute')
+					  })
+				
+					  test("should place tooltips relative to placement option", function () {
+						$.support.transition = false
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>')
+						  .appendTo('#qunit-fixture')
+						  .tooltip({placement: 'bottom'})
+						  .tooltip('show')
+				
+						ok($(".tooltip").hasClass('fade bottom in'), 'has correct classes applied')
+						tooltip.tooltip('hide')
+					  })
+				
+					  test("should always allow html entities", function () {
+						$.support.transition = false
+						var tooltip = $('<a href="#" rel="tooltip" title="<b>@fat</b>"></a>')
+						  .appendTo('#qunit-fixture')
+						  .tooltip('show')
+				
+						ok($('.tooltip b').length, 'b tag was inserted')
+						tooltip.tooltip('hide')
+						ok(!$(".tooltip").length, 'tooltip removed')
+					  })
+				
+					  test("should respect custom classes", function () {
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>')
+						  .appendTo('#qunit-fixture')
+						  .tooltip({ template: '<div class="tooltip some-class"><div class="tooltip-arrow"/><div class="tooltip-inner"/></div>'})
+						  .tooltip('show')
+				
+						ok($('.tooltip').hasClass('some-class'), 'custom class is present')
+						tooltip.tooltip('hide')
+						ok(!$(".tooltip").length, 'tooltip removed')
+					  })
+				
+					  test("should not show tooltip if leave event occurs before delay expires", function () {
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>')
+						  .appendTo('#qunit-fixture')
+						  .tooltip({ delay: 200 })
+				
+						stop()
+				
+						tooltip.trigger('mouseenter')
+				
+						setTimeout(function () {
+						  ok(!$(".tooltip").hasClass('fade in'), 'tooltip is not faded in')
+						  tooltip.trigger('mouseout')
+						  setTimeout(function () {
+							ok(!$(".tooltip").hasClass('fade in'), 'tooltip is not faded in')
+							start()
+						  }, 200)
+						}, 100)
+					  })
+				
+					  test("should not show tooltip if leave event occurs before delay expires", function () {
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>')
+						  .appendTo('#qunit-fixture')
+						  .tooltip({ delay: 100 })
+						stop()
+						tooltip.trigger('mouseenter')
+						setTimeout(function () {
+						  ok(!$(".tooltip").hasClass('fade in'), 'tooltip is not faded in')
+						  tooltip.trigger('mouseout')
+						  setTimeout(function () {
+							ok(!$(".tooltip").hasClass('fade in'), 'tooltip is not faded in')
+							start()
+						  }, 100)
+						}, 50)
+					  })
+				
+					  test("should show tooltip if leave event hasn't occured before delay expires", function () {
+						var tooltip = $('<a href="#" rel="tooltip" title="Another tooltip"></a>')
+						  .appendTo('#qunit-fixture')
+						  .tooltip({ delay: 200 })
+						stop()
+						tooltip.trigger('mouseenter')
+						setTimeout(function () {
+						  ok(!$(".tooltip").hasClass('fade in'), 'tooltip is not faded in')
+						  setTimeout(function () {
+							ok(!$(".tooltip").hasClass('fade in'), 'tooltip has faded in')
+							start()
+						  }, 200)
+						}, 100)
+					  })
+				
+					  test("should detect if title string is html or text: foo", function () {
+						ok(!$.fn.tooltip.Constructor.prototype.isHTML('foo'), 'correctly detected html')
+					  })
+				
+					  test("should detect if title string is html or text: &amp;lt;foo&amp;gt;", function () {
+						ok(!$.fn.tooltip.Constructor.prototype.isHTML('&lt;foo&gt;'), 'correctly detected html')
+					  })
+				
+					  test("should detect if title string is html or text: &lt;div>foo&lt;/div>", function () {
+						ok($.fn.tooltip.Constructor.prototype.isHTML('<div>foo</div>'), 'correctly detected html')
+					  })
+				
+					  test("should detect if title string is html or text: asdfa&lt;div>foo&lt;/div>asdfasdf", function () {
+						ok($.fn.tooltip.Constructor.prototype.isHTML('asdfa<div>foo</div>asdfasdf'), 'correctly detected html')
+					  })
+				
+					  test("should detect if title string is html or text: document.createElement('div')", function () {
+						ok($.fn.tooltip.Constructor.prototype.isHTML(document.createElement('div')), 'correctly detected html')
+					  })
+				
+					  test("should detect if title string is html or text: $('&lt;div />)", function () {
+						ok($.fn.tooltip.Constructor.prototype.isHTML($('<div></div>')), 'correctly detected html')
+					  })
+					  
+					  module("Sushi  transition")
+
+					  test("should be defined on Sushi support object", function () {
+						ok($.support.transition !== undefined, 'transition object is defined')
+					  })
+				
+					  test("should provide an end object", function () {
+						ok($.support.transition ? $.support.transition.end : true, 'end string is defined')
+					  })
+					  
+					   module("Sushi typeahead")
+
+					  test("should be defined on Sushi object", function () {
+						ok($(document.body).typeahead, 'alert method is defined')
+					  })
+				
+					  test("should return element", function () {
+						ok($(document.body).typeahead()[0] == document.body, 'document.body returned')
+					  })
+						/*
+					  test("should listen to an input", function () {
+						var $input = $('<input />')
+						$input.typeahead()
+						console.log($input.data('events'));
+						ok($input.data('events').blur, 'has a blur event')
+						ok($input.data('events').keypress, 'has a keypress event')
+						ok($input.data('events').keyup, 'has a keyup event')
+						ok($input.data('events').keydown, 'has a keydown event')
+					  })
+						*/
+					  test("should create a menu", function () {
+						var $input = $('<input />')
+						ok($input.typeahead().data('typeahead').$menu, 'has a menu')
+					  })
+						/*
+					  test("should listen to the menu", function () {
+						var $input = $('<input />')
+						  , $menu = $input.typeahead().data('typeahead').$menu
+				
+						ok($menu.data('events').mouseover, 'has a mouseover(pseudo: mouseenter)')
+						ok($menu.data('events').click, 'has a click')
+					  })
+					  */
+				
+					  test("should show menu when query entered", function () {
+						var $input = $('<input />').typeahead({
+							  source: ['aa', 'ab', 'ac']
+							})
+						  , typeahead = $input.data('typeahead')
+				
+						$input.val('a')
+						typeahead.lookup()
+				
+						ok(typeahead.$menu.isVisible(), 'typeahead is visible')
+						equals(typeahead.$menu.find('li').length, 3, 'has 3 items in menu')
+						equals(typeahead.$menu.find('.active').length, 1, 'one item is active')
+				
+						typeahead.$menu.remove()
+					  })
+				
+					  test("should not explode when regex chars are entered", function () {
+						var $input = $('<input />').typeahead({
+							  source: ['aa', 'ab', 'ac', 'mdo*', 'fat+']
+							})
+						  , typeahead = $input.data('typeahead')
+				
+						$input.val('+')
+						typeahead.lookup()
+				
+						ok(typeahead.$menu.isVisible(), 'typeahead is visible')
+						equals(typeahead.$menu.find('li').length, 1, 'has 1 item in menu')
+						equals(typeahead.$menu.find('.active').length, 1, 'one item is active')
+				
+						typeahead.$menu.remove()
+					  })
+				
+					  test("should hide menu when query entered", function () {
+						stop()
+						var $input = $('<input />').typeahead({
+							  source: ['aa', 'ab', 'ac']
+							})
+						  , typeahead = $input.data('typeahead')
+				
+						$input.val('a')
+						typeahead.lookup()
+				
+						ok(typeahead.$menu.isVisible(), 'typeahead is visible')
+						equals(typeahead.$menu.find('li').length, 3, 'has 3 items in menu')
+						equals(typeahead.$menu.find('.active').length, 1, 'one item is active')
+				
+						$input.blur()
+				
+						setTimeout(function () {
+						  ok(!typeahead.$menu.isVisible(), "typeahead is no longer visible")
+						  start()
+						}, 200)
+				
+						typeahead.$menu.remove()
+					  })
+						/*
+					  test("should set next item when down arrow is pressed", function () {
+						var $input = $('<input />').typeahead({
+							  source: ['aa', 'ab', 'ac']
+							})
+						  , typeahead = $input.data('typeahead')
+				
+						$input.val('a')
+						typeahead.lookup()
+				
+						ok(typeahead.$menu.isVisible(), 'typeahead is visible')
+						equals(typeahead.$menu.find('li').length, 3, 'has 3 items in menu')
+						equals(typeahead.$menu.find('.active').length, 1, 'one item is active')
+						ok(typeahead.$menu.find('li').first().hasClass('active'), "first item is active")
+				
+						$input.trigger('keydown', [{
+							keyCode: 40
+						}])
+				
+						ok(typeahead.$menu.find('li').first().next().hasClass('active'), "second item is active")
+				
+				
+						$input.trigger('keydown', [{
+							keyCode: 38
+						}])
+				
+						ok(typeahead.$menu.find('li').first().hasClass('active'), "first item is active")
+				
+						typeahead.$menu.remove()
+					  })
+					*/
+				
+					  test("should set input value to selected item", function () {
+						var $input = $('<input />').appendTo('#qunit-fixture')
+							.typeahead({
+								source: ['aa', 'ab', 'ac']
+							})
+						  , typeahead = $input.data('typeahead')
+						  , changed = false
+
+						$input.val('a')
+						typeahead.lookup()
+						
+						$input.bind('change', function() { changed = true });
+						$(typeahead.$menu.find('li')[2]).trigger('mouseover').trigger('click');
+				
+						equals($input.val(), 'ac', 'input value was correctly set')
+						ok(!typeahead.$menu.isVisible(), 'the menu was hidden')
+						ok(changed, 'a change event was fired')
+				
+						typeahead.$menu.remove()
+					  })
+					  
 				});
 			}
 	</script>
