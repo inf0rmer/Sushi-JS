@@ -12,7 +12,9 @@ require.config({
 });
 		
 require([
+	'sushi.core',
 	'sushi.event'
 	], 
-	function(){
+	function(Sushi){
+		Sushi.ready(runTests);
 });
