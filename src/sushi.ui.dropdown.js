@@ -102,7 +102,7 @@
 				});
 			}
 		
-		  	$.fn.dropdown.Constructor = Dropdown
+		  	Sushi.fn.dropdown.Constructor = Dropdown
 		
 		
 			/* APPLY TO STANDARD DROPDOWN ELEMENTS
