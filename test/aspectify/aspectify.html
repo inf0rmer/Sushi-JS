@@ -6,7 +6,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>		
-		require(['vendors/domReady!'], function(doc) {	
+		function runTests() {
 			window.Hunter = Hunter = new Sushi.Class({
 				constructor: function() {
 					
@@ -44,7 +44,7 @@
 			.guard('draw', function() {
 				return this.hasBow;
 			})
-		});
+		}
 		
 	</script>
 </head>

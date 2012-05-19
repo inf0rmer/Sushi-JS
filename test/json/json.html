@@ -6,7 +6,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
-		require(['vendors/domReady!'], function(doc) {
+		function runTests() {
 			module('Sushi.utils Namespace');
 			test('Sushi.utils', function(){
 				ok(Sushi.utils, 'Sushi.utils is defined');
@@ -29,7 +29,7 @@
 			test('Sushi.utils.json.stringify', function(){
 				equals(typeof Sushi.utils.json.stringify(literal), 'string');
 			});			
-		});
+		}
 	</script>
 </head>
 <body>

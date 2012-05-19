@@ -9,7 +9,7 @@
  		'sushi.core',
  		'sushi.Store',
  		'sushi.stores',
- 		'sushi.Enumerable',
+ 		'sushi.enumerable',
  		'sushi.utils.json',
  		'sushi.error',
  		'vendors/polyfills.localstorage'

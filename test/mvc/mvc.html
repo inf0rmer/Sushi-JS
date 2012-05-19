@@ -6,7 +6,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
-		require(['vendors/domReady!'], function(doc) {
+		function runTests() {
 			
 			module('Models');
 			test('Sushi.Model', function() {
@@ -390,7 +390,7 @@
 				equals(remaining[0].get('text'), 'Pick up laundry', 'list.remaining()[0] model is correct');
 				equals(done[0].get('text'), 'Take a shower', 'list.done()[0] model is correct');
 			});
-		});
+		}
 	</script>
 </head>
 <body>

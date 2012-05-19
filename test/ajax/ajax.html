@@ -12,204 +12,206 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
-		module('MIME Types');
-		test('JSON', 1, function() {
-			stop(1);
-			Sushi.ajax({
-			  	url: 'fixtures/fixtures.json',
-			  	type: 'GET',
-			  	dataType: 'json',
-			  	success: function (resp) {
-					ok(resp.boosh == 'boosh', 'evaluated response as JSON');
-					start();
-			  	}
+		function runTests() {
+			module('MIME Types');
+			test('JSON', 1, function() {
+				stop(1);
+				Sushi.ajax({
+					url: 'fixtures/fixtures.json',
+					type: 'GET',
+					dataType: 'json',
+					success: function (resp) {
+						ok(resp.boosh == 'boosh', 'evaluated response as JSON');
+						start();
+					}
+				});
 			});
-		});
-		// For some reason, using the .jsonp file extension didn't work
-		// in the testing suite. Using .js instead for now.
-		
-		test('JSONP', 3, function() {
-			stop(1);
-			Sushi.ajax({
-			  	url: 'fixtures/fixtures_jsonp.js?callback=?',
-			  	dataType: 'jsonp',
-			  	success: function (resp) {
-					equals(resp.boosh, "boosh", "evaluated response as JSONP");
-			  	}
-			});
+			// For some reason, using the .jsonp file extension didn't work
+			// in the testing suite. Using .js instead for now.
+			
+			test('JSONP', 3, function() {
+				stop(1);
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp.js?callback=?',
+					dataType: 'jsonp',
+					success: function (resp) {
+						equals(resp.boosh, "boosh", "evaluated response as JSONP");
+					}
+				});
+					
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp2.js?foo=bar',
+					dataType: 'jsonp',
+					jsonpCallback: 'foo',
+					success: function (resp) {
+						equals(resp.boosh, "boosh", "evaluated response as JSONP with custom callback");
+					}
+				});
+	
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp3.js?foo=?',
+					dataType: 'jsonp',
+					jsonpCallback: 'foo',
+					success: function (resp) {
+						equals(resp.boosh, "boosh", "evaluated response as JSONP with custom wildcard callback");
+					}
+				});
 				
-			Sushi.ajax({
-			  	url: 'fixtures/fixtures_jsonp2.js?foo=bar',
-			  	dataType: 'jsonp',
-			  	jsonpCallback: 'foo',
-			  	success: function (resp) {
-					equals(resp.boosh, "boosh", "evaluated response as JSONP with custom callback");
-			  	}
+				setTimeout(function(){
+					start();
+				}, 500);
 			});
-
-			Sushi.ajax({
-			  	url: 'fixtures/fixtures_jsonp3.js?foo=?',
-			  	dataType: 'jsonp',
-			  	jsonpCallback: 'foo',
-			  	success: function (resp) {
-					equals(resp.boosh, "boosh", "evaluated response as JSONP with custom wildcard callback");
-			  	}
+	
+			test('JS', 1, function() {
+				stop(1);
+				Sushi.ajax({
+					url: 'fixtures/fixtures.js',
+					dataType: 'js',
+					success: function (resp) {
+						equals(boosh, 'boosh', 'evaluated response as JavaScript');
+						start();
+					}
+				});
 			});
 			
-			setTimeout(function(){
-				start();
-			}, 500);
-		});
-
-		test('JS', 1, function() {
-			stop(1);
-			Sushi.ajax({
-			  	url: 'fixtures/fixtures.js',
-			  	dataType: 'js',
-			  	success: function (resp) {
-					equals(boosh, 'boosh', 'evaluated response as JavaScript');
-					start();
-			  	}
-			});
-		});
-		
-		test('HTML', 1, function() {
-			stop(1);
-			Sushi.ajax({
-			  	url: 'fixtures/fixtures.html',
-			  	dataType: 'html',
-			  	success: function (resp) {
-					equals(resp, '<p>boosh</p>', 'evaluated response as HTML');
-					start();
-			  	}
-			});
-		});
-		
-		module('Callbacks');
-		test('no callbacks', 1, function () {
-			stop(1);
-			var pass = true;
-			try {
-			  	Sushi.ajax('fixtures/fixtures.js');
-			} catch (ex) {
-			  	pass = false;
-			} finally {
-			  	ok(pass, 'successfully doesnt fail without callback');
-			  	start();
-			}
-		  });
-		
-		test('complete is called', 1, function () {
-			stop(1);
-			Sushi.ajax({
-		  		url: 'fixtures/fixtures.js',
-			  	complete: function () {
-					ok(true, 'called complete');
-					start();
-			  	}
-			});
-		});
-		
-		module('Connection Object');
-		test('setRequestHeaders', 1, function () {
-			stop();
-    		Sushi.ajax({
-			  	url: 'fixtures/fixtures.html',
-			  	data: 'foo=bar&baz=thunk',
-			  	type: 'POST',
-			  	headers: {
-					'Accept': 'application/x-foo'
-			  	},
-			  	success: function (resp) {
-					ok(true, 'can post headers');
-					start();
-			  	}
-   			});
-  		});
-
-	  	test('can inspect http before send', 2, function () {	
-	  		stop(1);
-			var connection = Sushi.ajax({
-		  		url: 'fixtures/fixtures.js',
-		  		type: 'POST',
-		  		dataType: 'js',
-		  		before: function (http) {
-					equals(http.readyState, 1, 'received http connection object');
-		  		},
-		  		success: function () {
-					equals(connection.request.readyState, 4, 'success callback has readyState of 4');
-		  		}
+			test('HTML', 1, function() {
+				stop(1);
+				Sushi.ajax({
+					url: 'fixtures/fixtures.html',
+					dataType: 'html',
+					success: function (resp) {
+						equals(resp, '<p>boosh</p>', 'evaluated response as HTML');
+						start();
+					}
+				});
 			});
 			
-			setTimeout(function() {
-				start();
-			}, 500)
-	  	});
-	  	
-	  	module('Serializing');
-	  	test('serialize', 1, function () {
-      		var expected = 'foo=bar&bar=baz&wha=1&wha=3&choices=two&opinions=world+peace+is+not+real';
-      		equals(Sushi.ajax.serialize(document.forms[0]), expected, 'serialized form');
-    	});
-
-    	test('serializeArray', 6, function () {
-      		var expected = [
-				{ name: 'foo', value: 'bar' },
-				{ name: 'bar', value: 'baz' },
-				{ name: 'wha', value: 1 },
-				{ name: 'wha', value: 3 },
-				{ name: 'choices', value: 'two' },
-				{ name: 'opinions', value: 'world peace is not real' }
-		  	];
-
-      		var result = Sushi.ajax.serializeArray(document.forms[0]);
-
-      		for (var i = 0; i < expected.length; i++) {
-        		ok(result.some(function (v) {
-          			return v.name == expected[i].name && v.value == expected[i].value;
-        		}), 'serialized ' + result[i].name);
-      		}
-    	});
-    	
-    	module('Parallel calls');
-    	test('multiple named callbacks', 4, function () {
-    		stop(1);
-		  	Sushi.ajax({
-				url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
-				dataType: 'jsonp',
-				success: function (resp) {
-			  		equals(resp.a, "a", "evaluated response as JSONP");
+			module('Callbacks');
+			test('no callbacks', 1, function () {
+				stop(1);
+				var pass = true;
+				try {
+					Sushi.ajax('fixtures/fixtures.js');
+				} catch (ex) {
+					pass = false;
+				} finally {
+					ok(pass, 'successfully doesnt fail without callback');
+					start();
 				}
-		 	});
-		  
-		  	Sushi.ajax({
-				url: 'fixtures/fixtures_jsonp_multi_b.js?callback=reqwest_0',
-				dataType: 'jsonp',
-				success: function (resp) {
-				  	equals(resp.b, "b", "evaluated response as JSONP");
+			  });
+			
+			test('complete is called', 1, function () {
+				stop(1);
+				Sushi.ajax({
+					url: 'fixtures/fixtures.js',
+					complete: function () {
+						ok(true, 'called complete');
+						start();
+					}
+				});
+			});
+			
+			module('Connection Object');
+			test('setRequestHeaders', 1, function () {
+				stop();
+				Sushi.ajax({
+					url: 'fixtures/fixtures.html',
+					data: 'foo=bar&baz=thunk',
+					type: 'POST',
+					headers: {
+						'Accept': 'application/x-foo'
+					},
+					success: function (resp) {
+						ok(true, 'can post headers');
+						start();
+					}
+				});
+			});
+	
+			test('can inspect http before send', 2, function () {	
+				stop(1);
+				var connection = Sushi.ajax({
+					url: 'fixtures/fixtures.js',
+					type: 'POST',
+					dataType: 'js',
+					before: function (http) {
+						equals(http.readyState, 1, 'received http connection object');
+					},
+					success: function () {
+						equals(connection.request.readyState, 4, 'success callback has readyState of 4');
+					}
+				});
+				
+				setTimeout(function() {
+					start();
+				}, 500)
+			});
+			
+			module('Serializing');
+			test('serialize', 1, function () {
+				var expected = 'foo=bar&bar=baz&wha=1&wha=3&choices=two&opinions=world+peace+is+not+real';
+				equals(Sushi.ajax.serialize(document.forms[0]), expected, 'serialized form');
+			});
+	
+			test('serializeArray', 6, function () {
+				var expected = [
+					{ name: 'foo', value: 'bar' },
+					{ name: 'bar', value: 'baz' },
+					{ name: 'wha', value: 1 },
+					{ name: 'wha', value: 3 },
+					{ name: 'choices', value: 'two' },
+					{ name: 'opinions', value: 'world peace is not real' }
+				];
+	
+				var result = Sushi.ajax.serializeArray(document.forms[0]);
+	
+				for (var i = 0; i < expected.length; i++) {
+					ok(result.some(function (v) {
+						return v.name == expected[i].name && v.value == expected[i].value;
+					}), 'serialized ' + result[i].name);
 				}
-		  	});
-		  
-		  	Sushi.ajax({
-				url: 'fixtures/fixtures_jsonp_multi_c.js?callback=reqwest_0',
-				dataType: 'jsonp',
-				success: function (resp) {
-				  	equals(resp.c, "c", "evaluated response as JSONP");
-				}
-		  	});
-		  	
-		  	Sushi.ajax({
-				url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
-				dataType: 'jsonp',
-				success: function (resp) {
-			  		equals(resp.a, "a", "evaluated response as JSONP");
-				}
-		  	});
-		  	
-		  	setTimeout(function() {
-				start();
-			}, 500)
-		});
+			});
+			
+			module('Parallel calls');
+			test('multiple named callbacks', 4, function () {
+				stop(1);
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
+					dataType: 'jsonp',
+					success: function (resp) {
+						equals(resp.a, "a", "evaluated response as JSONP");
+					}
+				});
+			  
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp_multi_b.js?callback=reqwest_0',
+					dataType: 'jsonp',
+					success: function (resp) {
+						equals(resp.b, "b", "evaluated response as JSONP");
+					}
+				});
+			  
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp_multi_c.js?callback=reqwest_0',
+					dataType: 'jsonp',
+					success: function (resp) {
+						equals(resp.c, "c", "evaluated response as JSONP");
+					}
+				});
+				
+				Sushi.ajax({
+					url: 'fixtures/fixtures_jsonp_multi.js?callback=reqwest_0',
+					dataType: 'jsonp',
+					success: function (resp) {
+						equals(resp.a, "a", "evaluated response as JSONP");
+					}
+				});
+				
+				setTimeout(function() {
+					start();
+				}, 500)
+			});
+		}
 	</script>
 </head>
 <body>

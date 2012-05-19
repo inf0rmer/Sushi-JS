@@ -6,7 +6,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
-		require(['vendors/domReady!'], function(doc) {
+		function runTests() {
 			var Animal = new Sushi.Class(Sushi.Model, {
 				constructor: function(attributes, options) {
 					Animal.Super.call(this, attributes, options);
@@ -49,7 +49,7 @@
 				animals.reset();
 				animals.fetch();
 				equals(animals.length, 2);
-				animals.store.empty();
+				//animals.store.empty();
 			});
 			
 			asyncTest('Removing from localStore', function() {
@@ -69,7 +69,7 @@
 					}
 				});
 			});
-		});
+		}
 	</script>
 </head>
 <body>

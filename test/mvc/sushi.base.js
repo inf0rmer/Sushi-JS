@@ -20,5 +20,5 @@ require([
 	'sushi.template',
 	'sushi.utils.json'
 	], 
-	function(){
-});
+	runTests
+);

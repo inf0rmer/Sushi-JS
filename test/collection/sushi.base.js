@@ -15,5 +15,5 @@ require([
 	'sushi.core',
 	'sushi.utils.collection'
 	], 
-	function(){
-});
+	runTests
+);

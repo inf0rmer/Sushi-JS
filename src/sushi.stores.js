@@ -7,7 +7,7 @@
  	[
  		'sushi.core',
  		'sushi.utils',
- 		'sushi.Enumerable',
+ 		'sushi.enumerable',
  		'sushi.Store',
  		'sushi.error'
  	],

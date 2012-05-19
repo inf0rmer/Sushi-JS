@@ -35,7 +35,7 @@
 			
 		collection.each(methods, function(method) {
 			Enumerable.prototype[method] = function() {
-				return new Enumerable(collection[method].apply(Sushi, [this].concat(collection.toArray(arguments))));
+				return collection[method].apply(Sushi, [this].concat(collection.toArray(arguments)));
 			};
 	  	});
 	  	

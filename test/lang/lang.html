@@ -7,7 +7,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
-		require(['vendors/domReady!'], function(doc) {	
+		function runTests() {	
 			module('Sushi.utils.lang replaceAccents');
 			test('replaceAccents', function(){
 				var accentedString = 'áàãâéèêóòõô',
@@ -16,7 +16,7 @@
 					
 				equals(Sushi.utils.replaceAccents(accentedString), normalString);
 			});
-		});
+		}
 	</script>
 </head>
 <body>

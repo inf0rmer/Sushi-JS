@@ -14,5 +14,5 @@ require.config({
 require([ 
 	'sushi.utils.json'
 	], 
-	function(){
-});
+	runTests
+);

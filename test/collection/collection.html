@@ -6,7 +6,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>		
-		require(['vendors/domReady!'], function(doc) {
+		function runTests() {
 			module('Sushi.utils namespace');
 			test('Sushi.utils', function() {
 				ok(Sushi.utils, 'Sushi.utils is defined');
@@ -131,7 +131,7 @@
 				deepEqual(Sushi.utils.pluck(arr, 'name'), ['Alice', 'Jane']);
 			});
 
-		});
+		}
 	</script>
 </head>
 <body>

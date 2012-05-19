@@ -18,5 +18,5 @@ require([
 	'sushi.stores.RemoteStore',
 	'sushi.Enumerable'
 	], 
-	function(){
-});
+	runTests
+);

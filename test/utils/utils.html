@@ -6,7 +6,7 @@
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
 	<script>
-		require(['vendors/domReady!'], function(doc) {
+		function runTests() {
 			module('Sushi.utils Namespace');
 			test('Sushi.utils', function(){
 				ok(Sushi.utils, 'Sushi.utils is defined');
@@ -123,7 +123,7 @@
 				ok(!Sushi.utils.isUndefined(0));
 				ok(!Sushi.utils.isUndefined('null'));
 			});	
-		});
+		}
 	</script>
 </head>
 <body>
