@@ -5,8 +5,8 @@
 	<link rel="stylesheet" href="../qunit/qunit.css" type="text/css" media="screen">
 	<script src="../qunit/qunit.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
-	<script>		
-		require(['vendors/domReady!'], function(doc) {
+	<script>
+		function runTests() {
 			module('Sushi.event namespace');
 			test('Sushi.event', function() {
 				ok(Sushi.event, 'Sushi.event is defined');
@@ -25,7 +25,7 @@
 			});
 			
 			Sushi.event.publish('some/topic', 'one', 'two', 'three');
-		});
+		}
 	</script>
 </head>
 <body>
