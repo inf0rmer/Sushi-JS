@@ -16,6 +16,11 @@ cd $DIR
 # Empty the src/vendors folder
 rm -rf $DIR/../src/vendors/*
 
+# Zepto
+echo 'Converting Zepto...'
+node r.js -convert $TMP/zepto/ $TMP/zepto
+cp $TMP/zepto/zepto.js $DIR/../src/vendors/zepto.js
+
 # Bean
 echo 'Converting Bean...'
 node r.js -convert $TMP/bean/ $TMP/bean
