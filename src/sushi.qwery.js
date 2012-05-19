@@ -1,15 +1,15 @@
 /*
- * Sushi.qwery - CSS3 querySelectorAll utility
+ * Sushi.qwery - CSS3 querySelectorAll
  *
  */
- define('sushi.qwery'
+ define('sushi.qwery',
  	// Module dependencies
  	[
  		'vendors/qwery'
     ],
 
  	/**
- 	 * Sushi Qwery
+ 	 * Sushi qwery
  	 *
  	 * @namespace Sushi
  	 * @class qwery
