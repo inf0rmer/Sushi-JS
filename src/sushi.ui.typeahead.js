@@ -51,7 +51,7 @@
 			this.highlighter = this.options.highlighter || this.highlighter
 			this.updater = this.options.updater || this.updater
 			this.$menu = $(this.options.menu).appendTo('body')
-			this.source = JSON.parse(this.options.source)
+			this.source = (typeof this.options.source === 'string') ? JSON.parse(this.options.source) : this.options.source
 			this.shown = false
 			this.listen()
 		}
@@ -62,7 +62,7 @@
 				var val = this.$menu.find('.active').attr('data-value')
 				this.$element
 				.val(this.updater(val))
-				.change()
+				.trigger('change')
 				return this.hide()
 			}
 			
@@ -70,7 +70,7 @@
 				return item
 			}
 			
-			, show: function () {				
+			, show: function () {			
 				var pos = {};
 				Sushi.extend(pos, this.$element.offset());
 				Sushi.extend(pos, {
@@ -113,7 +113,7 @@
 				if (!items.length) {
 					return this.shown ? this.hide() : this
 				}
-			
+				
 				return this.render(items.slice(0, this.options.items)).show()
 			}
 			
@@ -186,20 +186,19 @@
 			}
 			
 			, listen: function () {
-				this.$element
-				.on('blur',     utils.bind(this.blur, this))
-				.on('keypress', utils.bind(this.keypress, this))
-				.on('keyup',    utils.bind(this.keyup, this))
+				this.$element.on('blur',     utils.bind(this.blur, this))
+				this.$element.on('keypress', utils.bind(this.keypress, this))
+				this.$element.on('keyup',    utils.bind(this.keyup, this))
+				
 				this.$element.on('keydown', utils.bind(this.keypress, this))
 				/*
 				if ($.browser.webkit || $.browser.msie) {
 					this.$element.on('keydown', $.proxy(this.keypress, this))
 				}
 				*/
-				
-				this.$menu
-				.on('click', utils.bind(this.click, this))
-				.on('mouseenter', 'li', utils.bind(this.mouseenter, this))
+
+				this.$menu.on('li', 'click', utils.bind(this.click, this))
+				this.$menu.on('li', 'mouseover', utils.bind(this.mouseenter, this))
 			}
 				
 			, keyup: function (e) {
@@ -223,8 +222,8 @@
 					this.lookup()
 				}
 				
-				e.stopPropagation()
-				e.preventDefault()
+				e.stopPropagation && e.stopPropagation()
+				e.preventDefault && e.preventDefault()
 			}
 				
 			, keypress: function (e) {
@@ -250,7 +249,7 @@
 					break
 				}
 				
-				e.stopPropagation()
+				e.stopPropagation && e.stopPropagation()
 			}
 			
 			, blur: function (e) {
@@ -276,12 +275,13 @@
 		* =========================== */
 		
 		Sushi.fn.typeahead = function (option) {
-		return this.each(function () {
-			var $this = $(this)
-				, data = $this.data('typeahead')
-				, options = typeof option == 'object' && option
-			if (!data) $this.data('typeahead', (data = new Typeahead(this, options)))
-			if (typeof option == 'string') data[option]()
+			return this.each(function () {
+				var $this = $(this)
+					, data = $this.data('typeahead')
+					, options = typeof option == 'object' && option
+					
+				if (!data) $this.data('typeahead', (data = new Typeahead(this, options)))
+				if (typeof option == 'string') data[option]()
 			})
 		}
 		
