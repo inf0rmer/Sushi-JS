@@ -188,13 +188,13 @@
 			, show: true
 		  }
 		
-		  $.fn.modal.Constructor = Modal
+		  Sushi.fn.modal.Constructor = Modal
 		
 		
 		 /* MODAL DATA-API
 		  * ============== */
 		
-		  $(function () {
+		  Sushi.ready(function () {
 			$('body').delegate('[data-toggle="modal"]', 'click', function ( e ) {
 			
 			  var $this = $(this), href
@@ -209,7 +209,7 @@
 
 			  e.preventDefault()
 			  $target.modal(option)
-			}, Sushi);
+			});
 		  })
  	}
  );
