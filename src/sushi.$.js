@@ -10,10 +10,10 @@ define('sushi.$',
     	'sushi.utils',
     	'sushi.utils.collection',
     	'sushi.support',
-    	'vendors/qwery',
-    	'vendors/bonzo',
-    	'vendors/bean',
-    	'vendors/morpheus',
+    	'sushi.qwery',
+    	'sushi.bonzo',
+    	'sushi.bean',
+    	'sushi.morpheus',
     	'sushi.ajax'
     ],
     
@@ -337,12 +337,6 @@ define('sushi.$',
     	
     	//Sugars
     	Sushi.fn = $;
-    	
-    	// Make raw objects available
-    	Sushi.morpheus = morpheus;
-    	Sushi.bonzo = bonzo;
-    	Sushi.qwery = qwery;
-    	Sushi.bean = bean;
     	
     	return Sushi;
     } 
