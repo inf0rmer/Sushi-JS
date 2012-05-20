@@ -109,10 +109,10 @@
 			 * =================================== */
 		
 			Sushi.ready(function () {
-				$('html').on('click.dropdown.data-api', clearMenus)
 				$('html')
-				  .on('.dropdown form', 'click.dropdown', function (e) { e.stopPropagation() })
-				  .on(toggle, 'click.dropdown.data-api', Dropdown.prototype.toggle)
+					.on('click.dropdown.data-api', clearMenus)
+					.on('.dropdown form', 'click.dropdown', function (e) { e.stopPropagation() })
+					.on(toggle, 'click.dropdown.data-api', Dropdown.prototype.toggle)
 			});
  	}
  );
