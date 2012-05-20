@@ -10,11 +10,10 @@ define('sushi.mvc.model',
 		'sushi.utils',
 		'sushi.utils.collection',
 		'sushi.stores',
-		'sushi.error',
-		'sushi.Enumerable'
+		'sushi.error'
 	],
 
-	function(Sushi, event, utils, collection, stores, SushiError, Enumerable) {
+	function(Sushi, event, utils, collection, stores, SushiError) {
 		/**
 		 * Sushi MVC - Model
 		 * Heavily based on Backbone.Model
