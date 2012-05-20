@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<title>Sushi JS UI Test Suite</title>
+	<title>Sushi JS UI Visual Test Suite</title>
 	<link rel="stylesheet/less" href="../../src/less/sushi.less" type="text/css" media="screen">
 	<script src="../../utils/less-1.3.0.min.js"></script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
@@ -41,10 +41,30 @@
 		}
 	</style>
 </head>
-<body>
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+	<nav class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<ul class="nav">
+					<li class="active"><a href="#tooltips">Tooltips</a></li>
+					<li><a href="#popovers">Popovers</a></li>
+					<li><a href="#modals">Modals</a></li>
+					<li><a href="#tabs">Tabs</a></li>
+					<li><a href="#dropdowns">Dropdowns</a></li>
+					<li><a href="#alerts">Alerts</a></li>
+					<li><a href="#buttons">Buttons</a></li>
+					<li><a href="#collapse">Collapse</a></li>
+					<li><a href="#carousel">Carousel</a></li>
+					<li><a href="#typeahead">Typeahead</a></li>
+					<li><a href="#scrollspy">Scrollspy</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 	
 	<div id="setup" style="margin: 200px 50px 50px">
-		<div class="row">
+		<div class="row" id="tooltips">
 			<div class="span2">
 				<h2>Tooltips</h2>
 			</div>
@@ -54,7 +74,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="popovers">
 			<div class="span2">
 				<h2>Popovers</h2>
 			</div>
@@ -64,7 +84,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="modals">
 			<div class="span2">
 				<h2>Modals</h2>
 			</div>
@@ -102,7 +122,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="tabs">
 			<div class="span2">
 				<h2>Tabs</h2>
 			</div>
@@ -131,7 +151,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="dropdowns">
 			<div class="span2">
 				<h2>Dropdowns</h2>
 			</div>
@@ -156,7 +176,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="alerts">
 			<div class="span2">
 				<h2>Alerts</h2>
 			</div>
@@ -177,9 +197,9 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="buttons">
 			<div class="span2">
-				<h2>Alerts</h2>
+				<h2>Buttons</h2>
 			</div>
 			
 			<div class="span8">
@@ -224,7 +244,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="collapse">
 			<div class="span2">
 				<h2>Collapse</h2>
 			</div>
@@ -271,7 +291,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="carousel">
 			<div class="span2">
 				<h2>Carousel</h2>
 			</div>
@@ -297,7 +317,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="typeahead">
 			<div class="span2">
 				<h2>Typeahead</h2>
 			</div>
@@ -307,7 +327,7 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="scrollspy">
 			<div class="span2">
 				<h2>Scrollspy</h2>
 			</div>
