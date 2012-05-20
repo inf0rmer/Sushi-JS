@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8" />
 	<title>Sushi JS UI Test Suite</title>
 	<link rel="stylesheet/less" href="../../src/less/sushi.less" type="text/css" media="screen">
 	<script src="../../utils/less-1.3.0.min.js"></script>
@@ -103,31 +104,6 @@
 		
 		<div class="row">
 			<div class="span2">
-				<h2>Dropdowns</h2>
-			</div>
-			
-			<div class="span8">
-				<ul class="nav nav-pills">
-					<li class="active"><a href="#">Regular link</a></li>
-					<li class="dropdown" id="menu1">
-						<a class="dropdown-toggle" data-toggle="dropdown" data-target="menu1">
-							Dropdown
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
-							<li class="divider"></li>
-							<li><a href="#">Separated link</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="span2">
 				<h2>Tabs</h2>
 			</div>
 			
@@ -152,6 +128,31 @@
 					<div class="tab-pane fade" id="dropdown1">Options</div>
 					<div class="tab-pane fade" id="dropdown2">Trade History</div>
 				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span2">
+				<h2>Dropdowns</h2>
+			</div>
+			
+			<div class="span8">
+				<ul class="nav nav-pills">
+					<li class="active"><a href="#">Regular link</a></li>
+					<li class="dropdown" id="menu1">
+						<a class="dropdown-toggle" href="#" data-toggle="dropdown" data-target="menu1">
+							Dropdown
+							<b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else here</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+					</li>
+				</ul>
 			</div>
 		</div>
 		
