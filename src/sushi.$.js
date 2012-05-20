@@ -128,7 +128,7 @@ define('sushi.$',
 				bonzoed[plugin] = Sushi.fn[plugin];
 			}
     		
-    		return Sushi.extend(bonzoed, {
+    		Sushi.extend(bonzoed, {
     		
     			is: function(s, r) {
 					var i, l
@@ -171,7 +171,7 @@ define('sushi.$',
 				},
 			
 			  	next: function () {
-					return $(bonzo(this).next().get(0))
+					return $(bonzo(this).next()[0]);
 				},
 				
 				offset: function () {
@@ -179,7 +179,7 @@ define('sushi.$',
 				},
 			
 			  	previous: function () {
-					return $(bonzo(this).previous().get(0))
+					return $(bonzo(this).previous()[0]);
 				},
 			
 			  	appendTo: function (t) {
@@ -305,6 +305,11 @@ define('sushi.$',
 				  	})
 				}
     		});
+    		
+    		// Aliases
+    		bonzoed.prev = bonzoed.previous;
+    		
+    		return bonzoed;
     	};
     	
     	// Helpers
