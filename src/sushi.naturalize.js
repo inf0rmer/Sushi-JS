@@ -19,7 +19,7 @@
         
         // Helpers
         
-        var _numberFormat( number, decimals, dec_point, thousands_sep ) {
+        var _numberFormat = function( number, decimals, dec_point, thousands_sep ) {
 			// http://kevin.vanzonneveld.net
 			// +   original by: Jonas Raoni Soares Silva (http://www.jsfromhell.com)
 			// +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -53,8 +53,8 @@
 				hundred: 'hundred',
 				thousand: 'thousand',
 				hundredThousand: 'hundred thousand',
-				million: 'million'
-				billion: 'billion'
+				million: 'million',
+				billion: 'billion',
 				trillion: 'trillion'
 			}
 			
@@ -262,6 +262,8 @@
 			separateNumber: separateNumber,
 			intToWord: intToWord
 		});
+        
+        return Sushi.naturalize;
         
         return Sushi.naturalize;
  	}
