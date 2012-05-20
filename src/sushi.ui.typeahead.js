@@ -9,6 +9,7 @@
  		'sushi.utils',
  		'sushi.utils.collection',
  		'sushi.utils.json',
+ 		'sushi.browser',
  		'sushi.$'
  	],
 
@@ -18,7 +19,7 @@
  	 * @namespace Sushi
  	 * @class ui.typeahead
  	 */
- 	function(Sushi, utils, collection, JSON, $) {
+ 	function(Sushi, utils, collection, JSON, browser, $) {
 		/* =============================================================
 		* bootstrap-typeahead.js v2.0.3
 		* http://twitter.github.com/bootstrap/javascript.html#typeahead
@@ -189,13 +190,10 @@
 				this.$element.on('blur',     utils.bind(this.blur, this))
 				this.$element.on('keypress', utils.bind(this.keypress, this))
 				this.$element.on('keyup',    utils.bind(this.keyup, this))
-				
-				this.$element.on('keydown', utils.bind(this.keypress, this))
-				/*
-				if ($.browser.webkit || $.browser.msie) {
-					this.$element.on('keydown', $.proxy(this.keypress, this))
+
+				if (browser.webkit || browser.msie) {
+					this.$element.on('keydown', utils.bind(this.keypress, this))
 				}
-				*/
 
 				this.$menu.on('li', 'click', utils.bind(this.click, this))
 				this.$menu.on('li', 'mouseover', utils.bind(this.mouseenter, this))
