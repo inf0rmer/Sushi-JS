@@ -113,7 +113,11 @@
 					, i
 				
 				if (scrollTop >= maxScroll) {
-					return activeTarget != (i = targets.last()[0])
+					i = targets.last();
+					
+					if (!i) i = [];
+					
+					return activeTarget != ( i )
 					&& this.activate ( i )
 				}
 				
