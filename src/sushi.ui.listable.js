@@ -97,7 +97,8 @@
 						return (pattern.test(model.get('title')) || pattern.test(model.get('description')));
 					}));
 					
-					that.trigger('search', results);
+					that.trigger('search', results, value);
+					that.$element.trigger('search', [results, value]);
 				}
 			});
 			

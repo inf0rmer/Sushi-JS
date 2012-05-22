@@ -878,8 +878,10 @@
 					  
 					  module("Sushi listable")
 					  
+					  var listableData = [{title: 'A horse', description: 'This is a cool pony'}, {title: 'Green eggs', description: 'Always go well with ham'}, {title: 'Princesses', description: 'Always getting in trouble'}, {title: 'Hakuna Matata', description: "It's a problem free philosophy!"}];
+					  
 					  test("Takes an array as source", function() {
-						var data = [{title: 'Item 1', description: 'Description 1'}, {title: 'Item 2', description: 'Description 2'}, {title: 'Item 3', description: 'Description 3'}, {title: 'Item 4', description: 'Description 4'}],
+						var data = listableData,
 							uses = [{type: 'list'}],
 							$listable = $('<div></div>').listable({source: data, uses: uses});					  	
 
@@ -889,7 +891,7 @@
 					  });
 					  
 					  test("Takes a Sushi Collection as source", function() {
-						var data = new Sushi.Collection([{title: 'Item 1', description: 'Description 1'}, {title: 'Item 2', description: 'Description 2'}, {title: 'Item 3', description: 'Description 3'}, {title: 'Item 4', description: 'Description 4'}]),
+						var data = new Sushi.Collection(listableData),
 							uses = [{type: 'list'}],
 							$listable = $('<div></div>').listable({source: data, uses: uses});					  	
 
@@ -897,6 +899,31 @@
 					  		deepEqual($listable.data('listable').source.at(2).toJSON(), data.at(2).toJSON(), 'data is the same on source array and on listable collection');
 					  		equals($listable.find('ul li').length, data.length);
 					  });
+					  
+					  test('Triggers search event', function() {
+					  	stop();
+					  	
+					  	var data = listableData,
+					  		uses = [{type: 'search'}, {type: 'list'}],
+							$listable = $('<div></div>').appendTo('#qunit-fixture').listable({source: data, uses: uses});
+							
+							expect(2);
+							
+					  		$listable.on('search', function() {
+					  			ok('search event was fired from triggering input change event');
+					  			start();
+					  		})
+					  		
+					  		$listable.find('input[type="search"]').val('Hakuna Matata').trigger('change')
+					  		$listable.unbind('search');
+					  		
+					  		$listable.on('search', function() {
+					  			ok('search event was fired from triggering input keyup');
+					  			start();
+					  		})
+					  		
+					  		$listable.find('input[type="search"]').trigger('keyup')
+					  })
 					  
 				});
 			}
