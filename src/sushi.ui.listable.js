@@ -12,7 +12,6 @@
  		'sushi.mvc.view',
  		'sushi.mvc.model',
  		'sushi.mvc.collection',
- 		'sushi.enumerable',
  		'sushi.utils',
  		'sushi.error',
  		'sushi.mvc.view.bindings'
@@ -24,7 +23,7 @@
  	 * @namespace Sushi
  	 * @class ui.listable
  	 */
- 	function(Sushi, Event, $, template, View, Model, Collection, Enumerable, utils, SushiError) {
+ 	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError) {
  		
  		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel;
  		
@@ -76,7 +75,8 @@
 				template: that.options.searchTemplate,
 				
 				events: {
-					'keyup': 'search'
+					'keyup input': 'search',
+					'change input': 'search'
 				},
 				
 				initialize: function(options) {
@@ -93,7 +93,7 @@
 						pattern = new RegExp(value, 'gi'),
 						results;
 					
-					results = new Enumerable(this.collection.filter(function(model){
+					results = new ListCollection(this.collection.filter(function(model){
 						return (pattern.test(model.get('title')) || pattern.test(model.get('description')));
 					}));
 					
