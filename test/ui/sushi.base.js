@@ -23,7 +23,8 @@ require([
 	'sushi.ui.collapse',
 	'sushi.ui.carousel',
 	'sushi.ui.typeahead',
-	'sushi.ui.scrollspy'
+	'sushi.ui.scrollspy',
+	'sushi.ui.listable'
 	],
 	function(Sushi) {
 		window.runTests(Sushi);

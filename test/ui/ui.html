@@ -723,7 +723,7 @@
 						ok($.fn.tooltip.Constructor.prototype.isHTML($('<div></div>')), 'correctly detected html')
 					  })
 					  
-					  module("Sushi  transition")
+					  module("Sushi transition")
 
 					  test("should be defined on Sushi support object", function () {
 						ok($.support.transition !== undefined, 'transition object is defined')
@@ -873,7 +873,30 @@
 						ok(changed, 'a change event was fired')
 				
 						typeahead.$menu.remove()
-					  })
+					  });
+					  
+					  
+					  module("Sushi listable")
+					  
+					  test("Takes an array as source", function() {
+						var data = [{title: 'Item 1', description: 'Description 1'}, {title: 'Item 2', description: 'Description 2'}, {title: 'Item 3', description: 'Description 3'}, {title: 'Item 4', description: 'Description 4'}],
+							uses = [{type: 'list'}],
+							$listable = $('<div></div>').listable({source: data, uses: uses});					  	
+
+					  		equals($listable.data('listable').source.length, data.length, 'source has the same length as data array');
+					  		deepEqual($listable.data('listable').source.at(2).toJSON(), data[2], 'data is the same on source array and on listable collection');
+					  		equals($listable.find('ul li').length, data.length);
+					  });
+					  
+					  test("Takes a Sushi Collection as source", function() {
+						var data = new Sushi.Collection([{title: 'Item 1', description: 'Description 1'}, {title: 'Item 2', description: 'Description 2'}, {title: 'Item 3', description: 'Description 3'}, {title: 'Item 4', description: 'Description 4'}]),
+							uses = [{type: 'list'}],
+							$listable = $('<div></div>').listable({source: data, uses: uses});					  	
+
+					  		equals($listable.data('listable').source.length, data.length, 'source has the same length as data array');
+					  		deepEqual($listable.data('listable').source.at(2).toJSON(), data.at(2).toJSON(), 'data is the same on source array and on listable collection');
+					  		equals($listable.find('ul li').length, data.length);
+					  });
 					  
 				});
 			}
