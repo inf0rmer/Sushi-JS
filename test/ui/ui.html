@@ -878,7 +878,7 @@
 					  
 					  module("Sushi listable")
 					  
-					  var listableData = [{title: 'A horse', description: 'This is a cool pony'}, {title: 'Green eggs', description: 'Always go well with ham'}, {title: 'Princesses', description: 'Always getting in trouble'}, {title: 'Hakuna Matata', description: "It's a problem free philosophy!"}];
+					  var listableData = [{title: 'A horse', description: 'This is a cool pony'}, {title: 'Green eggs', description: 'Always go well with ham'}, {title: 'Princesses', description: 'Always getting in trouble'}, {title: 'Hakuna Matata', description: "A problem free philosophy!"}];
 					  
 					  test("Takes an array as source", function() {
 						var data = listableData,
@@ -898,6 +898,16 @@
 					  		equals($listable.data('listable').source.length, data.length, 'source has the same length as data array');
 					  		deepEqual($listable.data('listable').source.at(2).toJSON(), data.at(2).toJSON(), 'data is the same on source array and on listable collection');
 					  		equals($listable.find('ul li').length, data.length);
+					  });
+					  
+					  test("Should get values from data api", function() {
+					  	var stringData = JSON.stringify(listableData),
+					  		$listable = $("<div data-provide='listable' data-uses='[{\"type\": \"list\"}]' data-source='" + stringData + "'></div>").listable(),
+					  		api = $listable.data('listable');
+					  	
+					  	equals(api.uses.length, 1, 'uses array has correct length');
+					  	equals(api.source.length, 4, 'source array has correct length');
+					  	
 					  });
 					  
 					  test('Triggers search event', function() {

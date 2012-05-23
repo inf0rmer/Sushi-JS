@@ -39,6 +39,10 @@
 			overflow: auto;
 			position: relative;
 		}
+		
+		.row {
+			margin-top: 50px;
+		}
 	</style>
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="50">
@@ -387,8 +391,7 @@
 			</div>
 			
 			<div class="span8">
-				<div class="listable">
-			
+				<div class="listable listable-striped" data-provide="listable" data-uses='[{"type": "title", "content": "A spiffy list"}, {"type": "search", "placeholder": "Type to search..."}, {"type": "list"}]' data-source='[{"title": "A horse", "description": "This is a cool pony"}, {"title": "Green eggs", "description": "Always go well with ham"}, {"title": "Princesses", "description": "Always getting in trouble"}, {"title": "Hakuna Matata", "description": "A problem free philosophy!"}]'>
 				</div>
 			</div>
 			

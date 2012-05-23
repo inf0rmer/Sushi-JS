@@ -14,6 +14,7 @@
  		'sushi.mvc.collection',
  		'sushi.utils',
  		'sushi.error',
+ 		'sushi.utils.json',
  		'sushi.mvc.view.bindings'
  	],
 
@@ -23,9 +24,9 @@
  	 * @namespace Sushi
  	 * @class ui.listable
  	 */
- 	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError) {
+ 	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON) {
  		
- 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel;
+ 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel;
  		
  		Listable = function(element, options) {
  		
@@ -33,9 +34,10 @@
  			
  			this.$element = $(element)
 			this.options = {};
-			Sushi.extend(this.options, Sushi.fn.listable.defaults);
 			Sushi.extend(this.options, options);
-			this.source = (typeof this.options.source === 'string') ? JSON.parse(this.options.source) : this.options.source
+			
+			this.source = (typeof this.options.source === 'string') ? JSON.parse(this.options.source) : this.options.source;
+			this.uses = (typeof this.options.uses === 'string') ? JSON.parse(options.uses) : this.options.uses;
 			
 			// Type inferring
 			isCollection = this.source instanceof Collection;
@@ -56,12 +58,44 @@
 				}
 			});
 			
+			TitleModel = new Sushi.Class( Model, {
+				constructor: function(attributes, options) {
+					TitleModel.Super.call(this, attributes, options);
+				},
+				
+				defaults: {
+					content: 'Title'
+				}
+			});
+			
 			ListCollection = Sushi.Class( Collection, {
 				constructor: function(models, options) {
 					ListCollection.Super.call(this, models, options);
 				},
 				
 				model: ItemModel
+			});
+			
+			TitleView = new Sushi.Class( View, {
+				constructor: function(options) {
+					TitleView.Super.call(this, options);
+					this._configure(options || {});
+				},
+				
+				tagName: 'header',
+				
+				template: that.options.titleTemplate,
+				
+				className: 'listable-header',
+				
+				initialize: function(options) {
+					this.data = options.data;
+				},
+				
+				render: function() {
+					this.$el.html(this.template(this.data));
+					return this;
+				}
 			});
 			
 			SearchView = new Sushi.Class( View, {
@@ -73,6 +107,8 @@
 				tagName: 'div',
 				
 				template: that.options.searchTemplate,
+				
+				className: 'listable-search',
 				
 				events: {
 					'keyup input': 'search',
@@ -112,6 +148,8 @@
 				
 				template: that.options.itemTemplate,
 				
+				className: 'listable-item',
+				
 				bindings: {
 					'text [data-binding="title"]': 'title',
 					'text [data-binding="description"]': 'description'
@@ -136,7 +174,7 @@
 				
 				tagName: (that.options.listType === 'unordered') ? 'ul' : 'ol',
 				
-				className: 'ui-listview',
+				className: 'listable-list unstyled',
 				
 				initialize: function(options) {
 					this.collection.bind('reset', this.addAll, this);
@@ -187,10 +225,15 @@
  				
  				var i, len, component, view, piece;
  				
- 				for (i=0, len=this.options.uses.length; i<len; i++) {
- 					component = this.options.uses[i];
+ 				for (i=0, len=this.uses.length; i<len; i++) {
+ 					component = this.uses[i];
  					
  					switch (component.type) {
+ 						case 'title':
+ 							view = new TitleView({data: component});
+ 							piece = view.render().el;
+ 							break;
+ 							
  						case 'search':
  							view = new SearchView({collection: this.source, data: component});
  							piece = view.render().el
@@ -216,10 +259,15 @@
         /* DROPDOWN PLUGIN DEFINITION
 		 * ========================== */
 	
-		Sushi.fn.listable = function (options) {
+		Sushi.fn.listable = function (opts) {
 			return this.each(function () {
 				var $this = $(this)
 					, data = $this.data('listable')
+					, options = {};
+					
+					Sushi.extend(options, Sushi.fn.listable.defaults)
+					Sushi.extend(options, $this.data())
+					Sushi.extend(options, opts);
 					
 					if (!data) $this.data('listable', (data = new Listable(this, options)))
 			});
@@ -229,6 +277,10 @@
 			source: [],
 			uses: [
 				{
+					type: 'title',
+					content: 'My List'
+				},
+				{
 					type: 'search',
 					placeholder: 'Search'
 				},
@@ -237,20 +289,26 @@
 				}
 			],
 			listType: 'unordered',
-			itemTemplate: template.compile( '<article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description">{{description}}</p> {{/if}}</article>' ),
+			titleTemplate: template.compile( '<h1 class="listable-title">{{content}}</h1>' ),
+			itemTemplate: template.compile( '<a href="http://google.com"><article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article></a>' ),
 			searchTemplate: template.compile( '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>' ),
 			emptyText: "No results"
 		}
 	
 		Sushi.fn.listable.Constructor = Listable
 		
+		 /* LISTABLE DATA-API
+		  * ============== */
+		
 		Sushi.ready(function () {
-			$('[data-provide="listable"]').on('focus.listable.data-api', function (e) {
-				var $this = $(this)
-				if ($this.data('listable')) retur
-				e.preventDefault();
-				$this.listable($this.data())
-			})
-		});
+			$('[data-provide="listable"]').each( function () {
+			  	var $this = $(this)
+					, data = {};
+				
+				Sushi.extend(data, $this.data());
+
+				$this.listable(data)
+			});
+		  })
  	}
  );
