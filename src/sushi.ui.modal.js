@@ -175,7 +175,12 @@
 			return this.each(function () {
 			  var $this = $(this)
 				, data = $this.data('modal')
-				, options = $.extend({}, $.fn.modal.defaults, $this.data(), typeof option == 'object' && option)
+				, options = {};
+				
+			  options = Sushi.extend(options, Sushi.fn.modal.defaults);
+			  options = Sushi.extend(options, $this.data());
+			  options = Sushi.extend(options, typeof option == 'object' && option);
+			  
 			  if (!data) $this.data('modal', (data = new Modal(this, options)))
 			  if (typeof option == 'string') data[option]()
 			  else if (options.show) data.show()
