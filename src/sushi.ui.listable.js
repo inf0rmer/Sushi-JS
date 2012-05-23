@@ -82,7 +82,7 @@
 					this._configure(options || {});
 				},
 				
-				tagName: 'header',
+				tagName: 'div',
 				
 				template: that.options.titleTemplate,
 				
