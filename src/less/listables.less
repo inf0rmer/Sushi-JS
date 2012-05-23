@@ -1,8 +1,15 @@
 // LISTABLES
 // ------
 
+@var baseColor = @gray;
+@var baseColorLight = @grayLight;
+@var baseColorDarker = @grayDarker;
+@var borderColor = @tableBorder;
+@var backgroundAccent = @tableBackgroundAccent;
+@var backgroundHover = @tableBackgroundHover;
+
 .listable {
-	border: 1px solid fade(@grayLight, 70%);
+	border: 1px solid fade(@baseColorLight, 70%);
 	.border-radius(4px);
 }
 
@@ -16,7 +23,7 @@
 
 .listable-list .listable-item {
 	padding: 10px;
-	border-top: 1px solid @tableBorder;
+	border-top: 1px solid @borderColor;
 	
 	.transition(.2s ease);	
 	.text-overflow();
@@ -28,19 +35,19 @@
 }
 
 .listable-striped .listable-item:nth-child(odd) {
-	background-color: @tableBackgroundAccent;
+	background-color: @backgroundAccent;
 }
 
 .listable-list .listable-item:hover {
-	background-color: @tableBackgroundHover
+	background-color: @backgroundHover
 }
 
 .listable-list .listable-item{
-	color: @grayDarker;
+	color: @baseColorDarker;
 	position: relative;
 	
 	a {
-		color: @grayDarker;
+		color: @baseColorDarker;
 		&:hover {
 			text-decoration: none;
 		}
@@ -58,7 +65,7 @@
 	font-size: @baseFontSize + 5;
 	font-weight: bold;
 	line-height: @baseLineHeight;
-	color: fade(@grayLight, 60%);
+	color: fade(@baseColorLight, 60%);
 	text-align: center;
 	
 	// Hover state
@@ -71,8 +78,8 @@
 
 
 .listable-header {
-	background-color: fade(@gray, 20%);
-	color: @gray;
+	background-color: fade(@baseColor, 20%);
+	color: @baseColor;
 	padding: 10px;
 	text-shadow: 1px 1px 0 #FFF;
 	
@@ -87,7 +94,7 @@
 }
 
 .listable-search {
-	background-color: fade(@gray, 10%);
+	background-color: fade(@baseColor, 10%);
 	padding: 10px;
 	
 	form, input {
