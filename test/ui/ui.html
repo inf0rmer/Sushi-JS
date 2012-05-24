@@ -935,6 +935,51 @@
 					  		$listable.find('input[type="search"]').trigger('keyup')
 					  })
 					  
+					  test('Can use custom Item Model, View, and template', function() {
+					  	var CustomModel = new Sushi.Class( Sushi.Model, {
+					  			constructor: function(attributes, options) {
+					  				CustomModel.Super.call(this, attributes, options);
+					  			},
+								defaults: {
+									'title': 'Custom title',
+									'field': 'Custom field'
+								}					  		
+							}),
+							customTemplate = '<strong class="customTitleClass" data-binding="title">{(title}}</strong><small data-binding="field">{{field}}</small>',
+							CustomView = new Sushi.Class( Sushi.View, {
+								constructor: function(options) {
+									CustomView.Super.call(this, options);
+									this._configure(options || {});
+								},
+								
+								tagName: 'div',
+								
+								template: Sushi.template.compile(customTemplate),
+								
+								className: 'listable-item',
+								
+								bindings: {
+									'text [data-binding="title"]': 'title',
+									'text [data-binding="field"]': 'field'
+								},
+								
+								initialize: function(options) {
+									this.model.bind('destroy', this.dealloc, this);
+									return this;
+								},
+								
+								render: function() {
+									this.$el.html( this.template( this.model.toJSON() ) );
+									return this.bindModel();
+								}
+							});
+							
+					  		$listable = $('<div></div>').listable({source: listableData, item: {Model: CustomModel, View: CustomView, template: customTemplate}});
+					  		
+					  		ok($listable.find('.customTitleClass').length > 0, 'Custom view with custom template');
+					  	
+					  });
+					  
 				});
 			}
 	</script>
