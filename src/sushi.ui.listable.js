@@ -15,6 +15,7 @@
  		'sushi.utils',
  		'sushi.error',
  		'sushi.utils.json',
+ 		'sushi.utils.performance',
  		'sushi.mvc.view.bindings'
  	],
 
@@ -24,7 +25,7 @@
  	 * @namespace Sushi
  	 * @class ui.listable
  	 */
- 	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON) {
+ 	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, performance) {
  		
  		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView;
  		
@@ -119,6 +120,8 @@
 				
 				initialize: function(options) {
 					this.data = options.data;
+					
+					this.search = utils.throttle(this.search, 500)
 				},
 				
 				render: function() {
