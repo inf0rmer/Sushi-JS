@@ -3,7 +3,7 @@
 
 @baseColor: @gray;
 @baseColorLight: @grayLight;
-@baseColorDarker: @grayDarker;
+@baseColorDarker: @gray;
 @borderColor: @tableBorder;
 @backgroundAccent: @tableBackgroundAccent;
 @backgroundHover: @tableBackgroundHover;
@@ -51,8 +51,14 @@
 		&:hover {
 			text-decoration: none;
 		}
+		
+		article {
+			max-width: 90%;
+		}
 	}
 }
+
+.listable-item
 
 .listable-item a:after {
 	content: '>';
