@@ -910,7 +910,7 @@
 					  	
 					  });
 					  
-					  test('Triggers search event', function() {
+					  asyncTest('Triggers search event', function() {
 					  	stop();
 					  	
 					  	var data = listableData,
@@ -934,7 +934,22 @@
 					  		
 					  		$listable.find('input[type="search"]').trigger('keyup')
 					  })
-					  
+
+					  test('Triggers click event on listable items', function() {
+					  	stop();
+					  	
+					  	var data = listableData,
+					  		uses = [{type: 'list'}],
+							$listable = $('<div></div>').listable({source: data, uses: uses});
+							
+					  		$listable.on('click', function() {
+					  			ok('click event was fired');
+					  			start();
+					  		})
+					  		
+					  		$listable.find('.listable-item').trigger('click')
+					  })
+
 					  test('Can use custom Item Model, View, and template', function() {
 					  	var CustomModel = new Sushi.Class( Sushi.Model, {
 					  			constructor: function(attributes, options) {
