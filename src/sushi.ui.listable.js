@@ -26,7 +26,7 @@
  	 */
  	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON) {
  		
- 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel;
+ 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView;
  		
  		Listable = function(element, options) {
  		
@@ -46,7 +46,7 @@
 				throw new SushiError('source must be a Sushi Collection or a simple array')
 			}
 			
-			ItemModel = new Sushi.Class( Model, {
+			ItemModel = this.options.item.Model || new Sushi.Class( Model, {
 				constructor: function(attributes, options) {
 					ItemModel.Super.call(this, attributes, options);
 				},
@@ -68,6 +68,8 @@
 				}
 			});
 			
+			TitleModel = this.options.title.Model || TitleModel;
+			
 			ListCollection = Sushi.Class( Collection, {
 				constructor: function(models, options) {
 					ListCollection.Super.call(this, models, options);
@@ -76,7 +78,7 @@
 				model: ItemModel
 			});
 			
-			TitleView = new Sushi.Class( View, {
+			TitleView = this.options.title.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					TitleView.Super.call(this, options);
 					this._configure(options || {});
@@ -84,7 +86,7 @@
 				
 				tagName: 'div',
 				
-				template: that.options.titleTemplate,
+				template: (typeof that.options.title.template === 'string') ? template.compile(that.options.title.template) : that.options.title.template,
 				
 				className: 'listable-header',
 				
@@ -98,7 +100,7 @@
 				}
 			});
 			
-			SearchView = new Sushi.Class( View, {
+			SearchView = this.options.search.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					SearchView.Super.call(this, options);
 					this._configure(options || {});
@@ -106,7 +108,7 @@
 				
 				tagName: 'div',
 				
-				template: that.options.searchTemplate,
+				template: (typeof that.options.search.template === 'string') ? template.compile(that.options.search.template) : that.options.search.template,
 				
 				className: 'listable-search',
 				
@@ -138,7 +140,7 @@
 				}
 			});
 			
-			ItemView = new Sushi.Class( View, {
+			ItemView = this.options.item.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					ItemView.Super.call(this, options);
 					this._configure(options || {});
@@ -146,7 +148,7 @@
 				
 				tagName: 'li',
 				
-				template: that.options.itemTemplate,
+				template: (typeof that.options.item.template === 'string') ? template.compile(that.options.item.template) : that.options.item.template,
 				
 				className: 'listable-item',
 				
@@ -166,7 +168,7 @@
 				}
 			});
 			
-			ListView = new Sushi.Class( View, {
+			ListView = this.options.list.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					ListView.Super.call(this, options);
 					this._configure(options || {});
@@ -289,9 +291,23 @@
 				}
 			],
 			listType: 'unordered',
-			titleTemplate: template.compile( '<h1 class="listable-title">{{content}}</h1>' ),
-			itemTemplate: template.compile( '<a href="http://google.com"><article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article></a>' ),
-			searchTemplate: template.compile( '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>' ),
+			title: {
+				View: TitleView,
+				Model: TitleModel,
+				template: template.compile( '<h1 class="listable-title">{{content}}</h1>' )
+			},
+			item: {
+				Model: ItemModel,
+				View: ItemView,
+				template: template.compile( '<a href="http://google.com"><article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article></a>' )
+			},
+			search: {
+				View: SearchView,
+				template: template.compile( '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>' )
+			},
+			list: {
+				View: ListView
+			},
 			emptyText: "No results"
 		}
 	
