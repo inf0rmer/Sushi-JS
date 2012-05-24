@@ -55,7 +55,8 @@
 				defaults: {
 					title: 'Title',
 					description: 'Description',
-					image: null
+					image: null,
+					link: null
 				}
 			});
 			
@@ -173,6 +174,9 @@
 				
 				render: function() {
 					this.$el.html( this.template( this.model.toJSON() ) );
+					
+					if (this.model.has('link')) this.$el.addClass('listable-item-interactive');
+					
 					return this.bindModel();
 				},
 				
@@ -323,7 +327,7 @@
 			item: {
 				Model: ItemModel,
 				View: ItemView,
-				template: template.compile( '<a href="http://google.com"><article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article></a>' )
+				template: template.compile( '{{#if link}}<a href="{{link}}">{{/if}}<article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article>{{#if link}}</a>{{/if}}' )
 			},
 			search: {
 				View: SearchView,
