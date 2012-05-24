@@ -155,6 +155,12 @@
 				
 				className: 'listable-item',
 				
+				events: {
+					'mouseenter': 'mouseenter',
+					'mouseleave': 'mouseleave',
+					'click': 'click'
+				},
+				
 				bindings: {
 					'text [data-binding="title"]': 'title',
 					'text [data-binding="description"]': 'description'
@@ -168,6 +174,21 @@
 				render: function() {
 					this.$el.html( this.template( this.model.toJSON() ) );
 					return this.bindModel();
+				},
+				
+				mouseenter: function() {
+					that.trigger('mouseenter');
+					that.$element.trigger('mouseenter');
+				},
+				
+				mouseleave: function() {
+					that.trigger('mouseleave');
+					that.$element.trigger('mouseleave');
+				},
+				
+				click: function() {
+					that.trigger('click');
+					that.$element.trigger('click');
 				}
 			});
 			
