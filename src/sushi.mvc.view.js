@@ -56,7 +56,7 @@ define('sushi.mvc.view',
 			
 			setElement: function(element, delegate) {
 				this.$el = $(element);
-			  	this.el = this.$el[0];
+			  	this.el = this.$el.get(0);
 			  	if (delegate !== false) this.delegateEvents();
 			  	return this;
 			},
