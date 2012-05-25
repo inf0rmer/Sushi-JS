@@ -44,8 +44,7 @@
 		var Collapse = function (element, options) {
 			this.$element = $(element)
 			this.options = {}
-			Sushi.extend(this.options, Sushi.fn.collapse.defaults);
-			Sushi.extend(this.options, options);
+			Sushi.extend(this.options, Sushi.fn.collapse.defaults, options);
 			
 			if (this.options.parent) {
 				this.$parent = $(this.options.parent)

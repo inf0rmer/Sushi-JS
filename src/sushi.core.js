@@ -66,31 +66,14 @@ define('sushi.core',
 		
 			return parent;			
 		},
-	
-		/**
-		 * Simple extending (shallow copying) utility.
-		 *
-		 * @method extend
-		 * @param {Object} obj Object to copy properties to
-		 * @param {Object} extension Object to copy properties from
-		 * @param {Boolean} override Should extend override existing properties?
-		 * @return {Object} Extended object
-		 */
-		extend = function(obj, extension, override) {
-			obj = obj || {};
-			extension = extension || {};
-			var prop;
-			if (override === false) {
-				for (prop in extension)
-					if (!(prop in obj))
-						obj[prop] = extension[prop];
-			} else {
-				for (prop in extension)
-					obj[prop] = extension[prop];
-						if (extension.toString !== Object.prototype.toString)
-							obj.toString = extension.toString;
+		
+		extend = function(obj) {
+			var args = Array.prototype.slice.call(arguments, 1)
+			for (var i=0, len=args.length; i<len; i++) {
+				for (var prop in args[i]) {
+					obj[prop] = args[i][prop];
+			  	}
 			}
-			
 			return obj;
 		},
 		
@@ -115,12 +98,12 @@ define('sushi.core',
 				Class.prototype = new SuperClassEmpty();
 				Class.prototype.constructor = Class;
 				Class.Super = SuperClass;
-				Sushi.extend(Class, SuperClass, false);
+				Sushi.extend(Class, SuperClass);
 			}
 		
 			if (hasImplementClasses)
 				for (var i = 1; i < len - 1; i++)
-					Sushi.extend(Class.prototype, arguments[i].prototype, false);    
+					Sushi.extend(Class.prototype, arguments[i].prototype);    
 		
 			Sushi.extendClass(Class, body);
 		
@@ -131,7 +114,6 @@ define('sushi.core',
 		 * @method extendClass
 		 * @param {Function} Class the Class to extend
 		 * @param {Object} extension Properties to extend the class with
-		 * @param {Boolean} override Should override existing properties?
 		 * 
 		 * Usage:
 		 *	 extendClass(Person, {
@@ -146,12 +128,12 @@ define('sushi.core',
 		 *		  }
 		 *	});
 		 */
-		extendClass = function(Class, extension, override) {
+		extendClass = function(Class, extension) {
 			if (extension.STATIC) {
-				extend(Class, extension.STATIC, override);
+				extend(Class, extension.STATIC);
 				delete extension.STATIC;
 			}
-			Sushi.extend(Class.prototype, extension, override)
+			Sushi.extend(Class.prototype, extension)
 		}
 	
     	// Sync global Sushi variable to namespaced one

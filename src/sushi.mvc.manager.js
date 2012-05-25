@@ -180,9 +180,7 @@
 			this._setup.apply(this, arguments);
 		};
 		
-		Sushi.extend(Manager.prototype, Events);
-		
-		Sushi.extend(Manager.prototype, {
+		Sushi.extend(Manager.prototype, Events, {
 		
 			_setup: function () {
 				this.views = [];

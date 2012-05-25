@@ -42,8 +42,7 @@
 		var Button = function (element, options) {
 			this.$element = $(element)
 			this.options = {};
-			Sushi.extend(this.options, Sushi.fn.button.defaults);
-			Sushi.extend(this.options, options);
+			Sushi.extend(this.options, Sushi.fn.button.defaults, options);
 		}
 		
 		Button.prototype.setState = function (state) {

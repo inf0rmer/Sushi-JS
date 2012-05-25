@@ -177,9 +177,7 @@
 				, data = $this.data('modal')
 				, options = {};
 				
-			  options = Sushi.extend(options, Sushi.fn.modal.defaults);
-			  options = Sushi.extend(options, $this.data());
-			  options = Sushi.extend(options, typeof option == 'object' && option);
+			  options = Sushi.extend(options, Sushi.fn.modal.defaults, $this.data(), typeof option == 'object' && option);
 			  
 			  if (!data) $this.data('modal', (data = new Modal(this, options)))
 			  if (typeof option == 'string') data[option]()
@@ -207,8 +205,7 @@
 				, option
 				, data = {};
 				
-				Sushi.extend(data, $target.data());
-				Sushi.extend(data, $this.data());
+				Sushi.extend(data, $target.data(), $this.data());
 				
 				$target.data('modal') ? 'toggle' : data
 

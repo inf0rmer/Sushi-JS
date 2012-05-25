@@ -34,8 +34,7 @@
  			var that = this;
  			
  			this.$element = $(element)
-			this.options = {};
-			Sushi.extend(this.options, options);
+			this.options = Sushi.extend({}, this.options, options);
 			
 			this.source = (typeof this.options.source === 'string') ? JSON.parse(this.options.source) : this.options.source;
 			this.uses = (typeof this.options.uses === 'string') ? JSON.parse(options.uses) : this.options.uses;
@@ -295,9 +294,7 @@
 					, data = $this.data('listable')
 					, options = {};
 					
-					Sushi.extend(options, Sushi.fn.listable.defaults)
-					Sushi.extend(options, $this.data())
-					Sushi.extend(options, opts);
+					Sushi.extend(options, Sushi.fn.listable.defaults, opts, $this.data());
 					
 					if (!data) $this.data('listable', (data = new Listable(this, options)))
 			});

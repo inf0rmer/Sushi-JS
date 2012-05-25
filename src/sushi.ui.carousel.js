@@ -152,8 +152,7 @@
 					, data = $this.data('carousel')
 					, options = (function(){
 						var opts = {};
-						Sushi.extend(opts, Sushi.fn.carousel.defaults);
-						Sushi.extend(opts, typeof option == 'object' && option);
+						Sushi.extend(opts, Sushi.fn.carousel.defaults, typeof option == 'object' && option);
 						return opts;
 					}());	
 					
@@ -182,8 +181,7 @@
 				, options = (function() {
 					var opts = {};
 					if (!$target.data('modal')) {
-						Sushi.extend(opts, $target.data());
-						Sushi.extend(opts, $this.data());
+						Sushi.extend(opts, $target.data(), $this.data());
 					}
 					return opts;
 				}());

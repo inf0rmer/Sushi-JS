@@ -313,7 +313,7 @@
 				body.removeChild( container );
 				marginDiv = div = container = null;
 		
-				$.extend( support, offsetSupport );
+				Sushi.extend( support, offsetSupport );
 			});
 		
 			return support;

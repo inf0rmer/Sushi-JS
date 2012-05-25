@@ -410,8 +410,8 @@
 					});
 					
 					ok(stage instanceof Sushi.manager.Stage, 'Stage was created');
-					equals(stage.name, 'test-stage', 'Stage has correct name');
-					equals(stage.el, $('#stage-body').get(0), 'Stage has correct element');
+					equals(stage.options.name, 'test-stage', 'Stage has correct name');
+					equals($(stage.options.el).get(0), stage.$el.get(0), 'Stage has correct element');
 				});
 				
 				test('Can create a Panel', function() {
@@ -427,7 +427,7 @@
 					});
 					
 					ok(panel instanceof Sushi.manager.Panel, 'Panel was created');
-					equals(panel.name, 'test-panel', 'Panel has correct name');
+					equals(panel.options.name, 'test-panel', 'Panel has correct name');
 				})
 			
 			}());

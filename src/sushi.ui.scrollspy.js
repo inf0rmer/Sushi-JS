@@ -48,8 +48,7 @@
 				, $element = $(element).is('body') ? $(window) : $(element)
 				, href
 			this.options = {}
-			this.options = Sushi.extend(this.options, Sushi.fn.scrollspy.defaults);
-			this.options = Sushi.extend(this.options, options)
+			this.options = Sushi.extend(this.options, Sushi.fn.scrollspy.defaults, options);
 			this.$scrollElement = $element
 			if (this.$scrollElement.get(0) === window) {
 				$(document).on('scroll.scroll.data-api', process)

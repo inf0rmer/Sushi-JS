@@ -45,8 +45,7 @@
 		var Typeahead = function (element, options) {
 			this.$element = $(element)
 			this.options = {};
-			Sushi.extend(this.options, Sushi.fn.typeahead.defaults);
-			Sushi.extend(this.options, options);
+			Sushi.extend(this.options, Sushi.fn.typeahead.defaults, options);
 			this.matcher = this.options.matcher || this.matcher
 			this.sorter = this.options.sorter || this.sorter
 			this.highlighter = this.options.highlighter || this.highlighter
@@ -73,8 +72,7 @@
 			
 			, show: function () {			
 				var pos = {};
-				Sushi.extend(pos, this.$element.offset());
-				Sushi.extend(pos, {
+				Sushi.extend(pos, this.$element.offset() , {
 					height: this.$element[0].offsetHeight
 				});
 				

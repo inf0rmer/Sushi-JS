@@ -50,9 +50,8 @@
 		/* NOTE: POPOVER EXTENDS SUSHI.UI.TOOLTIP.js
 		   ========================================== */
 		Popover.prototype = {}
-		Sushi.extend(Popover.prototype, Sushi.fn.tooltip.Constructor.prototype)
-		
-		Sushi.extend(Popover.prototype, {
+		Sushi.extend(Popover.prototype, Sushi.fn.tooltip.Constructor.prototype
+		, {
 		
 			Constructor: Popover
 		
@@ -108,8 +107,7 @@
 		
 		Sushi.fn.popover.Constructor = Popover
 		
-		Sushi.fn.popover.defaults = {}
-		Sushi.extend(Sushi.fn.popover.defaults, Sushi.fn.tooltip.defaults)
+		Sushi.fn.popover.defaults = Sushi.extend({}, Sushi.fn.popover.defaults, Sushi.fn.tooltip.defaults)
 		
 		Sushi.extend(Sushi.fn.popover.defaults, {
 			placement: 'right'

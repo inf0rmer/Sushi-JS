@@ -74,9 +74,7 @@
 		
 		  , getOptions: function (options) {			  
 			  var opts = {}
-			  Sushi.extend(opts, Sushi.fn[this.type].defaults);
-			  Sushi.extend(opts, options);
-			  Sushi.extend(opts, this.$element.data());
+			  Sushi.extend(opts, Sushi.fn[this.type].defaults, options, this.$element.data());
 			  options = opts;
 		
 			  if (options.delay && typeof options.delay == 'number') {

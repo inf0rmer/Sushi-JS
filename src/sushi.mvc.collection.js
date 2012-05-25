@@ -114,6 +114,30 @@
 				return this;
 			},
 			
+			push: function(model, options) {
+				model = this._prepareModel(model, options);
+				this.add(model, options);
+				return model;
+			},
+
+			pop: function(options) {
+				var model = this.at(this.length - 1);
+				this.remove(model, options);
+				return model;
+			},
+
+			unshift: function(model, options) {
+				model = this._prepareModel(model, options);
+				this.add(model, Sushi.extend({at: 0}, options));
+				return model;
+			},
+
+			shift: function(options) {
+				var model = this.at(0);
+				this.remove(model, options);
+				return model;
+			},
+			
 			get: function(id) {
 				if (id == null) return null;
 			  	return this._byId[id.id != null ? id.id : id];

@@ -54,7 +54,7 @@ define('sushi.mvc.model',
 				if (options && options.parse) attributes = this.parse(attributes);
 				
 				if (defaults = getValue(this, 'defaults')) {				  	
-				  	Sushi.extend(attributes, defaults, false);
+				  	attributes = Sushi.extend({}, defaults, attributes);
 				}
 				
 				this.attributes = {};
@@ -265,7 +265,7 @@ define('sushi.mvc.model',
 				
 				options = options ? collection.clone(options) : {};
 				if (options.wait) current = collection.clone(this.attributes);
-				var silentOptions = Sushi.extend(options, {silent: true});
+				var silentOptions = Sushi.extend({}, options, {silent: true});
 				
 				if (attrs && !this.set(attrs, options.wait ? silentOptions : options)) {
 					return false;
@@ -277,7 +277,10 @@ define('sushi.mvc.model',
 			  	
 			  	options.success = function(resp, status, xhr) {
 					var serverAttrs = model.parse(resp, xhr);
-					if (options.wait) serverAttrs = Sushi.extend(attrs || {}, serverAttrs);
+					if (options.wait) {
+						delete options.wait;
+						serverAttrs = Sushi.extend(attrs || {}, serverAttrs);
+					}
 					if (!model.set(serverAttrs, options)) return false;
 					if (success) {
 					  	success(model, resp);
@@ -357,7 +360,7 @@ define('sushi.mvc.model',
 			 * @return {Model} Clone of this Model's instance
 			 */
 			clone: function() {
-				return new this.constructor(this);
+				return new this.constructor(this.attributes);
 			},
 			
 			/**
@@ -461,7 +464,7 @@ define('sushi.mvc.model',
 			 */
 			_validate: function(attrs, options) {
 			  	if (options.silent || !this.validate) return true;
-			  	attrs = Sushi.extend(this.attributes, attrs);
+			  	attrs = Sushi.extend({}, this.attributes, attrs);
 			  	
 			  	var error = this.validate(attrs, options);
 			  	if (!error) return true;
