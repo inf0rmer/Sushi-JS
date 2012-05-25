@@ -389,6 +389,49 @@
 				equals(remaining[0].get('text'), 'Pick up laundry', 'list.remaining()[0] model is correct');
 				equals(done[0].get('text'), 'Take a shower', 'list.done()[0] model is correct');
 			});
+			
+			(function() {
+			
+				var Stage, stage;
+			
+				module('Manager');
+				test('Can create a Stage', function() {
+					Stage = new Sushi.Class(Sushi.manager.Stage, {
+						constructor: function(options) {
+							Stage.Super.call(this, options);
+						},
+						
+						skeleton: Sushi.template.compile('<article class="viewport"></article>')
+					});
+					
+					stage = new Stage({
+						name: 'test-stage',
+						el: '#stage-body'
+					});
+					
+					ok(stage instanceof Sushi.manager.Stage, 'Stage was created');
+					equals(stage.name, 'test-stage', 'Stage has correct name');
+					equals(stage.el, $('#stage-body').get(0), 'Stage has correct element');
+				});
+				
+				test('Can create a Panel', function() {
+					var Panel = new Sushi.Class(Sushi.manager.Panel, {
+						constructor: function(options) {
+							Panel.Super.call(this, options);
+						}
+					}),
+					
+					panel = new Panel({
+						name: 'test-panel',
+						stage: stage
+					});
+					
+					ok(panel instanceof Sushi.manager.Panel, 'Panel was created');
+					equals(panel.name, 'test-panel', 'Panel has correct name');
+				})
+			
+			}());
+			
 		}
 	</script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
@@ -399,6 +442,8 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
+	
+	<div id="stage-body"></div>
 	
 	<script id="meal-log" type="text/template">
 		<h1 class="name"></h1>
