@@ -1,0 +1,236 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Sushi JS GFX Visual Test Suite</title>
+	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
+	<script>
+		require.config({
+			baseUrl: '../../src'
+		});
+		
+		window.runTests = function() {
+			$.ready(function() {
+
+				 $("#container").gfxPopIn({
+				   scale: ".8"
+				 });
+				 
+				 $(".about").on('click', function() {
+				   return $.gfxOverlay("#aboutText", {
+					 css: {
+					   width: 300,
+					   height: 130
+					 }
+				   });
+				 });
+				 
+				 
+				 $("#shake").on('click', function() {
+				   return $(this).gfxShake();
+				 });
+				 
+				 $("#explode").on('click', function() {
+				   $(this).gfxExplodeOut({
+					 reset: false
+				   })
+				 setTimeout(function() {
+				 	$('#explode').gfxExplodeIn();
+				 }, 1000)
+				 });
+				 
+				 $("#cube").gfxCube({
+				   width: 200,
+				   height: 100
+				 });
+				 
+				 $("#cube").on('click', function() {
+					return $("#cube").trigger("cube", ["right"]);
+				  });
+				 
+				 $("#main .download").on('click', function() {
+				   return $("#cube").trigger("cube", "right");
+				 });
+				 
+				 $("#main .back").on('click', function() {
+				   return $("#cube").trigger("cube", "front");
+				 });
+
+  				$("#flip").on('click', function() {
+					return $(this).trigger("flip");
+				});
+				$('#flip').gfxFlip();
+				
+			});
+		}
+	</script>
+	<style>
+		html, body {
+		  height: 100%;
+		  overflow: hidden;
+		}
+		
+		body {
+		  margin: 0;
+		  font: 15px 'Helvetica Neue',Helvetica,Arial,sans-serif;
+		  background: -webkit-gradient(linear, left top, left bottom, from(#555), to(#222));
+		  background: -moz-linear-gradient(top, #555, #222);
+		  background: linear-gradient(top, #555, #222);
+		  color: #666;
+		}
+		
+		h1, h2, h3 {
+		  color: #444;
+		  font-size: 1.3em;
+		  font-weight: normal;
+		  padding: 0 30px;
+		  margin: 20px 0 5px 0;
+		}
+		
+		h1 {
+		  margin: 20px 0 10px 0;
+		}
+		
+		a {
+		  color: #444;
+		  cursor: pointer;
+		}
+		
+		#container {
+		  width: 100%;
+		  height: 100%;
+		}
+		
+		#inner {
+		  margin: 10% auto;
+		  width: 900px;
+		  position: relative;
+		}
+		
+		.box {
+		  background: #E3E3E3;
+		  border: 1px solid #FFF;
+		  text-shadow: #FFF 0px 1px 1px;
+		  font-size: 13px;
+		  -webkit-box-shadow: rgba(0, 0, 0, 1) 0px 0px 2px;
+		  -moz-box-shadow: rgba(0, 0, 0, 1) 0px 0px 2px;
+		  box-shadow: rgba(0, 0, 0, 1) 0px 0px 2px;
+		  -webkit-border-radius: 2px;
+		  -moz-border-radius: 2px;
+		  border-radius: 2px;
+		}
+		
+		#main {
+		  float: left;
+		  width: 500px;
+		}
+		
+		#main pre {
+		  padding: 0 30px;
+		  margin: 10px 0;    
+		}
+		
+		#main p {
+		  padding: 0 30px;
+		  margin: 5px 0;
+		  line-height: 1.5;
+		}
+		
+		#main .about {
+		  float: left;
+		}
+		
+		#main .download {
+		  float: right;
+		}
+		
+		#main footer {
+		  position: absolute;
+		  bottom: 15px;
+		  left: 0; right: 0;
+		  display: block;
+		  padding: 0 30px;
+		  line-height: 1.5;
+		}
+		
+		#main .twitter-share-button {
+		  position: absolute;
+		  right: 10px;
+		  top: 5px;
+		}
+		
+		#examples {
+		  float: left;
+		  margin-left: 20px;
+		  width: 300px;
+		  padding-top: 15px;
+		}
+		
+		#examples h2 {
+		  padding: 0;
+		  text-align: center;
+		  cursor: pointer;
+		  margin: 45px 0;
+		}
+		
+		#examples .item {
+		  float: left;
+		  margin: 0 0 20px 20px;
+		  width: 120px;
+		  height: 120px;
+		  cursor: pointer;
+		}
+		
+		#boxes {
+		  margin: 10% auto;
+		  width: 400px;
+		  height: 400px;
+		}
+		
+		#gfxOverlayPanel {
+		  margin: 10% auto;
+		  background: #E3E3E3;
+		  border: 1px solid #FFF;
+		  -webkit-border-radius: 2px;
+		  -moz-border-radius: 2px;
+		  border-radius: 2px;
+		  -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.4);
+		  -moz-box-shadow: 0 0 20px rgba(0,0,0,0.4);
+		  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+		}
+		
+		#gfxOverlayPanel p {
+		  padding: 0 30px;
+		  margin: 5px 0;
+		  line-height: 1.5;
+		}
+		
+		#unsupported {
+		  text-align: center;
+		  display: none;
+		  color: #FFF;
+		  text-shadow: 0 -1px 0 #000;
+		  margin: 20px 0;
+		}
+		
+		#unsupported h2 {
+		  color: #FFF;
+		}
+	</style>
+</head>
+<body>
+<div id="container">
+	<div id="examples">
+		<div id="flip" class="item">
+		  <div class="box front"><h2>Flip</h2></div>
+		  <div class="box back"><h2>Flipped!</h2></div>
+		</div>
+		
+		<div id="explode" class="box item"><h2>Explode</h2></div>
+		
+		<div id="shake" class="box item"><h2>Shake</h2></div>
+		
+		
+	</div>
+</div>
+</body>
+</html>
