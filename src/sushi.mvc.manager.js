@@ -121,6 +121,116 @@
 			};
 		};
 		
+		// The transitions mixin contains functions and objects needed for
+		// doing transition effects when Panel Views are activated/deactivated.
+		// There are default transitions provided, but you can add your own
+		// by using the `addTransition` method.  When adding a new transition,
+		// it must have a definition under `effects` and `reverseEffects` objects
+		// of the Panel.  It must also take in an arugment `callback`, which
+		// is a function that will be called once the transition is complete.
+		// Check out the default transitions code below for an example of how to setup
+		// your own transitions.  
+		// Note that if jQuery is used, the default transitions  
+		// require GFX (http://maccman.github.com/gfx/), or if Zepto is used then
+		// Zepto-GFX (https://github.com/gobhi/zepto-gfx).
+		//
+		transitions = function (obj) {
+		
+			// Animation options for the default transitions.
+			var effectOptions = {
+				duration: 450,
+				easing: 'cubic-bezier(.25, .1, .25, 1)'
+			},
+		
+			// Helper function to handle the transitions for the default 
+			// effects.
+			handleTransition = function (that, anim, options, callback) {
+			  
+				var l = that.transitionBindings.length,
+					// Helper function to animate a single element.
+					animate = function (container, ops, index) {
+			
+						if (!$.fn[anim]) throw new SushiError('$.fn.' + anim + ' is not available');
+					
+						// Using Zepto-GFX.  Only call the callback function if this is 
+						// the last animation.
+						(index === l-1) ? container[anim](ops, callback) : container[anim](ops);
+					};
+			  
+				// Animate each element.
+				collection.each(that.transitionBindings, function(elm, index) {
+					var container = that.$(elm);
+					if (container.length === 0)
+				  		throw new SushiError('The container element to animate is not availabe in this view.');
+				
+					animate(container, options, index);
+			  	});
+			};
+		
+			// The default element(s) in the Panel to animate for the transitions.
+			// An array of elements/selectors of the form 
+			// `['.header', '.container', '.footer', ...]`.  Each element/selector
+			// in the `transitionBindings` array represents a child DOM element
+			// within the Panel that is to be animated.  If `transitionBindings`
+			// is not overridden, the default child element that will be animated
+			// in the Panel View is `.container`.
+			obj.transitionBindings = ['.container'];
+		
+			// Transition effects for activation.
+			obj.effects = {
+			  
+				// Slide in from the left.
+				left: function (callback) {
+					var $el = $(this.el),
+						options = Sushi.extend({}, effectOptions, {direction: 'left'})
+				  
+					handleTransition(this, 'gfxSlideIn', options, callback);
+				},
+			
+				// Slide in from the right.
+				right: function (callback) {
+					var $el = $(this.el),
+						options = Sushi.extend({}, effectOptions, {direction: 'right'});
+				   
+					handleTransition(this, 'gfxSlideIn', options, callback);
+				}
+			};
+		
+		
+			// Transition effects for deactivation.
+			obj.reverseEffects = { 
+				// Reverse transition for the slide in from 
+				// left: slide out to the right.
+				left: function (callback) {
+					var $el = $(this.el),
+						options = Sushi.extend({}, effectOptions, {direction: 'right'});
+				 
+					handleTransition(this, 'gfxSlideOut', options, callback);
+			  	},
+			  
+			  	// Reverse transition for the slide in from 
+			  	// right: slide out to the left.
+			  	right: function (callback) {
+					var $el = $(this.el),
+						options = Sushi.extend({}, effectOptions, {direction: 'left'});
+				 
+					handleTransition(this, 'gfxSlideOut', options, callback);
+				}
+			};
+		
+			// Add a new transition.  The `transition` argument is an object as follows:
+			// `transition.effects` - Object that contains the activation transitions to be added.
+			// `transition.reverseEffects` - Object that contains the deactivation transitions.
+			// See the default transition effects defined above for an example.
+			obj.addTransition = function (transition) {
+				  if (!transition.effects) throw new SushiError('transition.effects is not set.');
+				  if (!transition.reverseEffects) throw new SushiError('transition.reverseEffects is not set.');
+				  Sushi.extend(this.effects, transition.effects);
+				  Sushi.extend(this.reverseEffects, transition.reverseEffects);
+			};
+		
+		};
+		
 		
 		// The state mixin contains methods used by the Manager to handle
 		// activating/deactivating the Views it manages.
