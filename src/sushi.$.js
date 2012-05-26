@@ -13,7 +13,6 @@ define('sushi.$',
     	'sushi.qwery',
     	'sushi.bonzo',
     	'sushi.bean',
-    	'sushi.morpheus',
     	'sushi.ajax'
     ],
     
@@ -23,35 +22,11 @@ define('sushi.$',
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, utils, collection, support, qwery, bonzo, bean, morpheus, ajax) {    	
+    function(Sushi, utils, collection, support, qwery, bonzo, bean, ajax) {    	
     	var $;
     	
     	bonzo.setQueryEngine(qwery);
     	bean.setSelectorEngine(qwery);
-    	
-    	function _parseAnimationDuration(d) {
-    		if (typeof d === 'string') {
-				switch (d) {
-					case 'fast':
-						d = 500;
-						break;
-					
-					case 'normal':
-						d = 1000;
-						break;
-					
-					case 'slow':
-						d = 2000;
-						break;
-					
-					default:
-						d = 1000;
-						break;
-				}
-			}
-			
-			return d;
-    	}
     	
     	$ = function(selector, context) {
     		var q,
@@ -276,33 +251,9 @@ define('sushi.$',
 						return $(offsetParent);
 					});
 				},
-			  	
-    			animate: function (options) {
-    				if (options && options.duration) {
-    					options.duration = _parseAnimationDuration(options.duration);
-    				}
-    				
-				  	return morpheus(this, options)
-				},
-			  	
-			  	fadeIn: function (d, fn) {
-			  		$(this).show().css({opacity: 0})
-				  	return morpheus(this, {
-					  	duration: _parseAnimationDuration(d),
-						opacity: 1,
-						complete: fn
-				  	})
-				},
 				
-				fadeOut: function (d, fn) {
-					var $self = $(this);
-				  	return morpheus(this, {
-					  	duration: _parseAnimationDuration(d),
-						opacity: 0,
-						complete: function() {
-							$self.hide()
-						}
-				  	})
+				toggle: function(setting){
+					return (setting === undefined ? this.css("display") == "none" : setting) ? this.show() : this.hide()
 				}
     		});
     		

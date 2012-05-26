@@ -1,14 +1,14 @@
 define(["require", "exports", "module"], function(require, exports, module) {
 /*!
-  * Morpheus - A Brilliant Animator
-  * https://github.com/ded/morpheus - (c) Dustin Diaz 2011
+  * Bonzo: DOM Utility (c) Dustin Diaz 2012
+  * https://github.com/ded/bonzo
   * License MIT
   */
-!function (name, definition) {
-  if (typeof define == 'function') define(name, definition)
-  else if (typeof module != 'undefined') module.exports = definition()
-  else this[name] = definition()
-}('morpheus', function () {
+(function (name, definition, context) {
+  if (typeof module != 'undefined' && module.exports) module.exports = definition()
+  else if (typeof context['define'] != 'undefined' && context['define'] == 'function' && context['define']['amd']) define(name, definition)
+  else context[name] = definition()
+})('morpheus', function() {
 
   var context = this
     , doc = document
@@ -385,6 +385,6 @@ define(["require", "exports", "module"], function(require, exports, module) {
 
   return morpheus
 
-})
+}, this)
 
 });
