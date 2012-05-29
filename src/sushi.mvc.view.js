@@ -119,7 +119,7 @@ define('sushi.mvc.view',
 					if (this.id) attrs.id = this.id;
 					if (this.className) attrs['class'] = this.className;
 					this.setElement(this.make(this.tagName, attrs));
-			  	} else if (utils.isString(this.el)) {
+			  	} else {
 					this.setElement(this.el, false);
 			  	}
 			}
