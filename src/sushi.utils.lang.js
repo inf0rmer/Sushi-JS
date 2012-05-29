@@ -36,12 +36,18 @@ define('sushi.utils.lang',
 		
 		camelCase = function(str) {
 			return str.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
-		}
+		},
+		
+		decamelize = function(str, delimiter) {
+			delimiter = (delimiter === undefined) ? "_" : delimiter;
+            return str.replace(/([A-Z])/g, delimiter + '$1').toLowerCase();
+		},
 		
 		_publicAPI = {
 			replaceAccents: replaceAccents,
-			camelCase: camelCase
-		};			
+			camelCase: camelCase,
+			decamelize: decamelize
+		};
 
 		Sushi.extend(Sushi.utils, _publicAPI);
 		
