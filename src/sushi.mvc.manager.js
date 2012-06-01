@@ -12,10 +12,7 @@
  		'sushi.event',
  		'sushi.template',
  		'sushi.error',
- 		'sushi.mvc.model',
- 		'sushi.mvc.view',
- 		'sushi.mvc.collection',
- 		'sushi.mvc.router'
+ 		'sushi.mvc',
  	],
 
  	/**
@@ -24,7 +21,7 @@
  	 * @namespace Sushi
  	 * @class mvc.manager
  	 */
-	function(Sushi, utils, collection, $, Events, template, SushiError, Model, View, Collection, Router) {
+	function(Sushi, utils, collection, $, Events, template, SushiError, MVC) {
         Sushi.namespace('manager', Sushi);
         
          //Initial Setup
@@ -352,7 +349,7 @@
 		// The Stage's Panels can then transition in and out to show
 		// different parts of the application.
 		//
-		Stage = new Sushi.Class(View, {
+		Stage = new Sushi.Class(MVC.View, {
 			constructor: function(options) {
 				this._setup(options, 'stage');
 				Stage.Super.call(this, options);
@@ -410,7 +407,7 @@
 				$(this.el).addClass('stage').html(this.skeleton());
 			  
 				// Create a Router if one is not provided.
-				this.router = options.router || new Router();
+				this.router = options.router || new MVC.Router();
 			}
 		});
 		
@@ -427,7 +424,7 @@
 		// managing and activating/deactivating the Panel.
 		// Usually only one Panel is shown in the application at one time.
 		//
-		Panel = new Sushi.Class(View, {
+		Panel = new Sushi.Class(MVC.View, {
 			constructor: function(options) {
 				this._setup(options, 'panel');
 				Panel.Super.call(this, options);
