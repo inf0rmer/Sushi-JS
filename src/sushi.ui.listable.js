@@ -27,7 +27,7 @@
  	 */
  	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, performance) {
  		
- 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView;
+ 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView;
  		
  		Listable = function(element, options) {
  		
@@ -101,10 +101,30 @@
 				}
 			});
 			
+			EmptyView = this.options.empty.View || new Sushi.Class( View, {
+				constructor: function(options) {
+					EmptyView.Super.call(this, options);
+				},
+				
+				tagName: 'li',
+				
+				template: (typeof that.options.empty.template === 'string') ? template.compile(that.options.empty.template) : that.options.empty.template,
+				
+				className: 'listable-item empty',
+				
+				initialize: function(options) {
+					this.data = options && options.data || {};
+				},
+				
+				render: function() {
+					this.$el.html( this.template(this.data) );
+					return this;
+				}
+			});
+			
 			SearchView = this.options.search.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					SearchView.Super.call(this, options);
-					this._configure(options || {});
 				},
 				
 				tagName: 'div',
@@ -230,7 +250,7 @@
 					if (collection.length) {
 						collection.each( this.addOne, this );
 					} else {
-						this.$el.html('<li class="empty">' + that.options.emptyText + '</li>')
+						this.$el.html('').append( new EmptyView().render().el);
 					}
 					return this;
 				},
@@ -333,7 +353,10 @@
 			list: {
 				View: ListView
 			},
-			emptyText: "There are no items to show here."
+			empty: {
+				View: EmptyView,
+				template: template.compile( 'There are no items here.' )
+			}
 		}
 	
 		Sushi.fn.listable.Constructor = Listable
