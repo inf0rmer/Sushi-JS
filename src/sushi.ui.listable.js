@@ -333,7 +333,7 @@
 			list: {
 				View: ListView
 			},
-			emptyText: "No results"
+			emptyText: "There are no items to show here."
 		}
 	
 		Sushi.fn.listable.Constructor = Listable
