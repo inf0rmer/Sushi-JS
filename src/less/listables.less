@@ -39,7 +39,11 @@
 }
 
 .listable-list .listable-item:hover {
-	background-color: @backgroundHover
+	background-color: @backgroundHover;
+	
+	&.empty {
+		background-color: transparent;
+	}
 }
 
 .listable-list .listable-item{
