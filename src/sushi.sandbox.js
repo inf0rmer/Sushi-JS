@@ -208,7 +208,7 @@ define('sushi.sandbox',
 					throw new SushiError('Both a require function and a requirejs global are needed');
 				}
 				
-				if (typeof recFunc !== 'function') {
+				if (typeof reqFunc !== 'function') {
 					throw new SushiError('require needs to be a function');
 				}
 				
