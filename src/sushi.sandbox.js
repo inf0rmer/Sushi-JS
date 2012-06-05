@@ -11,7 +11,8 @@ define('sushi.sandbox',
 		'sushi.utils.lang',
 		'sushi.$',
 		'sushi.mvc',
-		'sushi.template'
+		'sushi.template',
+		'sushi.error'
 	],
 
  	/**
@@ -20,32 +21,16 @@ define('sushi.sandbox',
 	 * @namespace Sushi
 	 * @class sandbox
 	 */
-	function(Sushi, utils, console, lang, $, mvc, template) {
+	function(Sushi, utils, console, lang, $, mvc, template, SushiError) {
 		Sushi.namespace('sandbox', Sushi);
 		
 		var channels 	= {},  			// Loaded modules and their callbacks
 			mediator 	= {},      		// Mediator object
 			permissions = {},			// Permissions object
 			rules 		= {}			// Rules
-			baseUrl 	= 'widgets/';	// Base URL to fetch widgets from
-		
-		/**
-		 * Override the default error handling for requirejs
-		 * @todo When error messages become part of core, use them instead
-		 * @link <a href="http://requirejs.org/docs/api.html#errors">Handling Errors</a>
-		 */
-		requirejs.onError = function (err) {
-			if (err.requireType === 'timeout') {
-				console.warn('Could not load module ' + err.requireModules);
-			} else {
-				// If a timeout hasn't occurred and there was another module 
-				// related error, unload the module then throw an error
-				var failedId = err.requireModules && err.requireModules[0];
-				requirejs.undef(failedId);
-		
-				throw err;
-			}
-		};
+			baseUrl 	= 'widgets/',	// Base URL to fetch widgets from
+			req 		= require,		// Require function to use (Sushi's by default)
+			reqjs		= requirejs;	// RequireLib global to use (Sushi's by default)
 		
 		permissions.extend = function (extended) {
 			rules = Sushi.extend({}, extended);
@@ -97,7 +82,7 @@ define('sushi.sandbox',
         
 			// If a widget hasn't called subscribe this will fail because it wont
 			// be present in the channels object
-			require([baseUrl + file + "/main"], function () {
+			req([baseUrl + file + "/main"], function () {
 				for (i = 0, l = channels[channel].length; i < l; i += 1) {
 					channels[channel][i].apply(mediator, args);
 				}
@@ -139,10 +124,10 @@ define('sushi.sandbox',
 		* @param {string} channel Event name
 		*/
 		mediator.unload = function(channel){
-			var contextMap = requirejs.s.contexts._.urlMap;
+			var contextMap = reqjs.s.contexts._.urlMap;
 			for (key in contextMap) {
 				if (contextMap.hasOwnProperty(key) && key.indexOf(channel) !== -1) {
-					require.undef(key);
+					req.undef(key);
 				}
 			}
 	
@@ -216,6 +201,26 @@ define('sushi.sandbox',
 			
 			getBaseUrl: function() {
 				return baseUrl;
+			},
+			
+			setRequireLib: function(reqFunc, reqGlobal) {
+				if (arguments.length < 2) {
+					throw new SushiError('Both a require function and a requirejs global are needed');
+				}
+				
+				if (typeof recFunc !== 'function') {
+					throw new SushiError('require needs to be a function');
+				}
+				
+				req = reqFunc;
+				reqjs = reqGlobal;
+			},
+			
+			getRequireLib: function() {
+				return {
+					require: req,
+					requirejs: reqjs
+				}
 			}
 		}
 		
