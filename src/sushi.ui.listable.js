@@ -231,7 +231,7 @@
 					
 					that.bind('search', this.search, this);
 					
-					if (this.collection.length)	this.addAll();
+					this.addAll();
 					
 					return this;
 				},
