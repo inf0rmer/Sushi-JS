@@ -33,7 +33,7 @@ define('sushi.sandbox',
 			reqjs		= requirejs;	// RequireLib global to use (Sushi's by default)
 		
 		permissions.extend = function (extended) {
-			rules = Sushi.extend({}, extended);
+			rules = Sushi.extend(rules, extended);
 		};
 	
 		/**
