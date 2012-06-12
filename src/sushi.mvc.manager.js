@@ -474,7 +474,7 @@
 		observer(Panel.prototype);
 		state(Panel.prototype);
 		cleanup(Panel.prototype);
-		//transitions(Gbone.Panel.prototype);
+		transitions(Panel.prototype);
 		
 		Sushi.manager = {
 			Stage: Stage,
