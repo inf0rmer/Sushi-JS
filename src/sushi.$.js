@@ -57,8 +57,12 @@ define('sushi.$',
     				var theArgs = arguments;
     				bonzo(context).each(function() {
 						args = _slice.call(theArgs, 0);
-						args.unshift(bonzo(this).get(0));
-						//console.log(context);
+						// Special case for window
+						var el = this;
+						if (el !== window) {
+							el = bonzo(this).get(0);
+						}
+						args.unshift(el);
 						fn.apply(context, args);
 					});
 
