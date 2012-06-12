@@ -54,7 +54,7 @@
 					params,
 					lastXHR = model._lastXHR && model._lastXHR[method];
 					
-				if ((lastXHR && lastXHR.state() === 'pending') && (options && options.safe !== false))
+				if ((lastXHR && lastXHR.state && lastXHR.state() === 'pending') && (options && options.safe !== false))
 					lastXHR.abort();
 		
 				if (!model._lastXHR)
