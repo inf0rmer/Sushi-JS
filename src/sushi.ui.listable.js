@@ -27,11 +27,10 @@
  	 */
  	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, performance) {
  		
- 		var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView;
- 		
  		Listable = function(element, options) {
  		
- 			var that = this;
+ 			var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView,
+ 				that = this;
  			
  			this.$element = $(element)
 			this.options = Sushi.extend({}, this.options, options);
@@ -69,8 +68,6 @@
 				}
 			});
 			
-			TitleModel = this.options.title.Model || TitleModel;
-			
 			ListCollection = Sushi.Class( Collection, {
 				constructor: function(models, options) {
 					ListCollection.Super.call(this, models, options);
@@ -79,7 +76,7 @@
 				model: ItemModel
 			});
 			
-			TitleView = this.options.title.View || new Sushi.Class( View, {
+			this.TitleView = TitleView = new Sushi.Class( View, {
 				constructor: function(options) {
 					TitleView.Super.call(this, options);
 					this._configure(options || {});
@@ -101,7 +98,7 @@
 				}
 			});
 			
-			EmptyView = this.options.empty.View || new Sushi.Class( View, {
+			this.EmptyView = EmptyView = new Sushi.Class( View, {
 				constructor: function(options) {
 					EmptyView.Super.call(this, options);
 				},
@@ -122,7 +119,7 @@
 				}
 			});
 			
-			SearchView = this.options.search.View || new Sushi.Class( View, {
+			this.SearchView = SearchView = new Sushi.Class( View, {
 				constructor: function(options) {
 					SearchView.Super.call(this, options);
 				},
@@ -163,7 +160,7 @@
 				}
 			});
 			
-			ItemView = this.options.item.View || new Sushi.Class( View, {
+			this.ItemView = ItemView = new Sushi.Class( View, {
 				constructor: function(options) {
 					ItemView.Super.call(this, options);
 					this._configure(options || {});
@@ -215,7 +212,7 @@
 				}
 			});
 			
-			ListView = this.options.list.View || new Sushi.Class( View, {
+			this.ListView = ListView = new Sushi.Class( View, {
 				constructor: function(options) {
 					ListView.Super.call(this, options);
 					this._configure(options || {});
@@ -279,17 +276,17 @@
  					
  					switch (component.type) {
  						case 'title':
- 							view = new TitleView({data: component});
+ 							view = new this.TitleView({data: component});
  							piece = view.render().el;
  							break;
  							
  						case 'search':
- 							view = new SearchView({collection: this.source, data: component});
+ 							view = new this.SearchView({collection: this.source, data: component});
  							piece = view.render().el
  							break;
  						
  						case 'list':
- 							view = new ListView({collection: this.source, data: component});
+ 							view = new this.ListView({collection: this.source, data: component});
  							piece = view.render().el;
  							break;
  					}
@@ -337,25 +334,16 @@
 			],
 			listType: 'unordered',
 			title: {
-				View: TitleView,
-				Model: TitleModel,
-				template: template.compile( '<h1 class="listable-title">{{content}}</h1>' )
+				template: '<h1 class="listable-title">{{content}}</h1>'
 			},
 			item: {
-				Model: ItemModel,
-				View: ItemView,
-				template: template.compile( '{{#if link}}<a href="{{link}}">{{/if}}<article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article>{{#if link}}</a>{{/if}}' )
+				template: '{{#if link}}<a href="{{link}}">{{/if}}<article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article>{{#if link}}</a>{{/if}}'
 			},
 			search: {
-				View: SearchView,
-				template: template.compile( '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>' )
-			},
-			list: {
-				View: ListView
+				template: '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>'
 			},
 			empty: {
-				View: EmptyView,
-				template: template.compile( 'There are no items here.' )
+				template: 'There are no items here.'
 			}
 		}
 	
