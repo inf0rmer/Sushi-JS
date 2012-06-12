@@ -55,7 +55,7 @@
 			
 			start : function(options) {
 				if (historyStarted) throw new SushiError("Sushi.history has already been started");
-				this.options          = Sushi.extend({root: '/'}, Sushi.extend(this.options, options), true);
+				this.options          = Sushi.extend({root: '/'}, this.options, options);
 				this._wantsHashChange = this.options.hashChange !== false;
 				this._wantsPushState  = !!this.options.pushState;
 				this._hasPushState    = !!(this.options.pushState && window.history && window.history.pushState);
