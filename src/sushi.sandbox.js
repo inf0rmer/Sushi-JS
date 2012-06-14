@@ -7,6 +7,7 @@ define('sushi.sandbox',
 	[
 		'sushi.core',
 		'sushi.utils',
+		'sushi.utils.collection',
 		'sushi.utils.debug',
 		'sushi.utils.lang',
 		'sushi.$',
@@ -21,7 +22,7 @@ define('sushi.sandbox',
 	 * @namespace Sushi
 	 * @class sandbox
 	 */
-	function(Sushi, utils, console, lang, $, mvc, template, SushiError) {
+	function(Sushi, utils, collection, console, lang, $, mvc, template, SushiError) {
 		Sushi.namespace('sandbox', Sushi);
 		
 		var channels 	= {},  			// Loaded modules and their callbacks
@@ -52,9 +53,10 @@ define('sushi.sandbox',
 		 * @param {object} subscription Module callback
 		 * @param {object} context Context in which to execute the module
 		 */
-		mediator.subscribe = function (channel, callback, context) {
-			channels[channel] = (!channels[channel]) ? [] : channels[channel];
-			channels[channel].push(utils.bind(callback, context));
+		mediator.subscribe = function (channel, subscriber, callback, context) {
+			channels[subscriber] = (!channels[subscriber]) ? {} : channels[subscriber];
+			channels[subscriber][channel] = (!channels[subscriber][channel]) ? [] : channels[subscriber][channel];
+			channels[subscriber][channel].push(utils.bind(callback, context));
 		};
 		
 		/**
@@ -70,15 +72,17 @@ define('sushi.sandbox',
 		 * call start if the channel is not already registered.
 		 * @param {string} channel Event name
 		 */
-		mediator.publish = function (channel) {
+		mediator.publish = function (channel, event) {
 			var i, l, args = [].slice.call(arguments, 1);
 			if (!channels[channel]) {
 				obj.start.apply(this, arguments);
 				return;
 			}
-	
-			for (i = 0, l = channels[channel].length; i < l; i += 1) {
-				channels[channel][i].apply(this, args);
+			
+			if (channels[channel][event] && channels[channel][event].length) {
+				collection.each(channels[channel][event], function(fn){
+					fn.apply(this, args);
+				});
 			}
 		};
 		
@@ -91,9 +95,9 @@ define('sushi.sandbox',
 			// If a widget hasn't called subscribe this will fail because it wont
 			// be present in the channels object
 			req([baseUrl + file + "/main"], function () {
-				for (i = 0, l = channels[channel].length; i < l; i += 1) {
-					channels[channel][i].apply(mediator, args);
-				}
+				collection.each(channels[channel]['bootstrap'], function(fn){
+					fn.apply(mediator, args);
+				})
 			});
 		};
 		
@@ -138,8 +142,8 @@ define('sushi.sandbox',
 					req.undef(key);
 				}
 			}
-			mediator.unsubscribe(channel);
-	
+			mediator.publish(channel, 'unload');
+			//mediator.unsubscribe(channel);
 		};
 		
 		mediator.dom = {
@@ -160,7 +164,7 @@ define('sushi.sandbox',
 			 */
 			subscribe: function (subscriber, channel, callback) {
 				if (permissions.validate(subscriber, channel)) {
-					mediator.subscribe(channel, callback, this);
+					mediator.subscribe(subscriber, channel, callback, this);
 				}
 			},
 		
