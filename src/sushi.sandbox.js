@@ -56,6 +56,14 @@ define('sushi.sandbox',
 			channels[channel] = (!channels[channel]) ? [] : channels[channel];
 			channels[channel].push(utils.bind(callback, context));
 		};
+		
+		/**
+		 * Unsubscribe to all events a widget has subscribed to
+		 * @param {string} channel Event name
+		 */
+		mediator.unsubscribe = function (channel) {
+			channels[channel] = [];
+		}
 	
 		/**
 		 * Publish an event, passing arguments to subscribers. Will
@@ -130,6 +138,7 @@ define('sushi.sandbox',
 					req.undef(key);
 				}
 			}
+			mediator.unsubscribe(channel);
 	
 		};
 		
