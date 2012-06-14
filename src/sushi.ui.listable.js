@@ -313,7 +313,11 @@
 					
 					Sushi.extend(options, Sushi.fn.listable.defaults, opts, $this.data());
 					
-					if (!data) $this.data('listable', (data = new Listable(this, options)))
+					if (!data) {
+						$this.data('listable', (data = new Listable(this, options)));
+					} else {
+						data.render();
+					}
 			});
 		}
 		
