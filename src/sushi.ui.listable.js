@@ -234,6 +234,8 @@
 				},
 				
 				addOne: function(item) {
+					if (this.emptyView) this.emptyView.dealloc();
+					
 					var view = new ItemView( {model: item} )
 					this.$el.append( view.render().el );
 					return this;
@@ -247,7 +249,8 @@
 					if (collection.length) {
 						collection.each( this.addOne, this );
 					} else {
-						this.$el.html('').append( new EmptyView().render().el);
+						this.emptyView = new EmptyView();
+						this.$el.html('').append( this.emptyView.render().el);
 					}
 					return this;
 				},
