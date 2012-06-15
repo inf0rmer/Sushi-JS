@@ -74,10 +74,6 @@ define('sushi.sandbox',
 		 */
 		mediator.publish = function (channel, event) {
 			var i, l, args = [].slice.call(arguments, 1);
-			if (!channels[channel]) {
-				obj.start.apply(this, arguments);
-				return;
-			}
 			
 			if (channels[channel][event] && channels[channel][event].length) {
 				collection.each(channels[channel][event], function(fn){
@@ -105,7 +101,8 @@ define('sushi.sandbox',
 			var args = [].slice.call(arguments, 1),
 				el = args[0],
 				file = lang.decamelize(channel);
-	
+			
+			mediator.publish(channel, 'unload');
 			// Remove all modules under a widget path (e.g widgets/todos)
 			mediator.unload(baseUrl + file);
 			
@@ -142,8 +139,6 @@ define('sushi.sandbox',
 					req.undef(key);
 				}
 			}
-			mediator.publish(channel, 'unload');
-			//mediator.unsubscribe(channel);
 		};
 		
 		mediator.dom = {
