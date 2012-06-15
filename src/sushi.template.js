@@ -25,7 +25,8 @@ define('sushi.template',
 
 		Sushi.extend(Sushi.template, {
 			compile: compile,
-			registerHelper: registerHelper
+			registerHelper: registerHelper,
+			helpers: Handlebars.helpers
 		});
 		
 		return Sushi.template;
