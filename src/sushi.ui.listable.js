@@ -160,7 +160,7 @@
 				}
 			});
 			
-			this.ItemView = ItemView = new Sushi.Class( View, {
+			ItemView = this.options.item.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					ItemView.Super.call(this, options);
 					this._configure(options || {});
