@@ -17,10 +17,15 @@ define('sushi.template',
 		
 		var compile = function(string) {
 			return Handlebars.compile(string);
+		},
+		
+		registerHelper = function(name, fn) {
+			return Handlebars.registerHelper(name, fn);
 		}
 
 		Sushi.extend(Sushi.template, {
-			compile: compile
+			compile: compile,
+			registerHelper: registerHelper
 		});
 		
 		return Sushi.template;
