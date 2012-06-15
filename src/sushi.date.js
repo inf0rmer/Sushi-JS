@@ -188,7 +188,7 @@ define('sushi.date',
 				
 				// special cases controlled by options
 				if (delta <= opts.nowThreshold) {
-					return future ? {time: 'Right now'} : {time: 'Just now'};
+					return {delta: 0};
 				}
 				if (opts.smartDays && delta <= 6 * MS_IN_DAY) {
 					return toSmartDays(this, now);
