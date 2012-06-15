@@ -443,10 +443,13 @@
 			 // The `callback` gets called after the routing happens. Within the callback you
 			 // should activate the Panel by calling the `active` method on it and/or 
 			 // `render`etc...
-			routePanel: function (callback) {
+			routePanel: function (callback, includeStage) {
+				var route;
+				
 				if (this.stage) {
-					this.stage.router.route(this.stage.name + '/' + this.name + '/trans-:trans', this.name, callback);
-					this.stage.router.route(this.stage.name + '/' + this.name, this.name, callback);
+					route = (includeStage) ? this.stage.name + '/' + this.name : this.name;
+					this.stage.router.route(route + '/trans-:trans', this.name, callback);
+					this.stage.router.route(route, this.name, callback);
 				} else {
 					throw new SushiError('A Stage for this Panel is not available.');
 				}
