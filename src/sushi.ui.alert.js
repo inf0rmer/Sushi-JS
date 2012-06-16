@@ -98,5 +98,7 @@
 		Sushi.ready(function () {
 			$('body').on(dismiss, 'click.alert.data-api', Alert.prototype.close, $)
 		})
+		
+		return Alert;
  	}
  );
