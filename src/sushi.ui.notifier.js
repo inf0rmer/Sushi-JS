@@ -46,22 +46,41 @@
 				this.$note.prepend($('<a class="close pull-right" data-dismiss="alert" href="#">&times;</a>'))
 			}
 			
+			if (this.options.pauseOnHover) {
+				this.$note.on('mouseenter', function() {
+					if (self.fadeTimer) {
+						clearTimeout(self.fadeTimer);
+						self.fadeTimer = null;
+					}
+				});
+				
+				this.$note.on('mouseout', function() {
+					self._fadeOut({
+						delay: 250
+					})
+				});
+			}
+			
 			return this;
+		}
+		
+		Notification.prototype._fadeOut = function(options) {
+			if (!options) options = {}
+			var self = this;
+			self.fadeTimer = setTimeout(function() {
+				self.$note.gfxFadeOut(function () {
+					self.options.onClose()
+					$(this).remove()
+					self.options.onClosed()
+				});
+			}, options.delay || this.options.fadeOut.delay || 3000);
 		}
 			
 		Notification.prototype.show = function () {
 			var self = this;
 			
-			if (this.options.fadeOut.enabled) {				
-				setTimeout(function() {
-					self.$note.gfxFadeOut(function () {
-						self.options.onClose()
-						$(this).remove()
-						self.options.onClosed()
-					});
-				}, this.options.fadeOut.delay || 3000);
+			if (this.options.fadeOut.enabled) this._fadeOut();
 				
-			}
 			this.$element.append(this.$note)
 			this.$note.alert();
 		}
@@ -70,13 +89,7 @@
 			var self = this;
 			
 			if (this.options.fadeOut.enabled) {				
-				setTimeout(function() {
-					self.$note.gfxFadeOut(function () {
-						self.options.onClose()
-						$(this).remove()
-						self.options.onClosed()
-					});
-				}, this.options.fadeOut.delay || 3000);
+				this._fadeOut();
 			} else {
 				self.options.onClose()
 				this.$note.remove()
@@ -96,6 +109,7 @@
 				enabled: true,
 				delay: 3000
 			},
+			pauseOnHover: true,
 			message: 'This is a message.',
 			onClose: function () {},
 			onClosed: function () {}
