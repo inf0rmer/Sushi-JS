@@ -28,5 +28,16 @@
 		z-index: 9999;
 		margin: 5px 0px;
 		width: 200px;
+		.opacity(70);
+		.transition(opacity .1s ease);
+		
+		&.fade.in {
+			.opacity(90);
+			.transition(opacity .1s ease);
+		}
+		
+		&:hover, &.fade.in:hover {
+			.opacity(100);
+		}
 	}
 }

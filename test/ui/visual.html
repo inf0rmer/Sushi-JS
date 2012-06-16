@@ -46,7 +46,8 @@
 					var message = messages[Math.floor(Math.random() * messages.length)];
 					$('.notifications').notify({
 						message: message[1],
-						type: message[0]
+						type: message[0],
+						fadeOut: {enabled:false}
 					}).show();
 				});
 			});
