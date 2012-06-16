@@ -114,5 +114,7 @@
 			onClose: function () {},
 			onClosed: function () {}
 		}
+		
+		return Notification;
  	}
  );
