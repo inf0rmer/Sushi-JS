@@ -30,6 +30,25 @@
 						}, 3000)
 				  })
 				
+				
+				// Random Messages
+				var messages = [
+					[ 'info', 'Gah this is awesome.'],
+					[ 'success', 'I love Nijiko, he is my creator' ],
+					[ 'warning', 'Soda is bad.' ],
+					[ 'danger', "I'm sorry dave, I'm afraid I can't let you do that." ],
+					[ 'info', "There are only three rules." ],
+					[ 'inverse', 'Do you hear me now?' ],
+					[ 'info', 'You should fork this!' ]
+				];
+				
+				$('.show-notification').on('click', function (e) {
+					var message = messages[Math.floor(Math.random() * messages.length)];
+					$('.notifications').notify({
+						message: message[1],
+						type: message[0]
+					}).show();
+				});
 			});
 		}
 	</script>
@@ -399,6 +418,17 @@
 			</div>
 			
 		</div>
+	
+		<div class="row fluid" id="notifier">
+			<div class="span2">
+				<h2>Notifier</h2>
+			</div>
+			<div class="span8">
+				<button class="btn btn-primary show-notification">Try me!</button>
+			</div>
+		</div>
 	</div>
+	
+	<div class='notifications top-right'></div>
 </body>
 </html>

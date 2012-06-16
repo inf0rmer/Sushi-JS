@@ -24,7 +24,8 @@ require([
 	'sushi.ui.carousel',
 	'sushi.ui.typeahead',
 	'sushi.ui.scrollspy',
-	'sushi.ui.listable'
+	'sushi.ui.listable',
+	'sushi.ui.notifier'
 	],
 	function(Sushi) {
 		window.runTests(Sushi);
