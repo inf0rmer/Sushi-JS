@@ -46,7 +46,7 @@
 				this.$note.prepend($('<a class="close pull-right" data-dismiss="alert" href="#">&times;</a>'))
 			}
 			
-			if (this.options.pauseOnHover) {
+			if (this.options.pauseOnHover && this.options.fadeOut.enabled) {
 				this.$note.on('mouseenter', function() {
 					if (self.fadeTimer) {
 						clearTimeout(self.fadeTimer);
