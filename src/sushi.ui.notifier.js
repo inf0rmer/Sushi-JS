@@ -80,7 +80,6 @@
 			var self = this;
 			
 			if (this.options.fadeOut.enabled) this._fadeOut();
-				
 			this.$element.append(this.$note)
 			this.$note.alert();
 		}
@@ -97,8 +96,13 @@
 			}
 		}
 			
-		Sushi.fn.notify = function (options) {
-			return new Notification(this, options)
+		Sushi.fn.notify = function (options) {			
+			var notification = new Notification(this, options)
+				,options = Sushi.extend({}, options, Sushi.fn.notify.defaults);
+			
+			if (options.show) notification.show();
+			
+			return notification;
 		}
 			
 		Sushi.fn.notify.defaults = {
@@ -110,6 +114,7 @@
 				delay: 3000
 			},
 			pauseOnHover: true,
+			show: true,
 			message: 'This is a message.',
 			onClose: function () {},
 			onClosed: function () {}
