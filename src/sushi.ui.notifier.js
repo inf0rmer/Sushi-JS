@@ -40,7 +40,11 @@
 			
 			this.$note.addClass('alert-' + this.options.type);
 			
-			this.$note.html(this.options.message);
+			if (typeof this.options.message === 'object') {
+				this.$note.append(this.options.message);
+			} else {
+				this.$note.html(this.options.message);
+			}
 			
 			if (this.options.closable) {
 				this.$note.prepend($('<a class="close pull-right" data-dismiss="alert" href="#">&times;</a>'))
