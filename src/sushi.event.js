@@ -68,11 +68,14 @@
 			}
         }
         
-        // Aliases for backwards compatibility
+        // Aliases
         Sushi.extend(Sushi.event, {
         	subscribe: Sushi.event.bind,
         	unsubscribe: Sushi.event.unbind,
-        	publish: Sushi.event.trigger
+        	publish: Sushi.event.trigger,
+        	on: Sushi.event.bind,
+        	off: Sushi.event.unbind,
+        	fire: Sushi.event.trigger
         });
         
         return Sushi.event;
