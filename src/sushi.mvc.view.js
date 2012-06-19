@@ -94,7 +94,6 @@ define('sushi.mvc.view',
 				this.undelegateEvents();
 				this.$el.remove();
 				delete this;
-				this = null;
 			},
 			
 			make : function(tagName, attributes, content) {
