@@ -16,6 +16,7 @@ require([
 	'sushi.mvc.view',
 	'sushi.mvc.view.bindings',
 	'sushi.mvc.collection',
+	'sushi.mvc.collection.live',
 	'sushi.mvc.router',
 	'sushi.mvc.manager',
 	'sushi.template',
