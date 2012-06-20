@@ -191,7 +191,7 @@
 			  	
 			  	options.success = function(resp, status, xhr) {
 					coll[options.add ? 'add' : 'reset'](coll.parse(resp, xhr), options);
-					if (success) success(collection, resp);
+					if (success) success(coll, resp);
 			  	};
 			  	
 			  	options.error = wrapError(options.error, coll, options);
