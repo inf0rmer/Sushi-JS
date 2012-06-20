@@ -151,6 +151,16 @@
 			  	return this.models[index];
 			},
 			
+			where: function(attrs) {
+				if (utils.isEmpty(attrs)) return [];
+				return this.filter(function(model) {
+					for (var key in attrs) {
+						if (attrs[key] !== model.get(key)) return false;
+					}
+					return true;
+				});
+			},
+			
 			sort: function(options) {
 			  	options || (options = {});
 			  	if (!this.comparator) throw new SushiError('Cannot sort a set without a comparator');
