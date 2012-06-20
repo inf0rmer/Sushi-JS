@@ -17,7 +17,7 @@
  	 * @namespace Sushi
  	 * @class mvc.collection.live
  	 */
- 	function(Sushi, utils, collection, Collection) {
+ 	function(Sushi, utils, collectionUtils, Collection) {
 		Sushi.namespace('LiveCollection');
         
 		// Define a Backbone Collection handling the details of running a "live"
@@ -35,7 +35,7 @@
 		// <http://weblog.bocoup.com/backbone-live-collections>
 		var LiveCollection = new Sushi.Class(Collection, {
 			constructor: function(models, options) {
-				this.Super.call(this, models, options);
+				LiveCollection.Super.call(this, models, options);
 			},
 			
 			// A specialized fetch that can add new models and remove
@@ -62,7 +62,7 @@
 			  }
 			  
 			  // Delegate to original fetch method.
-			  this.Super.prototype.fetch.call(this, options);
+			  LiveCollection.Super.prototype.fetch.call(this, options);
 			},
 			
 			// A custom add function that can prevent models with duplicate IDs
@@ -84,14 +84,14 @@
 			  // If unique option is set, don't add duplicate IDs.
 			  if (options.unique) {
 				modelsToAdd = [];
-				collection.each(models, function(model) {
+				collectionUtils.each(models, function(model) {
 				  if ( utils.isUndefined( this.get(model.id) ) ) {
 					modelsToAdd.push(model);
 				  }
 				}, this);
 			  }
 			
-			  return this.Super.prototype.add.call(this, modelsToAdd, options);
+			  return LiveCollection.Super.prototype.add.call(this, modelsToAdd, options);
 			},
 			
 			// Weed out old models in collection, that are no longer being returned
@@ -105,11 +105,11 @@
 				  respIDs, collectionIDs, oldModels;
 			  
 			  // Convert array of JSON model objects to array of IDs.
-			  respIDs = collection.map(parsedResp, modelToID);
-			  collectionIDs = collection.map(collection.toJSON(), modelToID);
+			  respIDs = collectionUtils.map(parsedResp, modelToID);
+			  collectionIDs = collectionUtils.map(collection.toJSON(), modelToID);
 			  
 			  // Find the difference between the two...
-			  oldModels = collection.difference(collectionIDs, respIDs);
+			  oldModels = collectionUtils.difference(collectionIDs, respIDs);
 			  
 			  // ...and remove it from the collection
 			  // (remove can take IDs or objects).
@@ -137,7 +137,7 @@
 				// Furthermore, since the sync success wrapper
 				// that wraps and replaces options.success has a different arguments
 				// order, you'll end up getting the wrong arguments.
-				var opts = collection.clone(options);
+				var opts = collectionUtils.clone(options);
 				
 				if (!opts.tries || polledCount < opts.tries) {
 				  polledCount = polledCount + 1;
