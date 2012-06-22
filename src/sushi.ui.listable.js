@@ -227,13 +227,22 @@
 					this.collection.bind('reset', this.addAll, this);
 					this.collection.bind('add', this.addOne, this);
 					
-					if (this.options.scrollable && this._scrollable) {
-						this.collection.bind('reset', this._scrollable.refresh, this);
-						this.collection.bind('add', this._scrollable.refresh, this);
-						this.collection.bind('remove', this._scrollable.refresh, this);
-					}
-					
 					that.bind('search', this.search, this);
+					
+					if (that.options.scrollable) {
+						this.collection.bind('reset', function() {
+							if (!that._scrollable) return false;
+							that._scrollable.refresh()
+						});
+						this.collection.bind('add', function() {
+							if (!that._scrollable) return false;
+							that._scrollable.refresh()
+						});
+						this.collection.bind('remove', function() {
+							if (!that._scrollable) return false;
+							that._scrollable.refresh()
+						});
+					}
 					
 					this.addAll();
 					
