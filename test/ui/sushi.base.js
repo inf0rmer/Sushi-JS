@@ -25,7 +25,8 @@ require([
 	'sushi.ui.typeahead',
 	'sushi.ui.scrollspy',
 	'sushi.ui.listable',
-	'sushi.ui.notifier'
+	'sushi.ui.notifier',
+	'sushi.ui.scrollable'
 	],
 	function(Sushi) {
 		window.runTests(Sushi);
