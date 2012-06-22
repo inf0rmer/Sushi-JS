@@ -16,7 +16,8 @@
  		'sushi.error',
  		'sushi.utils.json',
  		'sushi.utils.performance',
- 		'sushi.mvc.view.bindings'
+ 		'sushi.mvc.view.bindings',
+ 		'sushi.ui.scrollable'
  	],
 
  	/**
@@ -226,6 +227,12 @@
 					this.collection.bind('reset', this.addAll, this);
 					this.collection.bind('add', this.addOne, this);
 					
+					if (this.options.scrollable && this._scrollable) {
+						this.collection.bind('reset', this._scrollable.refresh, this);
+						this.collection.bind('add', this._scrollable.refresh, this);
+						this.collection.bind('remove', this._scrollable.refresh, this);
+					}
+					
 					that.bind('search', this.search, this);
 					
 					this.addAll();
@@ -238,6 +245,7 @@
 					
 					var view = new ItemView( {model: item} )
 					this.$el.append( view.render().el );
+					
 					return this;
 				},
 				
@@ -252,6 +260,7 @@
 						this.emptyView = new EmptyView();
 						this.$el.html('').append( this.emptyView.render().el);
 					}
+					
 					return this;
 				},
 				
@@ -291,10 +300,24 @@
  						case 'list':
  							view = new this.ListView({collection: this.source, data: component});
  							piece = view.render().el;
+ 							
+ 							if (this.options.scrollable) {
+								var $wrap = $('<div class="scrollable-wrap"><div class="scrollable-inner"></div></div>');
+								$wrap.find('.scrollable-inner').append(piece);
+								piece = $wrap.get(0);
+							}
+ 							
  							break;
  					}
  					
  					this.$element.append(piece);
+ 				}
+ 				
+ 				if (this.options.scrollable) {
+ 					var $scrollableWrap = this.$element.find('.scrollable-wrap');
+ 					
+ 					$scrollableWrap.scrollable();
+ 					this._scrollable = $scrollableWrap.data('scrollable');
  				}
  				
  				return this;
@@ -340,6 +363,7 @@
 				}
 			],
 			listType: 'unordered',
+			scrollable: true,
 			title: {
 				template: '<h1 class="listable-title">{{content}}</h1>'
 			},
