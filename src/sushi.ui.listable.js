@@ -257,15 +257,21 @@
 					if (that.options.scrollable) {
 						this.collection.bind('reset', function() {
 							if (!that._scrollable) return false;
-							that._scrollable.refresh()
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
 						});
 						this.collection.bind('add', function() {
 							if (!that._scrollable) return false;
-							that._scrollable.refresh()
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
 						});
 						this.collection.bind('remove', function() {
 							if (!that._scrollable) return false;
-							that._scrollable.refresh()
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
 						});
 					}
 					
