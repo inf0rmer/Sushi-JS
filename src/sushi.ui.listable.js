@@ -30,7 +30,7 @@
  		
  		Listable = function(element, options) {
  		
- 			var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView,
+ 			var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView, LoadingView,
  				that = this;
  			
  			this.$element = $(element)
@@ -161,6 +161,31 @@
 				}
 			});
 			
+			LoadingView = this.LoadingView = this.options.loading.View || new Sushi.Class( View, {
+				constructor: function(options) {
+					LoadingView.Super.call(this, options);
+				},
+				
+				tagName: 'div',
+				
+				className: 'listable-loading',
+				
+				events: {
+					'click span': 'clicked'
+				},
+				
+				clicked: function() {
+					alert('clicked')
+				},
+				
+				template: (typeof that.options.loading.template === 'string') ? template.compile(that.options.loading.template) : that.options.loading.template,
+				
+				render: function() {
+					this.$el.html( this.template() );
+					return this.bindModel();
+				}
+			});
+			
 			ItemView = this.options.item.View || new Sushi.Class( View, {
 				constructor: function(options) {
 					ItemView.Super.call(this, options);
@@ -288,26 +313,68 @@
  		// Public API
  		Listable.prototype = {
  			
+ 			setLoading: function() { 				
+				this.unsetLoading();
+				
+				var element = (this.options.scrollable) ? '.scrollable-wrap' : '.listable-list',
+					$element = this.$element.find(element);
+ 				
+ 				if ($element.length)
+ 					$element.hide();
+ 				
+ 				this.loadingView = new this.LoadingView();
+ 				this.$element.append(this.loadingView.render().el);
+ 			},
+ 			
+ 			unsetLoading: function() {
+				if (this.loadingView) {
+					this.loadingView.dealloc();
+					this.loadingView = null;
+				}
+				
+				var element = (this.options.scrollable) ? '.scrollable-wrap' : '.listable-list',
+					$element = this.$element.find(element);
+				
+				if ($element.length)
+ 					$element.show();
+ 			},
+ 			
+ 			dealloc: function() {
+ 				
+ 				if (this.titleView)
+	 				this.titleView.dealloc();
+	 			
+	 			if (this.searchView)
+	 				this.searchView.dealloc();
+	 			
+	 			if (this.listView)
+	 				this.listView.dealloc();
+ 				
+ 				this.$element.html('');
+ 			},
+ 			
  			render: function() {
  				
  				var i, len, component, view, piece;
+ 				
+ 				this.dealloc();
  				
  				for (i=0, len=this.uses.length; i<len; i++) {
  					component = this.uses[i];
  					
  					switch (component.type) {
  						case 'title':
- 							view = new this.TitleView({data: component});
+ 							this.titleView = view = new this.TitleView({data: component});
  							piece = view.render().el;
  							break;
  							
  						case 'search':
- 							view = new this.SearchView({collection: this.source, data: component});
+ 							this.searchView = view = new this.SearchView({collection: this.source, data: component});
  							piece = view.render().el
  							break;
  						
  						case 'list':
- 							view = new this.ListView({collection: this.source, data: component});
+ 							this.listView = view = new this.ListView({collection: this.source, data: component});
  							piece = view.render().el;
  							
  							if (this.options.scrollable) {
@@ -328,6 +395,9 @@
  					$scrollableWrap.scrollable();
  					this._scrollable = $scrollableWrap.data('scrollable');
  				}
+ 				
+ 				this.setLoading();
+ 				//this.unsetLoading();
  				
  				return this;
  			}
@@ -384,6 +454,9 @@
 			},
 			empty: {
 				template: 'There are no items here.'
+			},
+			loading: {
+				template: '<span class="listable-loading-loader centered">Loading...</span>'
 			}
 		}
 	
@@ -397,8 +470,7 @@
 			  	var $this = $(this)
 					, data = {};
 				
-				Sushi.extend(data, $this.data());
-
+				Sushi.extend(data, $this.data());				
 				$this.listable(data)
 			});
 		  })
