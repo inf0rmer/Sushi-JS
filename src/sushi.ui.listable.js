@@ -396,9 +396,6 @@
  					this._scrollable = $scrollableWrap.data('scrollable');
  				}
  				
- 				this.setLoading();
- 				//this.unsetLoading();
- 				
  				return this;
  			}
  			
