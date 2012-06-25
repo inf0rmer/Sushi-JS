@@ -5,46 +5,46 @@
  */
 /*global Sushi:true, define:true*/
 define('sushi.core',
-    [
-    	'sushi.domready'
-    ],
-    
+	[
+		'sushi.domready'
+	],
+	
 	/**
-	 * Sushi Core
-	 *
-	 * @namespace Sushi
-	 * @class core
-	 */
-    function(ready) {
-    	var root = this,
-    	previousSushi = root.Sushi,
-    	Sushi = root.Sushi = root.$ = function( selector, context ) {
-    		return Sushi.fn( selector, context )
-    	},
-    	
-    	_$ = window.$,
-    	
-    	VERSION = '1.0',
-    	
-    	fn = function() {
-    		return Sushi;
-    	}
-    	
-    	noConflict = function() {
-    		if (root.$ === Sushi) {
-    			root.$ = _$;
-    		}
-    		root.Sushi = previousSushi;
-    		return Sushi;
-    	},
+     * Sushi Core
+     *
+     * @namespace Sushi
+     * @class core
+     */
+	function(ready) {
+		var root = this,
+		previousSushi = root.Sushi,
+		Sushi = root.Sushi = root.$ = function( selector, context ) {
+			return Sushi.fn( selector, context );
+		},
+		
+		_$ = window.$,
+		
+		VERSION = '1.0',
+		
+		fn = function() {
+			return Sushi;
+		},
+		
+		noConflict = function() {
+			if (root.$ === Sushi) {
+				root.$ = _$;
+			}
+			root.Sushi = previousSushi;
+			return Sushi;
+		},
 		/**
-		 * A utility that non-destructively defines namespaces
-		 *
-		 * @method namespace
-		 * @param {String} namespaceString Name of namespace to create
-		 * @return {Object} Namespaced object
-		 */
-		namespace = function(namespaceString, global) {   			
+         * A utility that non-destructively defines namespaces
+         *
+         * @method namespace
+         * @param {String} namespaceString Name of namespace to create
+         * @return {Object} Namespaced object
+         */
+		namespace = function(namespaceString, global) {
 			global = (!global) ? Sushi : global;
 			
 			var parts = namespaceString.split('.'),
@@ -64,15 +64,15 @@ define('sushi.core',
 				parent = parent[parts[i]];
 			}
 		
-			return parent;			
+			return parent;
 		},
 		
 		extend = function(obj) {
-			var args = Array.prototype.slice.call(arguments, 1)
+			var args = Array.prototype.slice.call(arguments, 1);
 			for (var i=0, len=args.length; i<len; i++) {
 				for (var prop in args[i]) {
 					obj[prop] = args[i][prop];
-			  	}
+				}
 			}
 			return obj;
 		},
@@ -82,7 +82,7 @@ define('sushi.core',
 				body = arguments[len - 1],
 				SuperClass = len > 1 ? arguments[0] : null,
 				hasImplementClasses = len > 2,
-				Class, 
+				Class,
 				SuperClassEmpty;
 		
 			if (body.constructor === Object) {
@@ -103,7 +103,7 @@ define('sushi.core',
 		
 			if (hasImplementClasses)
 				for (var i = 1; i < len - 1; i++)
-					Sushi.extend(Class.prototype, arguments[i].prototype);    
+					Sushi.extend(Class.prototype, arguments[i].prototype);
 		
 			Sushi.extendClass(Class, body);
 		
@@ -111,43 +111,43 @@ define('sushi.core',
 		},
 		
 		/**
-		 * @method extendClass
-		 * @param {Function} Class the Class to extend
-		 * @param {Object} extension Properties to extend the class with
-		 * 
-		 * Usage:
-		 *	 extendClass(Person, {
-		 *		  newMethod1: function() {
-		 *			...
-		 *		  },
-		 *		  newMethod2: function() {
-		 *			...
-		 *		  },
-		 *		  newMethod3: function() {
-		 *			...
-		 *		  }
-		 *	});
-		 */
+         * @method extendClass
+         * @param {Function} Class the Class to extend
+         * @param {Object} extension Properties to extend the class with
+         *
+         * Usage:
+         *  extendClass(Person, {
+         *        newMethod1: function() {
+         *			...
+         *        },
+         *        newMethod2: function() {
+         *			...
+         *        },
+         *         newMethod3: function() {
+         *			...
+         *        }
+         *	});
+         */
 		extendClass = function(Class, extension) {
 			if (extension.STATIC) {
 				extend(Class, extension.STATIC);
 				delete extension.STATIC;
 			}
-			Sushi.extend(Class.prototype, extension)
-		}
+			Sushi.extend(Class.prototype, extension);
+		};
 	
-    	// Sync global Sushi variable to namespaced one
-    	extend(this.Sushi, {
-    		VERSION: VERSION,
-    		fn: fn,
-    		noConflict: noConflict,
-    		namespace: namespace,
-    		extend: extend,
-    		Class: Class,
-    		extendClass: extendClass,
-    		ready: ready    		
-    	});
-    	
-    	return this.Sushi;
-    }
+		// Sync global Sushi variable to namespaced one
+		extend(this.Sushi, {
+			VERSION: VERSION,
+			fn: fn,
+			noConflict: noConflict,
+			namespace: namespace,
+			extend: extend,
+			Class: Class,
+			extendClass: extendClass,
+			ready: ready
+		});
+		
+		return this.Sushi;
+	}
 );
