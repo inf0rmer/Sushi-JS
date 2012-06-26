@@ -2,31 +2,31 @@
  * Sushi.Enumerable
  *
  */
- define('sushi.enumerable',
- 	// Module dependencies
- 	[
- 		'sushi.core',
- 		'sushi.utils',
- 		'sushi.utils.collection'
- 	],
+define('sushi.enumerable',
+	// Module dependencies
+	[
+		'sushi.core',
+		'sushi.utils',
+		'sushi.utils.collection'
+	],
 
- 	/**
- 	 * Sushi Enumerable
- 	 *
- 	 * @namespace Sushi
- 	 * @class Enumerable
- 	 */
- 	function(Sushi, utils, collection) {
+	/**
+	 * Sushi Enumerable
+	 *
+	 * @namespace Sushi
+	 * @class Enumerable
+	 */
+	function(Sushi, utils, collection) {
         Sushi.namespace('Enumerable', Sushi);
         
         function Enumerable(value) {
-        	Sushi.extend(value, Enumerable.prototype);
-        	return value;
-        };
+			Sushi.extend(value, Enumerable.prototype);
+			return value;
+        }
         
         Enumerable.prototype = {
-        	Constructor: Enumerable
-        }
+			Constructor: Enumerable
+		};
         
         var	methods = ['each', 'map', 'reduce', 'reduceRight', 'find', 'detect', 'remove',
 			'filter', 'select', 'reject', 'every', 'all', 'some', 'any', 'include',
@@ -39,11 +39,11 @@
 				
 				if (utils.isObject(returnable) || utils.isArray(returnable)) returnable = new Enumerable(returnable);
 				
-				return returnable; 
+				return returnable;
 			};
-	  	});
-	  	
-	  	Sushi.Enumerable = Enumerable;
+		});
+
+		Sushi.Enumerable = Enumerable;
         return Enumerable;
- 	}
- );
+	}
+);

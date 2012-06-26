@@ -5,57 +5,57 @@
  */
 /*global Sushi:true, define:true*/
 define('sushi.$',
-    [
-    	'sushi.core',
-    	'sushi.utils',
-    	'sushi.utils.collection',
-    	'sushi.support',
-    	'sushi.qwery',
-    	'sushi.bonzo',
-    	'sushi.bean',
-    	'sushi.ajax'
-    ],
-    
+	[
+		'sushi.core',
+		'sushi.utils',
+		'sushi.utils.collection',
+		'sushi.support',
+		'sushi.qwery',
+		'sushi.bonzo',
+		'sushi.bean',
+		'sushi.ajax'
+	],
+	
 	/**
 	 * Sushi $
 	 *
 	 * @namespace Sushi
 	 * @class $
 	 */
-    function(Sushi, utils, collection, support, qwery, bonzo, bean, ajax) {    	
-    	var $;
-    	
-    	bonzo.setQueryEngine(qwery);
-    	bean.setSelectorEngine(qwery);
-    	
-    	$ = function(selector, context) {
-    		var q,
-    		match,
-    		quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
-    		rroot = /^(?:body|html)$/i,
-    		element;
-    		
-    		// If selector is a function, handle it as being domReady - support $(function(){})
-    		if (utils.isFunction(selector)) {
-    			return Sushi.ready( selector );
-    		}
-    		
-    		if (selector === '#' || selector === '.') selector = '';
+	function(Sushi, utils, collection, support, qwery, bonzo, bean, ajax) {
+		var $;
+		
+		bonzo.setQueryEngine(qwery);
+		bean.setSelectorEngine(qwery);
+		
+		$ = function(selector, context) {
+			var q,
+			match,
+			quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
+			rroot = /^(?:body|html)$/i,
+			element;
+			
+			// If selector is a function, handle it as being domReady - support $(function(){})
+			if (utils.isFunction(selector)) {
+				return Sushi.ready( selector );
+			}
+			
+			if (selector === '#' || selector === '.') selector = '';
 				
-    		// If the selector is a tag-like string, create it instead of qwerying it.
-    		match = quickExpr.exec(selector);
-    		
-    		if (match && match[1]) {
-	   			element = bonzo.create(selector);
-    		} else {
-    			element = bonzo(qwery(selector, context))
-    		}
-    		
-    		var _slice = Array.prototype.slice,
-    		_bind = function(fn, context) {
-    			return function() {
-    				var theArgs = arguments;
-    				bonzo(context).each(function() {
+			// If the selector is a tag-like string, create it instead of qwerying it.
+			match = quickExpr.exec(selector);
+			
+			if (match && match[1]) {
+				element = bonzo.create(selector);
+			} else {
+				element = bonzo(qwery(selector, context));
+			}
+			
+			var _slice = Array.prototype.slice,
+			_bind = function(fn, context) {
+				return function() {
+					var theArgs = arguments;
+					bonzo(context).each(function() {
 						args = _slice.call(theArgs, 0);
 						// Special case for window
 						var el = this;
@@ -67,9 +67,9 @@ define('sushi.$',
 					});
 
 					return $(context);
-				}
-    		},
-    		methods = {
+				};
+			},
+			methods = {
 				on: bean.add,
 				addListener: bean.add,
 				bind: bean.add,
@@ -97,7 +97,7 @@ define('sushi.$',
 				isVisible: function() {
 					var elem = this.get(0),
 						width = elem.offsetWidth,
-						height = elem.offsetHeight;	
+						height = elem.offsetHeight;
 					return !( width === 0 && height === 0 ) || (!support.reliableHiddenOffsets && ((elem.style && elem.style.display) || $(this).css( "display" )) === "none");
 				}
 			});
@@ -106,118 +106,118 @@ define('sushi.$',
 			for (var plugin in Sushi.fn) {
 				bonzoed[plugin] = Sushi.fn[plugin];
 			}
-    		
-    		Sushi.extend(bonzoed, {
-    		
-    			is: function(s, r) {
-					var i, l
+			
+			Sushi.extend(bonzoed, {
+			
+				is: function(s, r) {
+					var i, l;
 					for (i = 0, l = this.length; i < l; i++) {
 						if (qwery.is(this[i], s, r)) {
-							return true
+							return true;
 						}
 					}
-					return false
+					return false;
 				},
-    			
-    			parents: function (selector, closest) {
-					var collection = $(selector), j, k, p, r = []
+				
+				parents: function (selector, closest) {
+					var collection = $(selector), j, k, p, r = [];
 					for (j = 0, k = this.length; j < k; j++) {
-						p = this[j]
+						p = this[j];
 						while (p = p.parentNode) {
-						  if (~indexOf(collection, p)) {
-							r.push(p)
+							if (~indexOf(collection, p)) {
+								r.push(p);
 							if (closest) break;
-						  }
+							}
 						}
 					}
-					return $(uniq(r))
+					return $(uniq(r));
 				},
 			
-			  	parent: function() {
-					return $(uniq(bonzo(this).parent()))
+				parent: function() {
+					return $(uniq(bonzo(this).parent()));
 				},
 			
-			  	closest: function (selector) {
-					return this.parents(selector, true)
+				closest: function (selector) {
+					return this.parents(selector, true);
 				},
 			
-			  	first: function () {
-					return $(this.length ? this[0] : this)
+				first: function () {
+					return $(this.length ? this[0] : this);
 				},
 			
-			  	last: function () {
-					return $(this.length ? this[this.length - 1] : [])
+				last: function () {
+					return $(this.length ? this[this.length - 1] : []);
 				},
 			
-			  	next: function () {
+				next: function () {
 					return $(bonzo(this).next()[0]);
 				},
 				
 				offset: function () {
-					return bonzo(this).offset()
+					return bonzo(this).offset();
 				},
 			
-			  	previous: function () {
+				previous: function () {
 					return $(bonzo(this).previous()[0]);
 				},
 			
-			  	appendTo: function (t) {
-					return $(bonzo(this.selector).appendTo(t, this).get(0))
+				appendTo: function (t) {
+					return $(bonzo(this.selector).appendTo(t, this).get(0));
 				},
 			
-			  	prependTo: function (t) {
-					return $(bonzo(this.selector).prependTo(t, this).get(0))
+				prependTo: function (t) {
+					return $(bonzo(this.selector).prependTo(t, this).get(0));
 				},
 			
-			  	insertAfter: function (t) {
-					return $(bonzo(this.selector).insertAfter(t, this).get(0))
+				insertAfter: function (t) {
+					return $(bonzo(this.selector).insertAfter(t, this).get(0));
 				},
 			
-			  	insertBefore: function (t) {
-				  	return $(bonzo(this.selector).insertBefore(t, this).get(0))
+				insertBefore: function (t) {
+					return $(bonzo(this.selector).insertBefore(t, this).get(0));
 				},
 			
 				siblings: function () {
-				  	var i, l, p, r = []
-				  	for (i = 0, l = this.length; i < l; i++) {
-						p = this[i]
-						while (p = p.previousSibling) p.nodeType == 1 && r.push(p)
-						p = this[i]
-						while (p = p.nextSibling) p.nodeType == 1 && r.push(p)
+					var i, l, p, r = [];
+					for (i = 0, l = this.length; i < l; i++) {
+						p = this[i];
+						while (p = p.previousSibling) p.nodeType == 1 && r.push(p);
+						p = this[i];
+						while (p = p.nextSibling) p.nodeType == 1 && r.push(p);
 					}
-				  	return $(r)
+					return $(r);
 				},
 			
-			  	children: function () {
-				  	var i, el, r = []
-				  	for (i = 0, l = this.length; i < l; i++) {
+				children: function () {
+					var i, el, r = [];
+					for (i = 0, l = this.length; i < l; i++) {
 						if (!(el = bonzo.firstChild(this[i]))) continue;
-						r.push(el)
-						while (el = el.nextSibling) el.nodeType == 1 && r.push(el)
-				  	}
-				  	return $(uniq(r))
+						r.push(el);
+						while (el = el.nextSibling) el.nodeType == 1 && r.push(el);
+					}
+					return $(uniq(r));
 				},
 			
-			  	height: function (v) {
-				  	return dimension.call(this, 'height', v)
+				height: function (v) {
+					return dimension.call(this, 'height', v);
 				},
 			
-			  	width: function (v) {
-				  	return dimension.call(this, 'width', v)
+				width: function (v) {
+					return dimension.call(this, 'width', v);
 				},
-    			
-    			find: function (s) {
+				
+				find: function (s) {
 					var r = [], i, l, j, k, els;
 					for (i = 0, l = this.length; i < l; i++) {
-				 	 	els = qwery(s, this[i]);
+						els = qwery(s, this[i]);
 						for (j = 0, k = els.length; j < k; j++) {
 							r.push(els[j]);
 						}
 					}
 					return $(qwery.uniq(r));
-			  	},
-			  	
-			  	position: function() {
+				},
+
+				position: function() {
 					if ( !this[0] ) {
 						return null;
 					}
@@ -226,7 +226,7 @@ define('sushi.$',
 						// Get *real* offsetParent
 						offsetParent = this.offsetParent()[0],
 						// Get correct offsets
-						offset       = this.offset(),
+						offset = this.offset(),
 						parentOffset = rroot.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
 					
 					// Subtract element margins
@@ -257,47 +257,46 @@ define('sushi.$',
 				},
 				
 				toggle: function(setting){
-					return (setting === undefined ? this.css("display") == "none" : setting) ? this.show() : this.hide()
+					return (setting === undefined ? this.css("display") == "none" : setting) ? this.show() : this.hide();
 				}
-    		});
-    		
-    		// Aliases
-    		bonzoed.prev = bonzoed.previous;
-    		
-    		return bonzoed;
-    	};
-    	
-    	// Helpers
-    	function dimension(type, v) {
-    		var elem = this;
-    		if (this.get(0) === document || this.get(0) === window) elem = $(document.body)
-			return typeof v == 'undefined'
-			  ? bonzo(elem).dim()[type]
-			  : elem.css(type, v)
+			});
+			
+			// Aliases
+			bonzoed.prev = bonzoed.previous;
+			
+			return bonzoed;
+		};
+		
+		// Helpers
+		function dimension(type, v) {
+			var elem = this;
+			if (this.get(0) === document || this.get(0) === window) elem = $(document.body);
+			return typeof v == 'undefined' ? bonzo(elem).dim()[type] : elem.css(type, v);
 		}
 		
 		function indexOf(ar, val) {
-			for (var i = 0; i < ar.length; i++) if (ar[i] === val) return i
-			return -1
-	  	}
+			for (var i = 0; i < ar.length; i++) if (ar[i] === val) return i;
+			return -1;
+		}
 	
 		function uniq(ar) {
-			var r = [], i = 0, j = 0, k, item, inIt
+			var r = [], i = 0, j = 0, k, item, inIt;
 			for (; item = ar[i]; ++i) {
-			  	inIt = false
-			  	for (k = 0; k < r.length; ++k) {
+				inIt = false;
+				for (k = 0; k < r.length; ++k) {
 					if (r[k] === item) {
-				  		inIt = true; break
+						inIt = true;
+						break;
 					}
-			  	}
-			  	if (!inIt) r[j++] = item
+				}
+				if (!inIt) r[j++] = item;
 			}
-			return r
+			return r;
 		}
-    	
-    	//Sugars
-    	Sushi.fn = $;
-    	
-    	return Sushi;
-    } 
+		
+		//Sugars
+		Sushi.fn = $;
+		
+		return Sushi;
+	}
 );
