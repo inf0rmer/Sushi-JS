@@ -130,7 +130,7 @@ define('sushi.mvc.model',
 				if (html = this._escapedAttributes[attr]) return html;
 
 				val = this.attributes[attr];
-				return this._escapedAttributes[attr] = escapeHTML(val === null ? '' : '' + val);
+				return this._escapedAttributes[attr] = escapeHTML(val == null ? '' : '' + val);
 			},
 
 			/**
@@ -142,7 +142,7 @@ define('sushi.mvc.model',
 			 * @return {Boolean}
 			 */
 			has: function(attr) {
-				return this.attributes[attr] !== null;
+				return this.attributes[attr] != null;
 			},
 
 			/**
@@ -163,7 +163,7 @@ define('sushi.mvc.model',
 					alreadySetting,
 					val;
 
-				if (utils.isObject(key) || key === null) {
+				if (utils.isObject(key) || key == null) {
 					attrs = key;
 					options = value;
 				} else {
@@ -255,7 +255,7 @@ define('sushi.mvc.model',
 
 			save: function(key, value, options) {
 				var attrs, current;
-				if (utils.isObject(key) || key === null) {
+				if (utils.isObject(key) || key == null) {
 					attrs = key;
 					options = value;
 				} else {
@@ -368,7 +368,7 @@ define('sushi.mvc.model',
 			 * @return {Boolean}
 			 */
 			isNew: function() {
-				return this.id === null;
+				return this.id == null;
 			},
 
 			/**

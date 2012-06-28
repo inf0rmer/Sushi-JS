@@ -10,53 +10,53 @@
 				constructor: function(attributes, options) {
 					Animal.Super.call(this, attributes, options);
 				},
-				
+
 				defaults: function() {
 					return {
 						name	: 'Puff, the magic dragon'
 					}
 				}
 			});
-				
+
 			var AnimalCollection = new Sushi.Class(Sushi.Collection, {
 				constructor: function(models, options) {
 					AnimalCollection.Super.call(this, models, options);
 				},
-				
+
 				model: Animal,
-				
+
 				store: new Sushi.stores.LocalStore('animals')
 			});
-			
+
 			animals = new AnimalCollection();
-			
+
 			module('LocalStore');
 			test('Emptying localStore', function() {
 				animals.create({name: 'Mittens'});
 				animals.create({name: 'Old Yeller'});
-				
+
 				animals.store.empty();
 				animals.fetch();
 				equals(animals.length, 0);
 			});
-			
+
 			test('Fetching from localStore', function() {
 				animals.store.empty();
 				animals.create({name: 'Mittens'});
 				animals.create({name: 'Old Yeller'});
-			
+
 				animals.reset();
 				animals.fetch();
 				equals(animals.length, 2);
 				//animals.store.empty();
 			});
-			
+
 			asyncTest('Removing from localStore', function() {
 				animals.store.empty();
 				animals.reset();
 				animals.create({name: 'Mittens'});
 				animals.create({name: 'Old Yeller'});
-				
+
 				animals.fetch({
 					success: function() {
 						var anAnimal = animals.at(0);

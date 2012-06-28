@@ -15,7 +15,7 @@ define('sushi.$',
 		'sushi.bean',
 		'sushi.ajax'
 	],
-	
+
 	/**
 	 * Sushi $
 	 *
@@ -24,33 +24,33 @@ define('sushi.$',
 	 */
 	function(Sushi, utils, collection, support, qwery, bonzo, bean, ajax) {
 		var $;
-		
+
 		bonzo.setQueryEngine(qwery);
 		bean.setSelectorEngine(qwery);
-		
+
 		$ = function(selector, context) {
 			var q,
 			match,
 			quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 			rroot = /^(?:body|html)$/i,
 			element;
-			
+
 			// If selector is a function, handle it as being domReady - support $(function(){})
 			if (utils.isFunction(selector)) {
 				return Sushi.ready( selector );
 			}
-			
+
 			if (selector === '#' || selector === '.') selector = '';
-				
+
 			// If the selector is a tag-like string, create it instead of qwerying it.
 			match = quickExpr.exec(selector);
-			
+
 			if (match && match[1]) {
 				element = bonzo.create(selector);
 			} else {
 				element = bonzo(qwery(selector, context));
 			}
-			
+
 			var _slice = Array.prototype.slice,
 			_bind = function(fn, context) {
 				return function() {
@@ -76,23 +76,23 @@ define('sushi.$',
 				listen: bean.add,
 				delegate: bean.add,
 				one: bean.one,
-			
+
 				unbind: bean.remove,
 				off: bean.remove,
 				unlisten: bean.remove,
 				removeListener: bean.remove,
 				undelegate: bean.remove,
-			
+
 				emit: bean.fire,
 				trigger: bean.fire
 			};
-			
+
 			for (var method in methods) {
 				methods[method] = _bind(methods[method], element);
 			}
-			
+
 			var bonzoed = Sushi.extend(bonzo(element), methods);
-			
+
 			Sushi.extend(bonzoed, {
 				isVisible: function() {
 					var elem = this.get(0),
@@ -101,14 +101,14 @@ define('sushi.$',
 					return !( width === 0 && height === 0 ) || (!support.reliableHiddenOffsets && ((elem.style && elem.style.display) || $(this).css( "display" )) === "none");
 				}
 			});
-			
+
 			// extend plugins
 			for (var plugin in Sushi.fn) {
 				bonzoed[plugin] = Sushi.fn[plugin];
 			}
-			
+
 			Sushi.extend(bonzoed, {
-			
+
 				is: function(s, r) {
 					var i, l;
 					for (i = 0, l = this.length; i < l; i++) {
@@ -118,7 +118,7 @@ define('sushi.$',
 					}
 					return false;
 				},
-				
+
 				parents: function (selector, closest) {
 					var collection = $(selector), j, k, p, r = [];
 					for (j = 0, k = this.length; j < k; j++) {
@@ -132,51 +132,51 @@ define('sushi.$',
 					}
 					return $(uniq(r));
 				},
-			
+
 				parent: function() {
 					return $(uniq(bonzo(this).parent()));
 				},
-			
+
 				closest: function (selector) {
 					return this.parents(selector, true);
 				},
-			
+
 				first: function () {
 					return $(this.length ? this[0] : this);
 				},
-			
+
 				last: function () {
 					return $(this.length ? this[this.length - 1] : []);
 				},
-			
+
 				next: function () {
 					return $(bonzo(this).next()[0]);
 				},
-				
+
 				offset: function () {
 					return bonzo(this).offset();
 				},
-			
+
 				previous: function () {
 					return $(bonzo(this).previous()[0]);
 				},
-			
+
 				appendTo: function (t) {
 					return $(bonzo(this.selector).appendTo(t, this).get(0));
 				},
-			
+
 				prependTo: function (t) {
 					return $(bonzo(this.selector).prependTo(t, this).get(0));
 				},
-			
+
 				insertAfter: function (t) {
 					return $(bonzo(this.selector).insertAfter(t, this).get(0));
 				},
-			
+
 				insertBefore: function (t) {
 					return $(bonzo(this.selector).insertBefore(t, this).get(0));
 				},
-			
+
 				siblings: function () {
 					var i, l, p, r = [];
 					for (i = 0, l = this.length; i < l; i++) {
@@ -187,7 +187,7 @@ define('sushi.$',
 					}
 					return $(r);
 				},
-			
+
 				children: function () {
 					var i, el, r = [];
 					for (i = 0, l = this.length; i < l; i++) {
@@ -197,15 +197,15 @@ define('sushi.$',
 					}
 					return $(uniq(r));
 				},
-			
+
 				height: function (v) {
 					return dimension.call(this, 'height', v);
 				},
-			
+
 				width: function (v) {
 					return dimension.call(this, 'width', v);
 				},
-				
+
 				find: function (s) {
 					var r = [], i, l, j, k, els;
 					for (i = 0, l = this.length; i < l; i++) {
@@ -221,31 +221,31 @@ define('sushi.$',
 					if ( !this[0] ) {
 						return null;
 					}
-			
+
 					var elem = this[0],
 						// Get *real* offsetParent
 						offsetParent = this.offsetParent()[0],
 						// Get correct offsets
 						offset = this.offset(),
 						parentOffset = rroot.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
-					
+
 					// Subtract element margins
 					// note: when an element has margin: auto the offsetLeft and marginLeft
 					// are the same in Safari causing offset.left to incorrectly be 0
 					offset.top  -= parseFloat( $(elem).css("marginTop") ) || 0;
 					offset.left -= parseFloat( $(elem).css("marginLeft") ) || 0;
-			
+
 					// Add offsetParent borders
 					parentOffset.top  += parseFloat( $(offsetParent[0]).css("borderTopWidth") ) || 0;
 					parentOffset.left += parseFloat( $(offsetParent[0]).css("borderLeftWidth") ) || 0;
-			
+
 					// Subtract the two offsets
 					return {
 						top:  offset.top  - parentOffset.top,
 						left: offset.left - parentOffset.left
 					};
 				},
-			
+
 				offsetParent: function() {
 					return collection.map(this, function(elem) {
 						var offsetParent = elem.offsetParent || document.body;
@@ -255,30 +255,30 @@ define('sushi.$',
 						return $(offsetParent);
 					});
 				},
-				
+
 				toggle: function(setting){
 					return (setting === undefined ? this.css("display") == "none" : setting) ? this.show() : this.hide();
 				}
 			});
-			
+
 			// Aliases
 			bonzoed.prev = bonzoed.previous;
-			
+
 			return bonzoed;
 		};
-		
+
 		// Helpers
 		function dimension(type, v) {
 			var elem = this;
 			if (this.get(0) === document || this.get(0) === window) elem = $(document.body);
 			return typeof v == 'undefined' ? bonzo(elem).dim()[type] : elem.css(type, v);
 		}
-		
+
 		function indexOf(ar, val) {
 			for (var i = 0; i < ar.length; i++) if (ar[i] === val) return i;
 			return -1;
 		}
-	
+
 		function uniq(ar) {
 			var r = [], i = 0, j = 0, k, item, inIt;
 			for (; item = ar[i]; ++i) {
@@ -293,10 +293,10 @@ define('sushi.$',
 			}
 			return r;
 		}
-		
+
 		//Sugars
 		Sushi.fn = $;
-		
+
 		return Sushi;
 	}
 );

@@ -6,17 +6,17 @@
 	<script src="../qunit/qunit.js"></script>
 	<script>
 		function runTests() {
-			
+
 			module('Models');
 			test('Sushi.Model', function() {
 				ok(Sushi.Model, 'Sushi.Model is defined');
 			});
-			
+
 			var MyModel = new Sushi.Class(Sushi.Model, {
 				constructor: function(attributes, options) {
 					MyModel.Super.call(this, attributes, options);
 				},
-				
+
 				defaults: function() {
 					return {
 						content	: 'Custom content',
@@ -26,153 +26,153 @@
 					}
 				}
 			});
-			
+
 			window.MyModel = MyModel;
-			
+
 			test('Model get()', function() {
 				var model = new MyModel();
 				equals(model.get('content'), 'Custom content', 'Model.get() works');
 			});
-			
+
 			test('Model deep get()', function() {
 				var model = new MyModel();
 				equals(model.get('deep.content'), 'This is deep content, almost metaphysical.', 'Model.get() with deep objects works');
 			});
-			
+
 			test('Model.escape()', function() {
 				var model = new MyModel({content: '<li>A list item</li>'});
 				equals(model.escape('content'), '&lt;li&gt;A list item&lt;&#x2F;li&gt;', 'Model.escape() works');
 			});
-			
+
 			test('Model.set()', function() {
 				var model = new MyModel();
 				model.set({content: 'New Content'});
 				equals(model.get('content'), 'New Content', 'Model.set() works');
 			});
-			
+
 			test('Model.has()', function() {
 				var model = new MyModel();
 				ok(model.has('content'), 'Model.has works');
 			});
-			
+
 			test('Model.unset()', function() {
 				var model = new MyModel();
 				model.unset('content');
-				
+
 				ok(!model.has('content'), 'Model.unset() works');
 			});
-			
+
 			test('Model.clear()', function() {
 				var model = new MyModel({a: 1, b: 2, c: 3});
 				model.clear();
 				deepEqual(model.attributes, {}, 'Model.clear() works');
 			});
-			
+
 			test('Model.toJSON()', function() {
 				var model = new MyModel();
 				deepEqual(model.attributes, model.toJSON(), 'Model.toJSON works');
 			});
-			
+
 			test('Model.clone()', function() {
 				var model = new MyModel({content: 'unique'}),
 					cloned = model.clone();
 				deepEqual(cloned.get('content'), model.get('content'), 'Model.clone() works');
 			});
-						
+
 			module('Views');
 			test('Sushi.View', function() {
 				ok(Sushi.View, 'Sushi.View is defined');
 			});
-			
+
 			// Set up code
 			var MyView = new Sushi.Class(Sushi.View, {
 				constructor: function(options) {
 					MyView.Super.call(this, options);
 				},
-				
+
 				tagName: 'article',
 				className: 'testview'
 			});
-			
+
 			var view = new MyView({model: 'model'});
-				
+
 			test('Create view', function() {
 				equals(view.model, 'model', 'View was created as Sushi.View subclass');
 			});
-			
-			test('Render view', function() {				
+
+			test('Render view', function() {
 				$('body').append(view.render().el);
 				var el = $('body .testview');
-				
+
 				ok(el.length, 'View was rendered');
-				
+
 				//Cleanup
 				view.dealloc();
 			});
-			
+
 			test('Render with template', function() {
 				var MyView = new Sushi.Class(Sushi.View, {
 					constructor: function(options) {
 						MyView.Super.call(this, options);
 					},
-					
+
 					tagName: 'article',
 					className: 'testview',
-					
+
 					template: Sushi.template.compile('Hello, this is {{text}}.'),
-					
+
 					render: function() {
 						$(this.el).html(this.template({text: 'Dog'}));
 						return this;
 					}
 				});
-				
+
 				var view = new MyView();
 				$('body').append(view.render().el);
 				var el = $('body .testview');
-				
+
 				ok(el.length, 'View was rendered');
 				equals(el.text(), 'Hello, this is Dog.', 'Render action was overriden and text was correctly set from template');
-				
+
 				//Cleanup
 				view.dealloc();
 			});
-			
+
 			test('Render with events', function() {
 				var MyView = new Sushi.Class(Sushi.View, {
 					constructor: function(options) {
 						MyView.Super.call(this, options);
 					},
-					
+
 					tagName: 'article',
 					className: 'testview',
-					
+
 					events: {
 						'click .clickMe': 'respond'
 					},
-					
+
 					template: Sushi.template.compile('Hello, this is {{text}}. <button class="clickMe">Respond?</button>'),
-					
+
 					render: function() {
 						$(this.el).html(this.template({text: 'Dog'}));
 						return this;
 					},
-					
+
 					respond: function(e) {
 						equals(e.type, 'click', 'Click event was attached correctly');
 						el.remove();
 					}
 				});
-				
+
 				var view = new MyView();
 				$('body').append(view.render().el);
 				var el = $('body .testview');
 				$('body .testview .clickMe').trigger('click');
-				
+
 				//Cleanup
 				view.dealloc();
 			});
-			
+
 			test('Bind view to model', function() {
 				var model = new MyModel({content: 'Cat'}),
 					MyView = new Sushi.Class(Sushi.View, {
@@ -180,48 +180,48 @@
 							MyView.Super.call(this, options);
 							this._configure(options || {});
 						},
-						
+
 						tagName: 'article',
 						className: 'testview',
-						
+
 						template: Sushi.template.compile('Hello, this is {{content}}.'),
-						
+
 						initialize: function() {
 							this.model.bind('change', this.render, this);
 						},
-						
+
 						render: function() {
 							$(this.el).html(this.template(this.model.toJSON()));
 							return this;
 						}
 					}),
 					view = new MyView({model: model});
-					
+
 				$('body').append(view.render().el);
-				
+
 				equals($('body .testview').html(), 'Hello, this is Cat.', 'Rendered with original model content');
-				
+
 				model.set({content: 'Dog'});
-				
+
 				equals($('body .testview').html(), 'Hello, this is Dog.', 'View element was updated after model changed');
-				
+
 				model.set({content: 'Turtle'}, {silent: true});
-				
+
 				equals($('body .testview').html(), 'Hello, this is Dog.', 'View element was not updated after model changed with silent option');
-				
+
 				//Cleanup
 				view.dealloc();
 			});
-			
+
 			test('Cocoa-like View bindings', function() {
 				var categoryClassTransformer = function(value) {
 					return (value) ? value.toLowerCase().replace(/ /g, '') : '';
 				};
-				
+
 				var triedClassTransformer = function(value) {
 					return (value == true) ? 'tried' : 'todo';
 				};
-				
+
 				var Meal = new Sushi.Class(Sushi.Model, {
 						constructor: function(attributes) {
 							Meal.Super.call(this, attributes);
@@ -232,11 +232,11 @@
 							MealLogView.Super.call(this, options);
 							this._configure(options || {});
 						},
-						
+
 						tagName: 'form',
 						className: 'meal-log',
 						template: $.template.compile($('#meal-log').html()),
-						
+
 						bindings: {
 							'class': ['category', categoryClassTransformer],
 							'class': ['tried', triedClassTransformer],
@@ -245,11 +245,11 @@
 							'value textarea[name="notes"]': 'notes',
 							'checked input[name="tried"]': 'tried'
 						},
-						
+
 						events: {
 							'submit': 'save'
 						},
-				
+
 						save: function(event) {
 							alert("Save: " + $.utils.json.stringify(this.model.toJSON()));
 							event.preventDefault();
@@ -260,79 +260,79 @@
 							return this.bindModel();
 						}
 					});
-					
+
 				var meal = new Meal({
 					category: "fastfood",
 					name: "Coney",
 					notes: "Delish!",
 					tried: true
 				});
-				
+
 				var logView = new MealLogView({
 					model: meal
 				});
-				
+
 				$('body').append(logView.render().el);
 
 				meal.set({name: 'Burguer'});
-				
+
 				equals(logView.$el.find('h1').text(), 'Burguer', 'Title changed when model was changed');
-				
+
 				logView.dealloc();
 			});
-			
-			
+
+
 			module('Collections');
 			//Set up
 			var Todo = new Sushi.Class(Sushi.Model, {
 				constructor: function(attributes, options) {
 					Todo.Super.call(this, attributes, options);
 				},
-				
+
 				defaults: function() {
 					return {
 						done: false,
 						order: list.nextOrder()
 					}
 				},
-				
+
 				toggle: function() {
 					this.save({done: !this.get('done')})
 				}
 			});
-			
+
 			var TodoList = new Sushi.Class(Sushi.Collection, {
 				constructor: function(models, options) {
 					TodoList.Super.call(this, models, options);
 				},
-				
+
 				model: Todo,
-				
+
 				done: function() {
 					return this.filter(function(todo){ return todo.get('done'); });
 				},
-				
+
 				remaining: function() {
 					return this.without.apply(this, this.done());
 				},
-				
+
 				nextOrder: function() {
 					if (!this.length) return 1;
 					return this.last().get('order') + 1;
 				},
-				
+
 				comparator: function(todo) {
 					return todo.get('order');
 				}
 			});
-			
+
 			var list;
-			
+
 			test('Create a new Sushi.Collection', function() {
 				list = new TodoList;
 				ok((list instanceof Sushi.Collection), 'Collection created successfully');
 			});
-			
+
 			test('Populate Collection', function() {
 				list = new TodoList;
 				list.add(
@@ -343,17 +343,17 @@
 						{text: 'Watch the football game', done: false}
 					]
 				);
-				
+
 				equals(list.length, 4, 'Collection populated successfully');
-				
+
 				list.remove(list.last());
-				
+
 				equals(list.length, 3, 'Removed one item from collection successfully');
 			});
-			
+
 			test('Run shared collection methods', function() {
 				list = new TodoList;
-				
+
 				list.add(
 					[
 						{text: 'Take a shower', done: true},
@@ -361,15 +361,15 @@
 						{text: 'Cook dinner', done: false}
 					]
 				);
-				
+
 				equals(list.at(0).get('text'), 'Take a shower', 'Model 0 has correct attributes');
-				
+
 				var cid = list.at(1).cid;
 				equals(list.getByCid(cid).cid, cid);
-				
+
 				deepEqual(list.pluck('text'), ['Take a shower', 'Pick up laundry', 'Cook dinner'], 'list.pluck("text") correctly extracts texts');
 			});
-			
+
 			test('Run instance specific methods', function() {
 				list = new TodoList;
 				list.add(
@@ -379,60 +379,76 @@
 						{text: 'Cook dinner', done: false}
 					]
 				);
-				
+
 				var done = list.done(),
 					remaining = list.remaining();
-					
+
 				equals(done.length, 1, 'list.done().length is correct');
 				equals(remaining.length, 2, 'list.done().length is correct');
-				
+
 				equals(remaining[0].get('text'), 'Pick up laundry', 'list.remaining()[0] model is correct');
 				equals(done[0].get('text'), 'Take a shower', 'list.done()[0] model is correct');
 			});
-			
+
 			(function() {
-			
+
 				var Stage, stage;
-			
+
 				module('Manager');
 				test('Can create a Stage', function() {
 					Stage = new Sushi.Class(Sushi.manager.Stage, {
 						constructor: function(options) {
 							Stage.Super.call(this, options);
 						},
-						
+
 						skeleton: Sushi.template.compile('<article class="viewport"></article>')
 					});
-					
+
 					stage = new Stage({
 						name: 'test-stage',
 						el: '#stage-body'
 					});
-					
+
 					ok(stage instanceof Sushi.manager.Stage, 'Stage was created');
 					equals(stage.options.name, 'test-stage', 'Stage has correct name');
 					equals($(stage.options.el).get(0), stage.$el.get(0), 'Stage has correct element');
 				});
-				
+
 				test('Can create a Panel', function() {
+					Stage = new Sushi.Class(Sushi.manager.Stage, {
+						constructor: function(options) {
+							Stage.Super.call(this, options);
+							this._setup(options, 'stage');
+						},
+
+						skeleton: Sushi.template.compile('<article class="viewport"></article>')
+					});
+
+					stage = new Stage({
+						name: 'test-stage',
+						el: '#stage-body'
+					});
+
 					var Panel = new Sushi.Class(Sushi.manager.Panel, {
 						constructor: function(options) {
 							Panel.Super.call(this, options);
 							this._setup(options, 'panel');
 						}
 					}),
-					
+
 					panel = new Panel({
 						name: 'test-panel',
 						stage: stage
 					});
-					
+
+
+
 					ok(panel instanceof Sushi.manager.Panel, 'Panel was created');
 					equals(panel.options.name, 'test-panel', 'Panel has correct name');
 				})
-			
+
 			}());
-			
+
 		}
 	</script>
 	<script data-main="sushi.base.js" src="../../src/vendors/require.js"></script>
@@ -443,9 +459,9 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
-	
+
 	<div id="stage-body"></div>
-	
+
 	<script id="meal-log" type="text/template">
 		<h1 class="name"></h1>
 		<p><label>Meal Name:</label> <input type="text" name="name"></p>
