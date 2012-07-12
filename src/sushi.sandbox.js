@@ -102,7 +102,7 @@ define('sushi.sandbox',
 				el = args[0],
 				file = lang.decamelize(channel);
 
-			mediator.publish(channel, 'unload', args);
+			mediator.publish.apply(mediator, [channel, 'unload'].concat(args));
 			// Remove all modules under a widget path (e.g widgets/todos)
 			mediator.unload(baseUrl + file);
 
