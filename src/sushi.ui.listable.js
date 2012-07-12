@@ -288,7 +288,7 @@ define('sushi.ui.listable',
 					if (this.emptyView) this.emptyView.dealloc();
 
 					var view = new ItemView( {model: item} );
-					this.$el.append( view.render().el );
+					this.$el[that.options.listMethod]( view.render().el );
 
 					return this;
 				},
@@ -475,6 +475,7 @@ define('sushi.ui.listable',
 				}
 			],
 			listType: 'unordered',
+			listMethod: 'append',
 			scrollable: true,
 			title: {
 				template: '<h1 class="listable-title">{{content}}</h1>'
