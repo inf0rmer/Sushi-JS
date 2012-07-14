@@ -1,0 +1,11 @@
+# FX
+
+Special effects are the whole point of the Web, so there you go: a minimal animation library.
+It uses CSS transitions exclusively, JS animations suck.
+You can turn all animations off by setting ```$.fx.off = true```
+
+* **animate**, **anim**: Animate CSS properties in a time lapse.
+* **fadeIn**
+* **fadeOut**
+* **fadeToggle**
+* **fadeTo**

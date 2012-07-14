@@ -1,0 +1,12 @@
+# Aspectify
+
+This module allows you to integrate Aspect Oriented Programming with your Sushi Classes.
+It allows you to decouple logic that should be ran before or after a Class method from the method itself.
+Based on an earlier version of the YouAreDaChef library.
+
+You get four methods with which to "advise" your methods:
+
+* **before**: Executed before the method call
+* **after**: Executed after the method call
+* **guard**: Executed before method call, but the method only executes if it returns true
+* **around**: Wraps the original method; It is passed the parameters and the default advice, takes care of executing and decides what to return

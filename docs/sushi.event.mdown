@@ -1,0 +1,9 @@
+# Event
+
+A small publish/subscribe event library. You can mix it in with your objects to give them superhero event powers.
+
+It's really just three functions, but you get a metric ton of aliases because everybody loves binding events differently.
+
+* **subscribe**, **bind**, **on**: Execute a callback when a named event is triggered
+* **unsubscribe**, **unbind**, **off**: Stop listening to this event
+* **publish**, **trigger**, **fire**: Trigger an event, pass parameters with it

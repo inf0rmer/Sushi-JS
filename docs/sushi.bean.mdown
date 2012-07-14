@@ -1,0 +1,3 @@
+# Bean
+
+A DOM event handling utility. Straight up imports the **bean** library.

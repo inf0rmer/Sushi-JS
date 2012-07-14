@@ -1,0 +1,9 @@
+# Core
+
+At its core (heh) Sushi provides you with:
+
+* A Class system built on prototypal inheritance
+* A namespacing utility
+* An extend() function
+* A ready() function, from sushi.domready
+* A noop Sushi/$ function

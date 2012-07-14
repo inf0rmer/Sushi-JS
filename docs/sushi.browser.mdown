@@ -1,0 +1,3 @@
+# Browser
+
+Because life sucks at times, Sushi.browser lets you know which browser you're running on.

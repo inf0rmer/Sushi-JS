@@ -5,21 +5,10 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-# Non generated docs #
-######################
-docs/buildDocs.sh
-docs/parser
-docs/template
-
 # JSlint #
 ######################
 linter.sh
 lint_results.log
-
-# Docs folder #
-######################
-docs
-docs/*
 
 
 .DS_Store

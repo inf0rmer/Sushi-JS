@@ -1,0 +1,13 @@
+# History
+
+API for browser history navigation. It defaults to hash based URLs, but also supports pushState by passing it in the options hash. It borrows heavily from Backbone's History implementation.
+
+Here's what you get:
+
+* **start**: Start listening for history events
+* **stop**: Stop listening
+* **route**: Register a new route
+* **checkUrl**: Polling/Callback function that loads URLs as they change
+* **loadUrl**: Matches a URL against a registered route
+* **navigate**: Makes the browser navigate to a URL, triggering appropriate routes if you pass in ```{trigger: true}```
+* **getFragment**: Gets fragment from URL bar and passes it to a stripping regex

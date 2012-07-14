@@ -1,0 +1,4 @@
+# DOMReady
+
+A DOMReady implementation. That's... about it.
+Pass a function to the module and it gets executed when the DOM is ready. Just like jQuery.

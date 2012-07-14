@@ -1,0 +1,10 @@
+# Date
+
+Sushi.date provides several date handling and manipulation functions. It also supports locales.
+
+Here's what you get:
+
+* **fromString**: Creates a Date object from a string representation
+* **toRelativeTime**: Converts a Date to a relative time string
+* **strftime**: Get a string representation of a Date according to specified format
+* **setLocale**: What it says in the name

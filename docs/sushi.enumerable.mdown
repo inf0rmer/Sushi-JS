@@ -1,0 +1,3 @@
+# Enumerable
+
+Decorates a collection-like object (arrays, object hashes) with collection methods from Sushi.utils.collection.

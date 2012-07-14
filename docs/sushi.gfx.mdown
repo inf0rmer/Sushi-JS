@@ -1,0 +1,16 @@
+# GFX
+
+Because Sushi.fx may not be flashy enough, GFX adds awesome animations/transitions.
+
+**gfxPopIn**
+**gfxPopOut**
+**gfxShake**
+**gfxBlip**
+**gfxExplodeIn**
+**gfxExplodeOut**
+**gfxFlipIn**
+**gfxFlipOut**
+**gfxRotateIn**
+**gfxRotateOut**
+**gfxSlideIn**
+**gfxSlideOut**

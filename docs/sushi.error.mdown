@@ -1,0 +1,3 @@
+# Error
+
+Wraps the native Error Object and shows you the Error call stack.

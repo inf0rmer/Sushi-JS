@@ -1,0 +1,10 @@
+# Sushi(), or $()
+
+This module replaces the noop Sushi/$ function with a sort-of jQuery DOM API. It requires various other modules and builds a coherent bridge for common interoperability.
+
+In a nutshell, here's what you get:
+
+* AJAX, from sushi.ajax
+* A querySelectorAll API, from sushi.qwery
+* A DOM utility, from sushi.bonzo
+* A DOM event utility, from sushi.bean

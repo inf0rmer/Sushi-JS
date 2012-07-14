@@ -1,0 +1,10 @@
+# AJAX
+
+A straightforward AJAX implementation courtesy of the Reqwest library.
+The Sushi module adds some extra sugars, such as:
+
+* A jQuery-like API, because we're all so used to it by now
+* get()
+* getJSON()
+* getScript()
+* post()
