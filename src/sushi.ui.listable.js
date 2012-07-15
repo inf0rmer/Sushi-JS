@@ -2,38 +2,39 @@
  * Sushi.ui.listable
  *
  */
- define('sushi.ui.listable',
- 	// Module dependencies
- 	[
- 		'sushi.core',
- 		'sushi.event',
- 		'sushi.$',
- 		'sushi.template',
- 		'sushi.mvc.view',
- 		'sushi.mvc.model',
- 		'sushi.mvc.collection',
- 		'sushi.utils',
- 		'sushi.error',
- 		'sushi.utils.json',
- 		'sushi.utils.performance',
- 		'sushi.mvc.view.bindings',
- 		'sushi.ui.scrollable'
- 	],
+define('sushi.ui.listable',
+	// Module dependencies
+	[
+		'sushi.core',
+		'sushi.event',
+		'sushi.$',
+		'sushi.template',
+		'sushi.mvc.view',
+		'sushi.mvc.model',
+		'sushi.mvc.collection',
+		'sushi.utils',
+		'sushi.error',
+		'sushi.utils.json',
+		'sushi.utils.performance',
+		'sushi.mvc.view.bindings',
+		'sushi.ui.scrollable'
+	],
 
- 	/**
- 	 * Sushi ui.listable
- 	 *
- 	 * @namespace Sushi
- 	 * @class ui.listable
- 	 */
- 	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, performance) {
+	/**
+	 * Sushi ui.listable
+	 *
+	 * @namespace Sushi
+	 * @class ui.listable
+	 */
+	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, performance) {
 
- 		Listable = function(element, options) {
+		Listable = function(element, options) {
 
- 			var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView, LoadingView,
- 				that = this;
+			var Listable, isCollection, ListCollection, SearchView, ListView, ItemView, ItemModel, TitleModel, TitleView, EmptyView, LoadingView,
+				that = this;
 
- 			this.$element = $(element)
+			this.$element = $(element);
+
 			this.options = Sushi.extend({}, this.options, options);
 
 			this.source = (typeof this.options.source === 'string') ? JSON.parse(this.options.source) : this.options.source;
@@ -248,9 +249,13 @@
 
 				className: 'listable-list unstyled',
 
+				_height: 0,
+
 				initialize: function(options) {
 					this.collection.bind('reset', this.addAll, this);
 					this.collection.bind('add', this.addOne, this);
+					this.collection.bind('add', this.setHeight, this);
+					this.collection.bind('remove', this.setHeight, this);
 
 					that.bind('search', this.search, this);
 
@@ -283,8 +288,8 @@
 				addOne: function(item) {
 					if (this.emptyView) this.emptyView.dealloc();
 
-					var view = new ItemView( {model: item} )
-					this.$el.append( view.render().el );
+					var view = new ItemView( {model: item} );
+					this.$el[that.options.listMethod]( view.render().el );
 
 					return this;
 				},
@@ -304,6 +309,10 @@
 					return this;
 				},
 
+				setHeight: function() {
+					this._height = this.$el.get(0).scrollHeight - this.$el.get(0).offsetHeight;
+				},
+
 				search: function(collection) {
 					this.addAll.call(this, collection);
 				}
@@ -314,25 +323,25 @@
 			if (!isCollection) this.source = new ListCollection(this.source);
 
 			this.render();
- 		}
+		}
 
- 		// Public API
- 		Listable.prototype = {
+		// Public API
+		Listable.prototype = {
 
- 			setLoading: function() {
+			setLoading: function() {
 				this.unsetLoading();
 
 				var element = (this.options.scrollable) ? '.scrollable-wrap' : '.listable-list',
 					$element = this.$element.find(element);
 
- 				if ($element.length)
- 					$element.hide();
+				if ($element.length)
+					$element.hide();
 
- 				this.loadingView = new this.LoadingView();
- 				this.$element.append(this.loadingView.render().el);
- 			},
+				this.loadingView = new this.LoadingView();
+				this.$element.append(this.loadingView.render().el);
+			},
 
- 			unsetLoading: function() {
+			unsetLoading: function() {
 				if (this.loadingView) {
 					this.loadingView.dealloc();
 					this.loadingView = null;
@@ -342,73 +351,95 @@
 					$element = this.$element.find(element);
 
 				if ($element.length)
- 					$element.show();
- 			},
+					$element.show();
+			},
 
- 			dealloc: function() {
+			dealloc: function() {
 
- 				if (this.titleView)
-	 				this.titleView.dealloc();
+				if (this.titleView)
+					this.titleView.dealloc();
 
-	 			if (this.searchView)
-	 				this.searchView.dealloc();
+				if (this.searchView)
+					this.searchView.dealloc();
 
-	 			if (this.listView)
-	 				this.listView.dealloc();
+				if (this.listView)
+					this.listView.dealloc();
 
- 				this.$element.html('');
- 			},
+				this.$element.html('');
+			},
 
- 			render: function() {
+			render: function() {
 
- 				var i, len, component, view, piece;
+				var i, len, component, view, piece, $elForScrollEvent, scrollEventCallback, that = this;
 
- 				this.dealloc();
+				this.dealloc();
 
- 				for (i=0, len=this.uses.length; i<len; i++) {
- 					component = this.uses[i];
+				for (i=0, len=this.uses.length; i<len; i++) {
+					component = this.uses[i];
 
- 					switch (component.type) {
- 						case 'title':
- 							this.titleView = view = new this.TitleView({data: component});
- 							piece = view.render().el;
- 							break;
+					switch (component.type) {
+						case 'title':
+							this.titleView = view = new this.TitleView({data: component});
+							piece = view.render().el;
+							break;
 
- 						case 'search':
- 							this.searchView = view = new this.SearchView({collection: this.source, data: component});
- 							piece = view.render().el
- 							break;
+						case 'search':
+							this.searchView = view = new this.SearchView({collection: this.source, data: component});
+							piece = view.render().el;
+							break;
 
- 						case 'list':
- 							this.listView = view = new this.ListView({collection: this.source, data: component});
- 							piece = view.render().el;
+						case 'list':
+							this.listView = view = new this.ListView({collection: this.source, data: component});
+							piece = view.render().el;
 
- 							if (this.options.scrollable) {
+							if (this.options.scrollable) {
 								var $wrap = $('<div class="scrollable-wrap"><div class="scrollable-inner"></div></div>');
 								$wrap.find('.scrollable-inner').append(piece);
 								piece = $wrap.get(0);
 							}
 
- 							break;
- 					}
+							break;
+					}
 
- 					this.$element.append(piece);
- 				}
+					this.$element.append(piece);
+				}
 
- 				if (this.options.scrollable) {
- 					var $scrollableWrap = this.$element.find('.scrollable-wrap');
+				if (this.options.scrollable) {
+					var $scrollableWrap = this.$element.find('.scrollable-wrap');
 
- 					$scrollableWrap.scrollable();
- 					this._scrollable = $scrollableWrap.data('scrollable');
- 				}
+					$scrollableWrap.scrollable();
+					this._scrollable = $scrollableWrap.data('scrollable');
+				}
 
- 				return this;
- 			}
+				// Set height on first render
+				this.listView.setHeight();
 
- 		}
+				$elForScrollEvent = (this.options.scrollable) ? this.$element.find('.scrollable-inner') : this.listView.$el;
 
- 		// Make it able to bind and trigger events
- 		Sushi.extend( Listable.prototype, Event );
+				scrollEventCallback = function() {
+					var top = $elForScrollEvent.scrollTop();
+
+					// Publish edge cases under specific events
+					if (top === 0)
+						that.publish('top');
+
+					if (that.listView._height <= top)
+						that.publish('bottom');
+
+					// Always publish scroll
+					that.publish('scroll');
+				}
+				scrollEventCallback = performance.throttle(scrollEventCallback, 300);
+
+				$elForScrollEvent.on('scroll', scrollEventCallback);
+
+				return this;
+			}
+
+		};
+
+		// Make it able to bind and trigger events
+		Sushi.extend( Listable.prototype, Event );
 
         /* DROPDOWN PLUGIN DEFINITION
 		 * ========================== */
@@ -427,7 +458,7 @@
 						data.render();
 					}
 			});
-		}
+		};
 
 		Sushi.fn.listable.defaults = {
 			source: [],
@@ -445,6 +476,7 @@
 				}
 			],
 			listType: 'unordered',
+			listMethod: 'append',
 			scrollable: true,
 			title: {
 				template: '<h1 class="listable-title">{{content}}</h1>'
@@ -461,21 +493,21 @@
 			loading: {
 				template: '<span class="listable-loading-loader centered">Loading...</span>'
 			}
-		}
+		};
 
-		Sushi.fn.listable.Constructor = Listable
+		Sushi.fn.listable.Constructor = Listable;
 
 		 /* LISTABLE DATA-API
 		  * ============== */
 
 		Sushi.ready(function () {
 			$('[data-provide="listable"]').each( function () {
-			  	var $this = $(this)
+				var $this = $(this)
 					, data = {};
 
 				Sushi.extend(data, $this.data());
 				$this.listable(data)
 			});
-		  })
- 	}
- );
+		});
+	}
+);
