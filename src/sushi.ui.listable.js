@@ -255,6 +255,7 @@ define('sushi.ui.listable',
 					this.collection.bind('add', this.addOne, this);
 					this.collection.bind('add', this.setHeight, this);
 					this.collection.bind('remove', this.setHeight, this);
+					this.collection.bind('remove', this.checkEmpty, this);
 
 					that.bind('search', this.search, this);
 
@@ -306,6 +307,13 @@ define('sushi.ui.listable',
 					}
 
 					return this;
+				},
+
+				checkEmpty: function() {
+					if (!this.collection.length) {
+						this.emptyView = new EmptyView();
+						this.$el.html('').append( this.emptyView.render().el);
+					}
 				},
 
 				setHeight: function() {
