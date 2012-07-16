@@ -34,6 +34,7 @@ define('sushi.ui.listable',
 				that = this;
 
 			this.$element = $(element);
+
 			this.options = Sushi.extend({}, this.options, options);
 
 			this.source = (typeof this.options.source === 'string') ? JSON.parse(this.options.source) : this.options.source;
@@ -149,11 +150,11 @@ define('sushi.ui.listable',
 
 				search: function() {
 					var value = this.$el.find('input').val(),
-						pattern = new RegExp(value, 'gi'),
 						results;
 
 					results = new ListCollection(this.collection.filter(function(model){
-						return (pattern.test(model.get('title')) || pattern.test(model.get('description')));
+						return (model.get('title').toLowerCase().indexOf(value.toLowerCase()) != -1) 
+							|| (model.get('description').toLowerCase().indexOf(value.toLowerCase()) != -1);
 					}));
 
 					that.trigger('search', results, value);
