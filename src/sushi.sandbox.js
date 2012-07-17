@@ -75,6 +75,8 @@ define('sushi.sandbox',
 		mediator.publish = function (channel, event) {
 			var i, l, args = [].slice.call(arguments, 1);
 
+			if (!channels[channel]) return;
+
 			if (channels[channel][event] && channels[channel][event].length) {
 				collection.each(channels[channel][event], function(fn){
 					fn.apply(this, args);
