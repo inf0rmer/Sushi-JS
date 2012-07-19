@@ -8,7 +8,7 @@ define('sushi.date',
     [
     	'sushi.core'
     ],
-    
+
 	/**
 	 * Sushi Date - Date Handling functions
 	 *
@@ -17,10 +17,10 @@ define('sushi.date',
 	 */
     function(Sushi) {
     	Sushi.namespace('date');
-    	
+
     	var ext = {},
     		locale = "en-GB";
-    	
+
 		ext.util = {};
 		ext.util.xPad = function (x, pad, r) {
 			if (typeof (r) == "undefined") {
@@ -31,11 +31,11 @@ define('sushi.date',
 			}
 			return x.toString()
 		};
-		
+
 		if (document.getElementsByTagName("html") && document.getElementsByTagName("html")[0].lang) {
 			locale = document.getElementsByTagName("html")[0].lang
 		}
-		
+
 		ext.locales = {};
 		ext.locales.en = {
 			a: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -56,16 +56,16 @@ define('sushi.date',
 		ext.locales["en-AU"] = ext.locales["en-GB"];
 		ext.formats = {
 			a: function (d) {
-				return ext.locales[d.locale].a[d.getDay()]
+				return ext.locales[locale].a[d.getDay()]
 			},
 			A: function (d) {
-				return ext.locales[d.locale].A[d.getDay()]
+				return ext.locales[locale].A[d.getDay()]
 			},
 			b: function (d) {
-				return ext.locales[d.locale].b[d.getMonth()]
+				return ext.locales[locale].b[d.getMonth()]
 			},
 			B: function (d) {
-				return ext.locales[d.locale].B[d.getMonth()]
+				return ext.locales[locale].B[d.getMonth()]
 			},
 			c: "toLocaleString",
 			C: function (d) {
@@ -105,10 +105,10 @@ define('sushi.date',
 			},
 			M: ["getMinutes", "0"],
 			p: function (d) {
-				return ext.locales[d.locale].p[d.getHours() >= 12 ? 1 : 0]
+				return ext.locales[locale].p[d.getHours() >= 12 ? 1 : 0]
 			},
 			P: function (d) {
-				return ext.locales[d.locale].P[d.getHours() >= 12 ? 1 : 0]
+				return ext.locales[locale].P[d.getHours() >= 12 ? 1 : 0]
 			},
 			S: ["getSeconds", "0"],
 			u: function (d) {
@@ -173,19 +173,19 @@ define('sushi.date',
 		ext.aggregates.z = ext.formats.z(new Date());
 		ext.aggregates.Z = ext.formats.Z(new Date());
 		ext.unsupported = {};
-		
-		
+
+
 		var toRelativeTime = (function() {
-		
+
 			var _ = function(date, options) {
 				var opts = processOptions(options),
 					now = opts.now || new Date(),
 					delta = now - date,
 					future = (delta <= 0),
 					units = null;
-				
+
 				delta = Math.abs(delta);
-				
+
 				// special cases controlled by options
 				if (delta <= opts.nowThreshold) {
 					return {delta: 0};
@@ -193,14 +193,14 @@ define('sushi.date',
 				if (opts.smartDays && delta <= 6 * MS_IN_DAY) {
 					return toSmartDays(this, now);
 				}
-				
+
 				for (var key in CONVERSIONS) {
 					if (delta < CONVERSIONS[key])
 						break;
 					units = key; // keeps track of the selected key over the iteration
 					delta = delta / CONVERSIONS[key];
 				}
-				
+
 				// pluralize a unit when the difference is greater than 1.
 				delta = Math.floor(delta);
 				var plural = (delta !== 1);
@@ -211,7 +211,7 @@ define('sushi.date',
 					plural: plural
 				}
 			};
-		
+
 			var processOptions = function(arg) {
 				if (!arg) arg = 0;
 				if (typeof arg === 'string') {
@@ -223,7 +223,7 @@ define('sushi.date',
 				}
 				return arg;
 		  	};
-		
+
 		  	var toSmartDays = function(date, now) {
 				var day;
 				var weekday = date.getDay(),
@@ -238,7 +238,7 @@ define('sushi.date',
 					date: date.toLocaleTimeString()
 				}
 		  	};
-		
+
 		 	var CONVERSIONS = {
 				millisecond: 1, // ms    -> ms
 				second: 1000,   // ms    -> sec
@@ -249,15 +249,15 @@ define('sushi.date',
 				year:   12      // month -> year
 		  	};
 		  	var MS_IN_DAY = (CONVERSIONS.millisecond * CONVERSIONS.second * CONVERSIONS.minute * CONVERSIONS.hour * CONVERSIONS.day);
-		
+
 		  	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-		
+
 		  	return _;
-		
+
 		})();
-		
-		
-		
+
+
+
 		/*
 		 * Wraps up a common pattern used with this plugin whereby you take a String
 		 * representation of a Date, and want back a date object.
@@ -265,12 +265,12 @@ define('sushi.date',
 		var fromString = function(str) {
 			return new Date(Date.parse(str));
 		};
-		
+
 		Sushi.extend(Sushi.date, {
 			fromString: fromString,
-			
+
 			toRelativeTime: toRelativeTime,
-			
+
 			strftime: function (d, fmt) {
 				if (!(locale in ext.locales)) {
 					if (locale.replace(/-[a-zA-Z]+$/, "") in ext.locales) {
@@ -282,7 +282,7 @@ define('sushi.date',
 				while (fmt.match(/%[cDhnrRtTxXzZ]/)) {
 					fmt = fmt.replace(/%([cDhnrRtTxXzZ])/g, function (m0, m1) {
 						var f = ext.aggregates[m1];
-						return (f == "locale" ? ext.locales[d.locale][m1] : f)
+						return (f == "locale" ? ext.locales[locale][m1] : f)
 					})
 				}
 				var str = fmt.replace(/%([aAbBCdegGHIjmMpPSuUVwWyY%])/g, function (m0, m1) {
@@ -304,12 +304,12 @@ define('sushi.date',
 				d = null;
 				return str
 			},
-			
+
 			setLocale: function(newLocale) {
 				if (newLocale in ext.locales) locale = newLocale;
 			}
 		});
-		
+
 		return Sushi.date;
     }
 );
