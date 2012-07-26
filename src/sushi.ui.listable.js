@@ -335,7 +335,7 @@ define('sushi.ui.listable',
 
 					that.off('search', this.search, this);
 
-					if (that.options.scrollable) {
+					if (this.options.scrollable) {
 						this.collection.off('reset', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
@@ -356,7 +356,7 @@ define('sushi.ui.listable',
 						});
 					}
 
-					ListView.Super.prototype.deallocl.call(this);
+					ListView.Super.prototype.dealloc.call(this);
 				}
 
 			});
