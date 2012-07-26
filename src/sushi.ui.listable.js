@@ -252,28 +252,28 @@ define('sushi.ui.listable',
 				_height: 0,
 
 				initialize: function(options) {
-					this.collection.bind('reset', this.addAll, this);
-					this.collection.bind('add', this.addOne, this);
-					this.collection.bind('add', this.setHeight, this);
-					this.collection.bind('remove', this.setHeight, this);
-					this.collection.bind('remove', this.checkEmpty, this);
+					this.collection.on('reset', this.addAll, this);
+					this.collection.on('add', this.addOne, this);
+					this.collection.on('add', this.setHeight, this);
+					this.collection.on('remove', this.setHeight, this);
+					this.collection.on('remove', this.checkEmpty, this);
 
-					that.bind('search', this.search, this);
+					that.on('search', this.search, this);
 
 					if (that.options.scrollable) {
-						this.collection.bind('reset', function() {
+						this.collection.on('reset', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
 								that._scrollable.refresh();
 							}, 0);
 						});
-						this.collection.bind('add', function() {
+						this.collection.on('add', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
 								that._scrollable.refresh();
 							}, 0);
 						});
-						this.collection.bind('remove', function() {
+						this.collection.on('remove', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
 								that._scrollable.refresh();
@@ -323,6 +323,40 @@ define('sushi.ui.listable',
 
 				search: function(collection) {
 					this.addAll.call(this, collection);
+				},
+
+				dealloc: function() {
+					// Unbind events to avoid errors
+					this.collection.off('reset', this.addAll, this);
+					this.collection.off('add', this.addOne, this);
+					this.collection.off('add', this.setHeight, this);
+					this.collection.off('remove', this.setHeight, this);
+					this.collection.off('remove', this.checkEmpty, this);
+
+					that.off('search', this.search, this);
+
+					if (that.options.scrollable) {
+						this.collection.off('reset', function() {
+							if (!that._scrollable) return false;
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
+						});
+						this.collection.off('add', function() {
+							if (!that._scrollable) return false;
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
+						});
+						this.collection.off('remove', function() {
+							if (!that._scrollable) return false;
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
+						});
+					}
+
+					ListView.Super.prototype.deallocl.call(this);
 				}
 
 			});
