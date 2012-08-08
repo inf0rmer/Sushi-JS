@@ -264,7 +264,7 @@ define('sushi.date',
 		 */
 		var fromString = (function () {
 		  var defaults = {
-		    order : 'MDY',
+		    order : 'DMY',
 		    strict : false
 		  };
 
