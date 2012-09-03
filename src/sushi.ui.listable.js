@@ -295,9 +295,9 @@ define('sushi.ui.listable',
 					return this;
 				},
 
-				remove : function(model) {
-					var viewToRemove = this._views.select(function(cv) { return cv.model === model; })[0];
-					this._views = this._views.without(viewToRemove);
+				removeView : function(model) {
+					var viewToRemove = $.utils.select(this._views, function(cv) { return cv.model === model; })[0];
+					this._views = $.utils.without(this._views, viewToRemove);
 
 					viewToRemove.$el.remove();
 				},
