@@ -251,12 +251,15 @@ define('sushi.ui.listable',
 
 				_height: 0,
 
+				_views: [],
+
 				initialize: function(options) {
 					this.collection.bind('reset', this.addAll, this);
 					this.collection.bind('add', this.addOne, this);
 					this.collection.bind('add', this.setHeight, this);
 					this.collection.bind('remove', this.setHeight, this);
 					this.collection.bind('remove', this.checkEmpty, this);
+					this.collection.bind('remove', this.removeView, this);
 
 					that.bind('search', this.search, this);
 
@@ -286,11 +289,19 @@ define('sushi.ui.listable',
 					return this;
 				},
 
+				remove : function(model) {
+					var viewToRemove = this._views.select(function(cv) { return cv.model === model; })[0];
+					this._views = this._views.without(viewToRemove);
+
+					viewToRemove.$el.remove();
+				},
+
 				addOne: function(item) {
 					if (this.emptyView) this.emptyView.dealloc();
 
 					var view = new ItemView( {model: item} );
 					this.$el[that.options.listMethod]( view.render().el );
+					this._views.push(view);
 
 					return this;
 				},
