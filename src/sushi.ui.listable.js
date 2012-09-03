@@ -15,6 +15,7 @@ define('sushi.ui.listable',
 		'sushi.utils',
 		'sushi.error',
 		'sushi.utils.json',
+		'sushi.utils.collection',
 		'sushi.utils.performance',
 		'sushi.mvc.view.bindings',
 		'sushi.ui.scrollable'
@@ -26,7 +27,7 @@ define('sushi.ui.listable',
 	 * @namespace Sushi
 	 * @class ui.listable
 	 */
-	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, performance) {
+	function(Sushi, Event, $, template, View, Model, Collection, utils, SushiError, JSON, coll, performance) {
 
 		Listable = function(element, options) {
 
@@ -139,6 +140,7 @@ define('sushi.ui.listable',
 
 				initialize: function(options) {
 					this.data = options.data;
+					this.fields = that.options.search.fields || [];
 
 					this.search = utils.throttle(this.search, 500)
 				},
@@ -150,12 +152,16 @@ define('sushi.ui.listable',
 
 				search: function() {
 					var value = this.$el.find('input').val(),
-						results;
+						self = this;
+						results = [];
 
-					results = new ListCollection(this.collection.filter(function(model){
-						return (model.get('title').toLowerCase().indexOf(value.toLowerCase()) != -1) 
-							|| (model.get('description').toLowerCase().indexOf(value.toLowerCase()) != -1);
-					}));
+					utils.each(this.fields, function(field) {
+						results[results.length] = this.collection.filter(function(model){
+							return (model.has(field) && model.get(field).toLowerCase().indexOf(value.toLowerCase()) != -1);
+						});
+					}, this);
+
+					results = new ListCollection($.utils.unique($.utils.flatten(results)));
 
 					that.trigger('search', results, value);
 					that.$element.trigger('search', [results, value]);
@@ -261,22 +267,22 @@ define('sushi.ui.listable',
 					this.collection.bind('remove', this.checkEmpty, this);
 					this.collection.bind('remove', this.removeView, this);
 
-					that.bind('search', this.search, this);
+					that.on('search', this.search, this);
 
 					if (that.options.scrollable) {
-						this.collection.bind('reset', function() {
+						this.collection.on('reset', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
 								that._scrollable.refresh();
 							}, 0);
 						});
-						this.collection.bind('add', function() {
+						this.collection.on('add', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
 								that._scrollable.refresh();
 							}, 0);
 						});
-						this.collection.bind('remove', function() {
+						this.collection.on('remove', function() {
 							if (!that._scrollable) return false;
 							setTimeout(function() {
 								that._scrollable.refresh();
@@ -334,6 +340,40 @@ define('sushi.ui.listable',
 
 				search: function(collection) {
 					this.addAll.call(this, collection);
+				},
+
+				dealloc: function() {
+					// Unbind events to avoid errors
+					this.collection.off('reset', this.addAll, this);
+					this.collection.off('add', this.addOne, this);
+					this.collection.off('add', this.setHeight, this);
+					this.collection.off('remove', this.setHeight, this);
+					this.collection.off('remove', this.checkEmpty, this);
+
+					that.off('search', this.search, this);
+
+					if (this.options.scrollable) {
+						this.collection.off('reset', function() {
+							if (!that._scrollable) return false;
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
+						});
+						this.collection.off('add', function() {
+							if (!that._scrollable) return false;
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
+						});
+						this.collection.off('remove', function() {
+							if (!that._scrollable) return false;
+							setTimeout(function() {
+								that._scrollable.refresh();
+							}, 0);
+						});
+					}
+
+					ListView.Super.prototype.dealloc.call(this);
 				}
 
 			});
@@ -504,7 +544,8 @@ define('sushi.ui.listable',
 				template: '{{#if link}}<a href="{{link}}">{{/if}}<article>{{#if image}} <aside class="image">{{image}}</aside> {{/if}} {{#if title}} <h1 data-binding="title" class="content title">{{title}}</h1> {{/if}} {{#if description}} <p data-binding="description" class="muted content description">{{description}}</p> {{/if}}</article>{{#if link}}</a>{{/if}}'
 			},
 			search: {
-				template: '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>'
+				template: '<form action=""><input class="search" type="search" placeholder="{{placeholder}}" /></form>',
+				fields: ['title', 'description']
 			},
 			empty: {
 				template: 'There are no items here.'

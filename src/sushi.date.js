@@ -8,7 +8,7 @@ define('sushi.date',
     [
     	'sushi.core'
     ],
-    
+
 	/**
 	 * Sushi Date - Date Handling functions
 	 *
@@ -17,10 +17,10 @@ define('sushi.date',
 	 */
     function(Sushi) {
     	Sushi.namespace('date');
-    	
+
     	var ext = {},
     		locale = "en-GB";
-    	
+
 		ext.util = {};
 		ext.util.xPad = function (x, pad, r) {
 			if (typeof (r) == "undefined") {
@@ -31,11 +31,11 @@ define('sushi.date',
 			}
 			return x.toString()
 		};
-		
+
 		if (document.getElementsByTagName("html") && document.getElementsByTagName("html")[0].lang) {
 			locale = document.getElementsByTagName("html")[0].lang
 		}
-		
+
 		ext.locales = {};
 		ext.locales.en = {
 			a: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -56,16 +56,16 @@ define('sushi.date',
 		ext.locales["en-AU"] = ext.locales["en-GB"];
 		ext.formats = {
 			a: function (d) {
-				return ext.locales[d.locale].a[d.getDay()]
+				return ext.locales[locale].a[d.getDay()]
 			},
 			A: function (d) {
-				return ext.locales[d.locale].A[d.getDay()]
+				return ext.locales[locale].A[d.getDay()]
 			},
 			b: function (d) {
-				return ext.locales[d.locale].b[d.getMonth()]
+				return ext.locales[locale].b[d.getMonth()]
 			},
 			B: function (d) {
-				return ext.locales[d.locale].B[d.getMonth()]
+				return ext.locales[locale].B[d.getMonth()]
 			},
 			c: "toLocaleString",
 			C: function (d) {
@@ -105,10 +105,10 @@ define('sushi.date',
 			},
 			M: ["getMinutes", "0"],
 			p: function (d) {
-				return ext.locales[d.locale].p[d.getHours() >= 12 ? 1 : 0]
+				return ext.locales[locale].p[d.getHours() >= 12 ? 1 : 0]
 			},
 			P: function (d) {
-				return ext.locales[d.locale].P[d.getHours() >= 12 ? 1 : 0]
+				return ext.locales[locale].P[d.getHours() >= 12 ? 1 : 0]
 			},
 			S: ["getSeconds", "0"],
 			u: function (d) {
@@ -173,19 +173,19 @@ define('sushi.date',
 		ext.aggregates.z = ext.formats.z(new Date());
 		ext.aggregates.Z = ext.formats.Z(new Date());
 		ext.unsupported = {};
-		
-		
+
+
 		var toRelativeTime = (function() {
-		
+
 			var _ = function(date, options) {
 				var opts = processOptions(options),
 					now = opts.now || new Date(),
 					delta = now - date,
 					future = (delta <= 0),
 					units = null;
-				
+
 				delta = Math.abs(delta);
-				
+
 				// special cases controlled by options
 				if (delta <= opts.nowThreshold) {
 					return {delta: 0};
@@ -193,14 +193,14 @@ define('sushi.date',
 				if (opts.smartDays && delta <= 6 * MS_IN_DAY) {
 					return toSmartDays(this, now);
 				}
-				
+
 				for (var key in CONVERSIONS) {
 					if (delta < CONVERSIONS[key])
 						break;
 					units = key; // keeps track of the selected key over the iteration
 					delta = delta / CONVERSIONS[key];
 				}
-				
+
 				// pluralize a unit when the difference is greater than 1.
 				delta = Math.floor(delta);
 				var plural = (delta !== 1);
@@ -211,7 +211,7 @@ define('sushi.date',
 					plural: plural
 				}
 			};
-		
+
 			var processOptions = function(arg) {
 				if (!arg) arg = 0;
 				if (typeof arg === 'string') {
@@ -223,7 +223,7 @@ define('sushi.date',
 				}
 				return arg;
 		  	};
-		
+
 		  	var toSmartDays = function(date, now) {
 				var day;
 				var weekday = date.getDay(),
@@ -238,7 +238,7 @@ define('sushi.date',
 					date: date.toLocaleTimeString()
 				}
 		  	};
-		
+
 		 	var CONVERSIONS = {
 				millisecond: 1, // ms    -> ms
 				second: 1000,   // ms    -> sec
@@ -249,41 +249,186 @@ define('sushi.date',
 				year:   12      // month -> year
 		  	};
 		  	var MS_IN_DAY = (CONVERSIONS.millisecond * CONVERSIONS.second * CONVERSIONS.minute * CONVERSIONS.hour * CONVERSIONS.day);
-		
+
 		  	var WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-		
+
 		  	return _;
-		
+
 		})();
-		
-		
-		
+
+
+
 		/*
 		 * Wraps up a common pattern used with this plugin whereby you take a String
 		 * representation of a Date, and want back a date object.
 		 */
-		var fromString = function(str) {
-			return new Date(Date.parse(str));
-		};
-		
+		var fromString = (function () {
+		  var defaults = {
+		    order : 'DMY',
+		    strict : false
+		  };
+
+		  var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG",
+		      "SEP", "OCT", "NOV", "DEC"];
+
+		  var abs = ["AM", "PM", "AFTERNOON", "MORNING"];
+
+		  var mark = function (str, val) {
+		    var lval = val.toLowerCase();
+		    var regex = new RegExp('^' + lval + '|(.*[^:alpha:])' + lval, 'g');
+		    return str.replace(regex, '$1' + val);
+		  };
+
+		  var normalize = function (str) {
+		    str = str.toLowerCase();
+		    str = str.replace(/[^:a-z0-9]/g, '-');
+		    for (var i=0; i<months.length; i++) str = mark(str, months[i]);
+		    for (var i=0; i<abs.length; i++) str = mark(str, abs[i]);
+		    str = str.replace(/[a-z]/g, '');
+		    str = str.replace(/([0-9])([A-Z])/g, '$1-$2');
+		    str = ('-' + str + '-').replace(/-+/g, '-');
+		    return str;
+		  };
+
+		  var find_time = function (norm) {
+		    var obj = {date:norm, time:''};
+		    obj.time = norm.replace(
+		        /^.*-(\d\d?(:\d\d){1,2}(:\d\d\d)?(-(AM|PM))?)-.*$/, '$1');
+		    if (obj.time == obj.date)
+		      obj.time = norm.replace(/^.*-(\d\d?-(AM|PM))-.*$/, '$1');
+		    if (obj.time == obj.date) obj.time = '';
+		    obj.date = norm.replace(obj.time, '');
+		    obj.time = ('-' + obj.time + '-').replace(/-+/g, '-');
+		    obj.date = ('-' + obj.date + '-').replace(/-+/g, '-');
+		    return obj;
+		  };
+
+		  var find_year = function (norm) {
+		    var year = null;
+		    
+		    // Check for a 4-digit year
+		    year = norm.replace(/^.*-(\d\d\d\d)-.*$/, '$1');
+		    if (year != norm) return year; else year = null;
+
+		    // Check for a 2-digit year, over 32.
+		    year = norm.replace(/^.*-((3[2-9])|([4-9][0-9]))-.*$/, '$1');
+		    if (year != norm) return year; else year = null;
+		    
+		    // Day is always by month, so check for explicit months in 
+		    // first or third spot
+		    year = norm.replace(/^.*-[A-Z]{3}-\d\d?-(\d\d?)-.*$/, '$1');
+		    if (year != norm) return year; else year = null;
+		    year = norm.replace(/^.*-(\d\d?)-\d\d?-[A-Z]{3}-.*$/, '$1');
+		    if (year != norm) return year; else year = null;
+
+		    // If all else fails, use the setting for the position of the year.
+		    var pos = '$3';
+		    if (defaults.opts.order.charAt(0) == 'Y') pos = '$1';
+		    else if (defaults.opts.order.charAt(1) == 'Y') pos = '$2';
+		    year = norm.replace(/^.*-(\d\d?)-([A-Z]{3}|\d{1,2})-(\d\d?)-.*$/, pos);
+		    if (year != norm) return year; else year = null;
+
+		    return year;
+		  };
+
+		  var find_month = function (norm, year) {
+		    // Check for an explicity month
+		    var matches = norm.match(/[A-Z]{3}/);
+		    if (matches && matches.length) return matches[0];
+
+		    // Remove the year, and unless obviously wrong, use order
+		    // to chose which one to use for month.
+		    var parts = norm.replace(year + '-', '').split('-');
+		    if (parts.length != 4) return null;
+		    var order = defaults.opts.order;
+		    var md = order.indexOf('M') < order.indexOf('D')? 1: 2;
+		    return (parseInt(parts[md], 10) <= 12)? parts[md]: parts[md==1? 2: 1];
+		  };
+
+		  var find_day  = function (norm, year, month) {
+		    return norm.replace(year, '').replace(month, '').replace(/-/g, '');
+		  };
+
+		  var create_absolute = function (obj) {
+		    
+		    var time = obj.time.replace(/[-APM]/g, '');
+		    var parts = time.split(':');
+		    parts[1] = parts[1] || 0;
+		    parts[2] = parts[2] || 0;
+		    parts[3] = parts[3] || 0;
+		    var ihr = parseInt(parts[0], 10);
+		    if (obj.time.match(/-AM-/) && ihr == 12) parts[0] = 0;
+		    else if (obj.time.match(/-PM-/) && ihr < 12) parts[0] = ihr + 12;
+		    parts[0] = ("0" + parts[0]).substring(("0" + parts[0]).length - 2);
+		    parts[1] = ("0" + parts[1]).substring(("0" + parts[1]).length - 2);
+		    parts[2] = ("0" + parts[2]).substring(("0" + parts[2]).length - 2);
+		    time = parts[0] + ":" + parts[1] + ":" + parts[2];
+		    var millisecs = parts[3];
+
+		    var strict = defaults.opts.strict;
+		    if (!obj.year && !strict) obj.year = (new Date()).getFullYear();
+		    var year = parseInt(obj.year, 10);
+		    if (year < 100) {
+		      year += (year<70? 2000: 1900);
+		    }
+
+		    if (!obj.month && !strict) obj.month = (new Date()).getMonth() + 1;
+		    var month = String(obj.month);
+		    if (month.match(/[A-Z]{3}/)) {
+		      month = "JAN-FEB-MAR-APR-MAY-JUN-JUL-AUG-SEP-OCT-NOV-DEC-"
+		          .indexOf(month) / 4 + 1;
+		    }
+		    month = ("0" + month).substring(("0" + month).length - 2);
+		    if (!obj.day && !strict) obj.day = (new Date()).getDate();
+		    var day = ("0" + obj.day).substring(("0" + obj.day).length - 2);
+
+		    var date = new Date();
+		    date.setTime(Date.parse(year + '/' + month + '/' + day + ' ' + time));
+		    date.setMilliseconds(millisecs);
+		    return date;
+		  };
+
+		  var parse = function (norm) {
+		    return absolute(norm);
+		  };
+
+		  var absolute = function (norm) {
+		    var obj = find_time(norm);
+		    obj.norm = norm;
+		    obj.year = find_year(obj.date);
+		    obj.month = find_month(obj.date, obj.year);
+		    obj.day = find_day(obj.date, obj.year, obj.month);
+		    return create_absolute(obj);
+		  };
+
+		  return function (fuzz, opts) {
+		    defaults.opts = { order: defaults.order, strict: defaults.strict };
+		    if (opts && opts.order) defaults.opts.order = opts.order;
+		    if (opts && opts.strict != undefined) defaults.opts.strict = opts.strict;
+		    var date = parse(normalize(fuzz));
+		    return date;
+		  };
+
+		})();
+
 		Sushi.extend(Sushi.date, {
 			fromString: fromString,
-			
+
 			toRelativeTime: toRelativeTime,
-			
+
 			strftime: function (d, fmt) {
 				if (!(locale in ext.locales)) {
 					if (locale.replace(/-[a-zA-Z]+$/, "") in ext.locales) {
-						locale = locale.replace(/-[a-zA-Z]+$/, "")
+						locale = locale.replace(/-[a-zA-Z]+$/, "");
 					} else {
-						locale = "en-GB"
+						locale = "en-GB";
 					}
 				}
 				while (fmt.match(/%[cDhnrRtTxXzZ]/)) {
 					fmt = fmt.replace(/%([cDhnrRtTxXzZ])/g, function (m0, m1) {
 						var f = ext.aggregates[m1];
-						return (f == "locale" ? ext.locales[d.locale][m1] : f)
-					})
+						return (f == "locale" ? ext.locales[locale][m1] : f)
+					});
 				}
 				var str = fmt.replace(/%([aAbBCdegGHIjmMpPSuUVwWyY%])/g, function (m0, m1) {
 					var f = ext.formats[m1];
@@ -304,12 +449,12 @@ define('sushi.date',
 				d = null;
 				return str
 			},
-			
+
 			setLocale: function(newLocale) {
 				if (newLocale in ext.locales) locale = newLocale;
 			}
 		});
-		
+
 		return Sushi.date;
     }
 );
