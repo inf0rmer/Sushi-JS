@@ -32,18 +32,7 @@
 				i,
 				isSupported,
 				div = document.createElement( "div" ),
-				documentElement = document.documentElement,
-				getVendorPropertyName = function(prop) {
-					var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
-					var prop_ = prop.charAt(0).toUpperCase() + prop.substr(1);
-
-					if (prop in div.style) { return prop; }
-
-					for (var i=0; i<prefixes.length; ++i) {
-						var vendorProp = prefixes[i] + prop_;
-						if (vendorProp in div.style) { return vendorProp; }
-					}
-				}
+				documentElement = document.documentElement
 
 			// Preliminary tests
 			div.setAttribute("className", "t");
@@ -321,10 +310,7 @@
 					container.style.zoom = 1;
 				}
 
-				var transform = getVendorPropertyName('transform');
-				div.style[transform] = '';
-    			div.style[transform] = 'rotateY(90deg)';
-    			support.transform3D = div.style[transform] !== '';
+				support.transform3D = ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix());
 
     			body.removeChild( container );
 				marginDiv = div = container = null;
