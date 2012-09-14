@@ -312,6 +312,11 @@
 		
 				body.removeChild( container );
 				marginDiv = div = container = null;
+
+
+				div.style[support.transform] = '';
+    			div.style[support.transform] = 'rotateY(90deg)';
+    			support.transform3D = div.style[support.transform] !== '';
 		
 				Sushi.extend( support, offsetSupport );
 			});
