@@ -32,7 +32,18 @@
 				i,
 				isSupported,
 				div = document.createElement( "div" ),
-				documentElement = document.documentElement;
+				documentElement = document.documentElement,
+				getVendorPropertyName = function(prop) {
+					var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
+					var prop_ = prop.charAt(0).toUpperCase() + prop.substr(1);
+
+					if (prop in div.style) { return prop; }
+
+					for (var i=0; i<prefixes.length; ++i) {
+						var vendorProp = prefixes[i] + prop_;
+						if (vendorProp in div.style) { return vendorProp; }
+					}
+				}
 
 			// Preliminary tests
 			div.setAttribute("className", "t");
