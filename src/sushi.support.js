@@ -310,9 +310,10 @@
 					container.style.zoom = 1;
 				}
 
-				div.style[support.transform] = '';
-    			div.style[support.transform] = 'rotateY(90deg)';
-    			support.transform3D = div.style[support.transform] !== '';
+				var transform = getVendorPropertyName('transform');
+				div.style[transform] = '';
+    			div.style[transform] = 'rotateY(90deg)';
+    			support.transform3D = div.style[transform] !== '';
 
     			body.removeChild( container );
 				marginDiv = div = container = null;
