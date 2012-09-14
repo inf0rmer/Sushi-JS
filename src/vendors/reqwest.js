@@ -11,10 +11,8 @@ define(["require", "exports", "module"], function(require, exports, module) {
   else this[name] = definition()
 }('reqwest', function () {
 
-  var context = this
-    , win = window
+  var win = window
     , doc = document
-    , old = context.reqwest
     , twoHundo = /^20\d$/
     , byTag = 'getElementsByTagName'
     , readyState = 'readyState'
@@ -24,6 +22,9 @@ define(["require", "exports", "module"], function(require, exports, module) {
     , uniqid = 0
     , lastValue // data stored by the most recent JSONP callback
     , xmlHttpRequest = 'XMLHttpRequest'
+    , isArray = typeof Array.isArray == 'function' ? Array.isArray : function (a) {
+        return a instanceof Array
+      }
     , defaultHeaders = {
           contentType: 'application/x-www-form-urlencoded'
         , accept: {
@@ -36,7 +37,7 @@ define(["require", "exports", "module"], function(require, exports, module) {
           }
         , requestedWith: xmlHttpRequest
       }
-    , xhr = (xmlHttpRequest in win) ?
+    , xhr = win[xmlHttpRequest] ?
         function () {
           return new XMLHttpRequest()
         } :
@@ -57,12 +58,12 @@ define(["require", "exports", "module"], function(require, exports, module) {
   }
 
   function setHeaders(http, o) {
-    var headers = o.headers || {}
+    var headers = o.headers || {}, h
     headers.Accept = headers.Accept || defaultHeaders.accept[o.type] || defaultHeaders.accept['*']
     // breaks cross-origin requests with legacy browsers
     if (!o.crossOrigin && !headers[requestedWith]) headers[requestedWith] = defaultHeaders.requestedWith
     if (!headers[contentType]) headers[contentType] = o.contentType || defaultHeaders.contentType
-    for (var h in headers) {
+    for (h in headers) {
       headers.hasOwnProperty(h) && http.setRequestHeader(h, headers[h])
     }
   }
@@ -99,20 +100,12 @@ define(["require", "exports", "module"], function(require, exports, module) {
     script.type = 'text/javascript'
     script.src = url
     script.async = true
-    if (typeof script.onreadystatechange !== 'undefined') {
-        // need this for IE due to out-of-order onreadystatechange(), binding script
-        // execution to an event listener gives us control over when the script
-        // is executed. See http://jaubourg.net/2010/07/loading-script-as-onclick-handler-of.html
-        script.event = 'onclick'
-        script.htmlFor = script.id = '_reqwest_' + reqId
-    }
 
     script.onload = script.onreadystatechange = function () {
       if ((script[readyState] && script[readyState] !== 'complete' && script[readyState] !== 'loaded') || loaded) {
         return false
       }
       script.onload = script.onreadystatechange = null
-      script.onclick && script.onclick()
       // Call the user callback with the last value stored and clean up values and scripts.
       o.success && o.success(lastValue)
       lastValue = undefined
@@ -130,18 +123,19 @@ define(["require", "exports", "module"], function(require, exports, module) {
       // convert non-string objects to query-string form unless o.processData is false
       , data = (o.processData !== false && o.data && typeof o.data !== 'string')
         ? reqwest.toQueryString(o.data)
-        : (o.data || null);
+        : (o.data || null)
+      , http
 
     // if we're working on a GET request and we have data then we should append
     // query string to end of URL and not post data
-    (o.type == 'jsonp' || method == 'GET')
-      && data
-      && (url = urlappend(url, data))
-      && (data = null)
+    if ((o.type == 'jsonp' || method == 'GET') && data) {
+      url = urlappend(url, data)
+      data = null
+    }
 
     if (o.type == 'jsonp') return handleJsonp(o, fn, err, url)
 
-    var http = xhr()
+    http = xhr()
     http.open(method, url, true)
     setHeaders(http, o)
     http.onreadystatechange = handleReadyState(http, fn, err)
@@ -181,14 +175,13 @@ define(["require", "exports", "module"], function(require, exports, module) {
     }
 
     function success(resp) {
-      var r = resp.responseText,
-          xhr = resp;
+      var r = resp.responseText
       if (r) {
         switch (type) {
         case 'json':
           try {
             resp = win.JSON ? win.JSON.parse(r) : eval('(' + r + ')')
-          } catch(err) {
+          } catch (err) {
             return error(resp, 'Could not parse JSON in response', err)
           }
           break;
@@ -201,10 +194,10 @@ define(["require", "exports", "module"], function(require, exports, module) {
         }
       }
 
-      fn(resp, xhr.status, xhr)
-      o.success && o.success(resp, xhr.status, xhr)
+      fn(resp)
+      o.success && o.success(resp)
 
-      complete(resp, xhr.status, xhr)
+      complete(resp)
     }
 
     function error(resp, msg, t) {
@@ -232,10 +225,6 @@ define(["require", "exports", "module"], function(require, exports, module) {
   // normalize newline variants according to spec -> CRLF
   function normalize(s) {
     return s ? s.replace(/\r?\n/g, '\r\n') : ''
-  }
-
-  var isArray = typeof Array.isArray == 'function' ? Array.isArray : function(a) {
-    return a instanceof Array
   }
 
   function serial(el, cb) {
@@ -371,11 +360,6 @@ define(["require", "exports", "module"], function(require, exports, module) {
       o.jsonp && (o.jsonpCallback = o.jsonp)
     }
     return new Reqwest(o, fn)
-  }
-
-  reqwest.noConflict = function () {
-    context.reqwest = old
-    return this
   }
 
   return reqwest

@@ -12,4 +12,4 @@
 	url = git://github.com/ded/morpheus.git
 [submodule "reqwest"]
 	path = submodules/reqwest
-	url = git://github.com/ded/reqwest.git
+	url = git@github.com:inf0rmer/reqwest.git
